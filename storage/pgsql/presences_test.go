@@ -174,9 +174,9 @@ func TestPgSQLPresences_FetchCapabilities(t *testing.T) {
 	require.Nil(t, caps)
 }
 
-func newPresencesMock() (*pgSQLPresences, sqlmock.Sqlmock) {
+func newPresencesMock() (*Presences, sqlmock.Sqlmock) {
 	s, sqlMock := newStorageMock()
-	return &pgSQLPresences{
+	return &Presences{
 		pgSQLStorage: s,
 		pool:         pool.NewBufferPool(),
 	}, sqlMock
