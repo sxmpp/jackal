@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"testing"
 
-	sq "github.com/Masterminds/squirrel"
-
 	"github.com/DATA-DOG/go-sqlmock"
 	capsmodel "github.com/ortuman/jackal/model/capabilities"
 	"github.com/ortuman/jackal/util/pool"
@@ -54,8 +52,6 @@ func TestMySQLPresences_FetchPresence(t *testing.T) {
 
 func TestPgSQLPresences_FetchPrioritaryPresence(t *testing.T) {
 	var columns = []string{"allocation_id", "presence", "c.node", "c.ver", "c.features"}
-
-	sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
 
 	s, mock := newPresencesMock()
 	mock.ExpectQuery("SELECT allocation_id, presence, c.node, c.ver, c.features FROM presences AS p, capabilities AS c WHERE \\(username = \\? AND domain = \\? AND p.priority > 0 AND p.priority = \\(SELECT MAX\\(priority\\) FROM presences WHERE username = \\? AND domain = \\?\\) AND p.node = c.node AND p.ver = c.ver\\)").
