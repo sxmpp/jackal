@@ -39,9 +39,9 @@ type Config struct {
 	Hosts      []host.Config    `yaml:"hosts"`
 	Modules    module.Config    `yaml:"modules"`
 	Components component.Config `yaml:"components"`
+	Cluster    cluster.Config   `yaml:"cluster"`
 	C2S        []c2s.Config     `yaml:"c2s"`
 	S2S        *s2s.Config      `yaml:"s2s"`
-	Cluster    *cluster.Config  `yaml:"cluster"`
 }
 
 // FromFile loads default global configuration from a specified file.

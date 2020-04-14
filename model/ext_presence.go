@@ -3,23 +3,30 @@
  * See the LICENSE file for more information.
  */
 
-package capsmodel
+package model
 
 import (
 	"bytes"
 	"encoding/gob"
 
+	capsmodel "github.com/ortuman/jackal/model/capabilities"
 	"github.com/ortuman/jackal/xmpp"
 )
 
-// PresenceCaps represents the combination of along with its capabilities.
-type PresenceCaps struct {
+// ExtPresence represents an extended presence type.
+type ExtPresence struct {
+	// AllocationID specifies the allocation identifier of the node that registered the presence.
+	AllocationID string
+
+	// Presence contains presence stanza value.
 	Presence *xmpp.Presence
-	Caps     *Capabilities
+
+	// Caps contains presence associates capabilities.
+	Caps *capsmodel.Capabilities
 }
 
 // FromBytes deserializes a Capabilities entity from its binary representation.
-func (p *PresenceCaps) FromBytes(buf *bytes.Buffer) error {
+func (p *ExtPresence) FromBytes(buf *bytes.Buffer) error {
 	presence, err := xmpp.NewPresenceFromBytes(buf)
 	if err != nil {
 		return err
@@ -27,6 +34,9 @@ func (p *PresenceCaps) FromBytes(buf *bytes.Buffer) error {
 	var hasCaps bool
 
 	dec := gob.NewDecoder(buf)
+	if err := dec.Decode(&p.AllocationID); err != nil {
+		return err
+	}
 	if err := dec.Decode(&hasCaps); err != nil {
 		return err
 	}
@@ -38,12 +48,15 @@ func (p *PresenceCaps) FromBytes(buf *bytes.Buffer) error {
 }
 
 // ToBytes converts a Capabilities entity to its binary representation.
-func (p *PresenceCaps) ToBytes(buf *bytes.Buffer) error {
+func (p *ExtPresence) ToBytes(buf *bytes.Buffer) error {
 	if err := p.Presence.ToBytes(buf); err != nil {
 		return err
 	}
 	enc := gob.NewEncoder(buf)
 
+	if err := enc.Encode(p.AllocationID); err != nil {
+		return err
+	}
 	hasCaps := p.Caps != nil
 	if err := enc.Encode(hasCaps); err != nil {
 		return err

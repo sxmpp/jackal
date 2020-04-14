@@ -102,17 +102,6 @@ func TestPgSQLPresences_DeleteAllocationPresence(t *testing.T) {
 	require.Nil(t, err)
 }
 
-func TestPgSQLPresences_ClearPresences(t *testing.T) {
-	s, mock := newPresencesMock()
-	mock.ExpectExec("DELETE FROM presences").
-		WillReturnResult(sqlmock.NewResult(1, 1))
-
-	err := s.ClearPresences(context.Background())
-
-	require.Nil(t, mock.ExpectationsWereMet())
-	require.Nil(t, err)
-}
-
 func TestPgSQLPresences_FetchPresenceAllocationID(t *testing.T) {
 	var columns = []string{"allocation_id"}
 

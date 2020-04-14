@@ -41,6 +41,11 @@ func TestMemoryStorage_FetchPresencesMatchingJID(t *testing.T) {
 	require.True(t, ok)
 	require.Nil(t, err)
 
+	// fetch presence
+	extPresence, _ := s.FetchPresence(context.Background(), j4)
+	require.NotNil(t, extPresence)
+	require.Equal(t, extPresence.AllocationID, allocID2)
+
 	// fetch presence allocation
 	allocID, _ := s.FetchPresenceAllocationID(context.Background(), j1)
 	require.Equal(t, allocID1, allocID)
@@ -69,11 +74,6 @@ func TestMemoryStorage_FetchPresencesMatchingJID(t *testing.T) {
 	mJID, _ = jid.NewWithString("jackal.im/yard", true)
 	presences, _ = s.FetchPresencesMatchingJID(context.Background(), mJID)
 	require.Len(t, presences, 1)
-
-	_ = s.ClearPresences(context.Background())
-	mJID, _ = jid.NewWithString("jackal.im", true)
-	presences, _ = s.FetchPresencesMatchingJID(context.Background(), mJID)
-	require.Len(t, presences, 0)
 }
 
 func TestMemoryStorage_InsertCapabilities(t *testing.T) {

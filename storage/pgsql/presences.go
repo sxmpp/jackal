@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	sq "github.com/Masterminds/squirrel"
+	"github.com/ortuman/jackal/model"
 	capsmodel "github.com/ortuman/jackal/model/capabilities"
 	"github.com/ortuman/jackal/util/pool"
 	"github.com/ortuman/jackal/xmpp"
@@ -44,9 +45,9 @@ func (s *Presences) UpsertPresence(ctx context.Context, presence *xmpp.Presence,
 	rawXML := buf.String()
 
 	q := sq.Insert("presences").
-		Columns("username", "domain", "resource", "presence", "node", "ver", "allocation_id").
-		Values(jid.Node(), jid.Domain(), jid.Resource(), rawXML, node, ver, allocationID).
-		Suffix("ON CONFLICT (username, domain, resource) DO UPDATE SET presence = $4, node = $5, ver = $6, allocation_id = $7").
+		Columns("username", "domain", "resource", "presence", "priority", "node", "ver", "allocation_id").
+		Values(jid.Node(), jid.Domain(), jid.Resource(), rawXML, presence.Priority(), node, ver, allocationID).
+		Suffix("ON CONFLICT (username, domain, resource) DO UPDATE SET presence = $4, priority = $5, node = $6, ver = $7, allocation_id = $7").
 		Suffix("RETURNING CASE WHEN updated_at=created_at THEN true ELSE false END AS inserted")
 
 	var inserted bool
@@ -57,10 +58,10 @@ func (s *Presences) UpsertPresence(ctx context.Context, presence *xmpp.Presence,
 	return inserted, nil
 }
 
-func (s *Presences) FetchPresence(ctx context.Context, jid *jid.JID) (*capsmodel.PresenceCaps, error) {
-	var rawXML, node, ver, featuresJSON string
+func (s *Presences) FetchPresence(ctx context.Context, jid *jid.JID) (*model.ExtPresence, error) {
+	var allocID, rawXML, node, ver, featuresJSON string
 
-	q := sq.Select("presence", "c.node", "c.ver", "c.features").
+	q := sq.Select("allocation_id", "presence", "c.node", "c.ver", "c.features").
 		From("presences AS p, capabilities AS c").
 		Where(sq.And{
 			sq.Eq{"username": jid.Node()},
@@ -74,7 +75,7 @@ func (s *Presences) FetchPresence(ctx context.Context, jid *jid.JID) (*capsmodel
 	err := q.ScanContext(ctx, &rawXML, &node, &ver, &featuresJSON)
 	switch err {
 	case nil:
-		return scanPresenceAndCapabilties(rawXML, node, ver, featuresJSON)
+		return scanExtendedPresence(allocID, rawXML, node, ver, featuresJSON)
 	case sql.ErrNoRows:
 		return nil, nil
 	default:
@@ -82,7 +83,7 @@ func (s *Presences) FetchPresence(ctx context.Context, jid *jid.JID) (*capsmodel
 	}
 }
 
-func (s *Presences) FetchPresencesMatchingJID(ctx context.Context, jid *jid.JID) ([]capsmodel.PresenceCaps, error) {
+func (s *Presences) FetchPresencesMatchingJID(ctx context.Context, jid *jid.JID) ([]model.ExtPresence, error) {
 	var preds sq.And
 	if len(jid.Node()) > 0 {
 		preds = append(preds, sq.Eq{"username": jid.Node()})
@@ -107,14 +108,14 @@ func (s *Presences) FetchPresencesMatchingJID(ctx context.Context, jid *jid.JID)
 	}
 	defer func() { _ = rows.Close() }()
 
-	var res []capsmodel.PresenceCaps
+	var res []model.ExtPresence
 	for rows.Next() {
-		var rawXML, node, ver, featuresJSON string
+		var allocID, rawXML, node, ver, featuresJSON string
 
-		if err := rows.Scan(&rawXML, &node, &ver, &featuresJSON); err != nil {
+		if err := rows.Scan(&allocID, &rawXML, &node, &ver, &featuresJSON); err != nil {
 			return nil, err
 		}
-		presenceCaps, err := scanPresenceAndCapabilties(rawXML, node, ver, featuresJSON)
+		presenceCaps, err := scanExtendedPresence(allocID, rawXML, node, ver, featuresJSON)
 		if err != nil {
 			return nil, err
 		}
@@ -138,11 +139,6 @@ func (s *Presences) DeleteAllocationPresences(ctx context.Context, allocationID 
 	_, err := sq.Delete("presences").
 		Where(sq.Eq{"allocation_id": allocationID}).
 		RunWith(s.db).ExecContext(ctx)
-	return err
-}
-
-func (s *Presences) ClearPresences(ctx context.Context) error {
-	_, err := sq.Delete("presences").RunWith(s.db).ExecContext(ctx)
 	return err
 }
 
@@ -223,7 +219,7 @@ func (s *Presences) FetchCapabilities(ctx context.Context, node, ver string) (*c
 	}
 }
 
-func scanPresenceAndCapabilties(rawXML, node, ver, featuresJSON string) (*capsmodel.PresenceCaps, error) {
+func scanExtendedPresence(allocationID string, rawXML, node, ver, featuresJSON string) (*model.ExtPresence, error) {
 	parser := xmpp.NewParser(strings.NewReader(rawXML), xmpp.DefaultMode, 0)
 	elem, err := parser.ParseElement()
 	if err != nil {
@@ -236,9 +232,11 @@ func scanPresenceAndCapabilties(rawXML, node, ver, featuresJSON string) (*capsmo
 	if err != nil {
 		return nil, err
 	}
-	var res capsmodel.PresenceCaps
+	var res model.ExtPresence
 
+	res.AllocationID = allocationID
 	res.Presence = presence
+
 	if len(featuresJSON) > 0 {
 		res.Caps = &capsmodel.Capabilities{
 			Node: node,

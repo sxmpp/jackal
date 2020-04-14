@@ -9,6 +9,8 @@ import (
 	"context"
 	"strings"
 
+	"github.com/ortuman/jackal/model"
+
 	capsmodel "github.com/ortuman/jackal/model/capabilities"
 	"github.com/ortuman/jackal/model/serializer"
 	"github.com/ortuman/jackal/xmpp"
@@ -43,32 +45,33 @@ func (m *Presences) UpsertPresence(_ context.Context, presence *xmpp.Presence, j
 }
 
 // FetchPresence retrieves from storage a concrete registered presence.
-func (m *Presences) FetchPresence(_ context.Context, jid *jid.JID) (*capsmodel.PresenceCaps, error) {
-	var pCaps *capsmodel.PresenceCaps
+func (m *Presences) FetchPresence(_ context.Context, jid *jid.JID) (*model.ExtPresence, error) {
+	var res *model.ExtPresence
 
 	if err := m.inReadLock(func() error {
 		for k, v := range m.b {
 			if !strings.HasPrefix(k, "presences:"+jid.String()) {
 				continue
 			}
-			presenceCaps, err := m.deserializePresence(v)
+			extPresence, err := m.deserializePresence(v)
 			if err != nil {
 				return err
 			}
-			pCaps = presenceCaps
+			extPresence.AllocationID = allocationIDFromKey(k)
+			res = extPresence
 			return nil
 		}
 		return nil
 	}); err != nil {
 		return nil, err
 	}
-	return pCaps, nil
+	return res, nil
 }
 
 // FetchPresencesMatchingJID retrives all storage presences matching a certain JID
-func (m *Presences) FetchPresencesMatchingJID(ctx context.Context, j *jid.JID) ([]capsmodel.PresenceCaps, error) {
+func (m *Presences) FetchPresencesMatchingJID(ctx context.Context, j *jid.JID) ([]model.ExtPresence, error) {
 	var usePrefix, useSuffix bool
-	var res []capsmodel.PresenceCaps
+	var res []model.ExtPresence
 
 	if j.IsFullWithUser() {
 		pCaps, err := m.FetchPresence(ctx, j)
@@ -78,7 +81,7 @@ func (m *Presences) FetchPresencesMatchingJID(ctx context.Context, j *jid.JID) (
 		if pCaps == nil {
 			return nil, nil
 		}
-		return []capsmodel.PresenceCaps{*pCaps}, nil
+		return []model.ExtPresence{*pCaps}, nil
 	}
 	usePrefix = j.IsBare()
 	useSuffix = j.IsFullWithServer()
@@ -102,11 +105,12 @@ func (m *Presences) FetchPresencesMatchingJID(ctx context.Context, j *jid.JID) (
 			} else if !j.MatchesWithOptions(kJID, jid.MatchesDomain) {
 				continue
 			}
-			presenceCaps, err := m.deserializePresence(v)
+			extPresence, err := m.deserializePresence(v)
 			if err != nil {
 				return err
 			}
-			res = append(res, *presenceCaps)
+			extPresence.AllocationID = allocationIDFromKey(k)
+			res = append(res, *extPresence)
 		}
 		return nil
 	}); err != nil {
@@ -134,18 +138,6 @@ func (m *Presences) DeleteAllocationPresences(_ context.Context, allocationID st
 			if strings.HasPrefix(k, "presences:") && strings.HasSuffix(k, ":"+allocationID) {
 				delete(m.b, k)
 			}
-		}
-		return nil
-	})
-}
-
-func (m *Presences) ClearPresences(_ context.Context) error {
-	return m.inWriteLock(func() error {
-		for k := range m.b {
-			if !strings.HasPrefix(k, "presences:") {
-				continue
-			}
-			delete(m.b, k)
 		}
 		return nil
 	})
@@ -205,24 +197,24 @@ func (m *Presences) FetchCapabilities(_ context.Context, node, ver string) (*cap
 	}
 }
 
-func (m *Presences) deserializePresence(b []byte) (*capsmodel.PresenceCaps, error) {
-	var pCaps capsmodel.PresenceCaps
+func (m *Presences) deserializePresence(b []byte) (*model.ExtPresence, error) {
+	var extPresence model.ExtPresence
 	var presence xmpp.Presence
 
 	if err := serializer.Deserialize(b, &presence); err != nil {
 		return nil, err
 	}
-	pCaps.Presence = &presence
+	extPresence.Presence = &presence
 	if c := presence.Capabilities(); c != nil {
 		if capsB := m.b[capabilitiesKey(c.Node, c.Ver)]; capsB != nil {
 			var caps capsmodel.Capabilities
 			if err := serializer.Deserialize(capsB, &caps); err != nil {
 				return nil, err
 			}
-			pCaps.Caps = &caps
+			extPresence.Caps = &caps
 		}
 	}
-	return &pCaps, nil
+	return &extPresence, nil
 }
 
 func presenceKey(jid *jid.JID, allocationID string) string {
@@ -231,4 +223,12 @@ func presenceKey(jid *jid.JID, allocationID string) string {
 
 func capabilitiesKey(node, ver string) string {
 	return "capabilities:" + node + ":" + ver
+}
+
+func allocationIDFromKey(k string) string {
+	ss := strings.Split(k, ":")
+	if len(ss) != 3 {
+		return ""
+	}
+	return ss[2]
 }

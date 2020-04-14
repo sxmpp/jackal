@@ -159,15 +159,9 @@ func (a *Application) Run() error {
 		return err
 	}
 	// initialize cluster
-	if cfg.Cluster != nil {
-		a.cluster, err = cluster.New(cfg.Cluster, a.allocID)
-		if err != nil {
-			return err
-		}
-	} else {
-		if err := a.storage.ClearPresences(context.Background()); err != nil {
-			return err
-		}
+	a.cluster, err = cluster.New(&cfg.Cluster, a.allocID)
+	if err != nil {
+		return err
 	}
 
 	// initialize hosts
@@ -369,14 +363,15 @@ func (a *Application) doShutdown(ctx context.Context) error {
 	if err := a.mods.Shutdown(ctx); err != nil {
 		return err
 	}
-	if a.cluster != nil {
-		if err := a.storage.DeleteAllocationPresences(ctx, a.allocID); err != nil {
-			return err
-		}
-		if err := a.cluster.Shutdown(ctx); err != nil {
-			return err
-		}
+	// shutdown cluster
+	if err := a.storage.DeleteAllocationPresences(ctx, a.allocID); err != nil {
+		return err
 	}
+	if err := a.cluster.Shutdown(ctx); err != nil {
+		return err
+	}
+
+	// shutdown storage
 	if err := a.storage.Shutdown(ctx); err != nil {
 		return err
 	}

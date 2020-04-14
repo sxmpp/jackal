@@ -150,7 +150,8 @@ route2all:
 }
 
 func (r *c2sRouter) routeToResource(ctx context.Context, stanza xmpp.Stanza) error {
-	allocID, err := r.presencesSt.FetchPresenceAllocationID(ctx, stanza.ToJID())
+	toJID := stanza.ToJID()
+	allocID, err := r.presencesSt.FetchPresenceAllocationID(ctx, toJID)
 	if err != nil {
 		return err
 	}
@@ -158,7 +159,13 @@ func (r *c2sRouter) routeToResource(ctx context.Context, stanza xmpp.Stanza) err
 		return router.ErrResourceNotFound
 	}
 	if r.clusterRouter == nil || r.cluster.IsLocalAllocationID(allocID) {
-
+		r.mu.RLock()
+		rs := r.tbl[toJID.Node()]
+		r.mu.RUnlock()
+		if rs != nil {
+			rs.route(ctx, stanza, toJID.Resource())
+		}
+		return nil
 	}
 	return r.clusterRouter.route(ctx, stanza, allocID)
 }

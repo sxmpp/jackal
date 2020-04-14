@@ -8,6 +8,8 @@ package storage
 import (
 	"context"
 
+	"github.com/ortuman/jackal/model"
+
 	capsmodel "github.com/ortuman/jackal/model/capabilities"
 	"github.com/ortuman/jackal/xmpp"
 	"github.com/ortuman/jackal/xmpp/jid"
@@ -19,19 +21,16 @@ type Presences interface {
 	UpsertPresence(ctx context.Context, presence *xmpp.Presence, jid *jid.JID, allocationID string) (inserted bool, err error)
 
 	// FetchPresence retrieves from storage a previously registered presence.
-	FetchPresence(ctx context.Context, jid *jid.JID) (*capsmodel.PresenceCaps, error)
+	FetchPresence(ctx context.Context, jid *jid.JID) (*model.ExtPresence, error)
 
 	// FetchPresencesMatchingJID retrives all storage presences matching a certain JID
-	FetchPresencesMatchingJID(ctx context.Context, jid *jid.JID) ([]capsmodel.PresenceCaps, error)
+	FetchPresencesMatchingJID(ctx context.Context, jid *jid.JID) ([]model.ExtPresence, error)
 
 	// DeletePresence removes from storage a concrete registered presence.
 	DeletePresence(ctx context.Context, jid *jid.JID) error
 
 	// DeleteAllocationPresences removes from storage all presences associated to a given allocation.
 	DeleteAllocationPresences(ctx context.Context, allocationID string) error
-
-	// ClearPresences wipes out all storage presences.
-	ClearPresences(ctx context.Context) error
 
 	// FetchPresenceAllocationID returns the allocation identifier that registered a concrete JID presence.
 	FetchPresenceAllocationID(ctx context.Context, jid *jid.JID) (string, error)

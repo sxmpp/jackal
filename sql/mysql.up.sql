@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS presences (
     domain        VARCHAR(256) NOT NULL,
     resource      VARCHAR(256) NOT NULL,
     presence      TEXT NOT NULL,
+    priority      INT DEFAULT 0,
     node          VARCHAR(256) NOT NULL,
     ver           VARCHAR(256) NOT NULL,
     allocation_id VARCHAR(256) NOT NULL,
