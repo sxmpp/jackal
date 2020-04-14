@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"testing"
 
+	sq "github.com/Masterminds/squirrel"
+
 	"github.com/DATA-DOG/go-sqlmock"
 	capsmodel "github.com/ortuman/jackal/model/capabilities"
 	"github.com/ortuman/jackal/util/pool"
@@ -48,6 +50,30 @@ func TestMySQLPresences_FetchPresence(t *testing.T) {
 	require.Equal(t, "v1234", presenceCaps.Caps.Ver)
 	require.Len(t, presenceCaps.Caps.Features, 1)
 	require.Equal(t, "urn:xmpp:ping", presenceCaps.Caps.Features[0])
+}
+
+func TestPgSQLPresences_FetchPrioritaryPresence(t *testing.T) {
+	var columns = []string{"allocation_id", "presence", "c.node", "c.ver", "c.features"}
+
+	sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
+
+	s, mock := newPresencesMock()
+	mock.ExpectQuery("SELECT allocation_id, presence, c.node, c.ver, c.features FROM presences AS p, capabilities AS c WHERE \\(username = \\? AND domain = \\? AND p.priority > 0 AND p.priority = \\(SELECT MAX\\(priority\\) FROM presences WHERE username = \\? AND domain = \\?\\) AND p.node = c.node AND p.ver = c.ver\\)").
+		WithArgs("ortuman", "jackal.im", "ortuman", "jackal.im").
+		WillReturnRows(sqlmock.NewRows(columns).
+			AddRow("a1234", "<presence/>", "http://jackal.im", "v1234", `["urn:xmpp:ping"]`))
+
+	j, _ := jid.NewWithString("ortuman@jackal.im/yard", true)
+	extPresence, err := s.FetchPrioritaryPresence(context.Background(), j)
+	require.Nil(t, mock.ExpectationsWereMet())
+	require.Nil(t, err)
+
+	require.NotNil(t, extPresence)
+
+	require.Equal(t, "http://jackal.im", extPresence.Caps.Node)
+	require.Equal(t, "v1234", extPresence.Caps.Ver)
+	require.Len(t, extPresence.Caps.Features, 1)
+	require.Equal(t, "urn:xmpp:ping", extPresence.Caps.Features[0])
 }
 
 func TestMySQLPresences_FetchPresencesMatchingJID(t *testing.T) {

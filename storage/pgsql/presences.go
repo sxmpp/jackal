@@ -72,7 +72,33 @@ func (s *Presences) FetchPresence(ctx context.Context, jid *jid.JID) (*model.Ext
 		}).
 		RunWith(s.db)
 
-	err := q.ScanContext(ctx, &rawXML, &node, &ver, &featuresJSON)
+	err := q.ScanContext(ctx, &allocID, &rawXML, &node, &ver, &featuresJSON)
+	switch err {
+	case nil:
+		return scanExtendedPresence(allocID, rawXML, node, ver, featuresJSON)
+	case sql.ErrNoRows:
+		return nil, nil
+	default:
+		return nil, err
+	}
+}
+
+func (s *Presences) FetchPrioritaryPresence(ctx context.Context, jid *jid.JID) (*model.ExtPresence, error) {
+	var allocID, rawXML, node, ver, featuresJSON string
+
+	q := sq.Select("allocation_id", "presence", "c.node", "c.ver", "c.features").
+		From("presences AS p, capabilities AS c").
+		Where(sq.And{
+			sq.Eq{"username": jid.Node()},
+			sq.Eq{"domain": jid.Domain()},
+			sq.Expr("p.priority > 0"),
+			sq.Expr("p.priority = (SELECT MAX(priority) FROM presences WHERE username = $1 AND domain = $2)"),
+			sq.Expr("p.node = c.node"),
+			sq.Expr("p.ver = c.ver"),
+		}).
+		RunWith(s.db)
+
+	err := q.ScanContext(ctx, &allocID, &rawXML, &node, &ver, &featuresJSON)
 	switch err {
 	case nil:
 		return scanExtendedPresence(allocID, rawXML, node, ver, featuresJSON)

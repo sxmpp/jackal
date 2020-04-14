@@ -10,7 +10,6 @@ import (
 	"strings"
 
 	"github.com/ortuman/jackal/model"
-
 	capsmodel "github.com/ortuman/jackal/model/capabilities"
 	"github.com/ortuman/jackal/model/serializer"
 	"github.com/ortuman/jackal/xmpp"
@@ -26,7 +25,6 @@ func NewPresences() *Presences {
 	return &Presences{memoryStorage: newStorage()}
 }
 
-// UpsertPresence inserts or updates a presence and links it to certain allocation.
 func (m *Presences) UpsertPresence(_ context.Context, presence *xmpp.Presence, jid *jid.JID, allocationID string) (inserted bool, err error) {
 	var ok bool
 	k := presenceKey(jid, allocationID)
@@ -44,7 +42,6 @@ func (m *Presences) UpsertPresence(_ context.Context, presence *xmpp.Presence, j
 	return !ok, nil
 }
 
-// FetchPresence retrieves from storage a concrete registered presence.
 func (m *Presences) FetchPresence(_ context.Context, jid *jid.JID) (*model.ExtPresence, error) {
 	var res *model.ExtPresence
 
@@ -68,7 +65,11 @@ func (m *Presences) FetchPresence(_ context.Context, jid *jid.JID) (*model.ExtPr
 	return res, nil
 }
 
-// FetchPresencesMatchingJID retrives all storage presences matching a certain JID
+func (m *Presences) FetchPrioritaryPresence(ctx context.Context, jid *jid.JID) (*model.ExtPresence, error) {
+	// TODO(ortuman): implement me!
+	return nil, nil
+}
+
 func (m *Presences) FetchPresencesMatchingJID(ctx context.Context, j *jid.JID) ([]model.ExtPresence, error) {
 	var usePrefix, useSuffix bool
 	var res []model.ExtPresence
@@ -119,7 +120,6 @@ func (m *Presences) FetchPresencesMatchingJID(ctx context.Context, j *jid.JID) (
 	return res, nil
 }
 
-// DeletePresence removes from storage a concrete registered presence.
 func (m *Presences) DeletePresence(_ context.Context, jid *jid.JID) error {
 	return m.inWriteLock(func() error {
 		for k := range m.b {

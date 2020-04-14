@@ -23,6 +23,9 @@ type Presences interface {
 	// FetchPresence retrieves from storage a previously registered presence.
 	FetchPresence(ctx context.Context, jid *jid.JID) (*model.ExtPresence, error)
 
+	// FetchPrioritaryPresence retrieves highest priority presence.
+	FetchPrioritaryPresence(ctx context.Context, jid *jid.JID) (*model.ExtPresence, error)
+
 	// FetchPresencesMatchingJID retrives all storage presences matching a certain JID
 	FetchPresencesMatchingJID(ctx context.Context, jid *jid.JID) ([]model.ExtPresence, error)
 
