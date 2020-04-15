@@ -156,6 +156,8 @@ func (r *c2sRouter) routeToAllResources(ctx context.Context, stanza xmpp.Stanza)
 	for k := range allocationIDs {
 		wg.Add(1)
 		go func(allocationID string) {
+			defer wg.Done()
+
 			if err := r.routeToAllocation(ctx, stanza, allocationID); err != nil {
 				log.Warnf("%v", err)
 			}
