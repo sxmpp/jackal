@@ -111,15 +111,21 @@ route2all:
 }
 
 func (r *c2sRouter) routeToResource(ctx context.Context, stanza xmpp.Stanza) error {
-	toJID := stanza.ToJID()
-	allocID, err := r.presencesSt.FetchPresenceAllocationID(ctx, toJID)
+	err := r.localRouter.route(ctx, stanza) // first, try to route locally
+	switch err {
+	case router.ErrResourceNotFound:
+		break
+	default:
+		return err
+	}
+	allocID, err := r.presencesSt.FetchPresenceAllocationID(ctx, stanza.ToJID())
 	if err != nil {
 		return err
 	}
 	if len(allocID) == 0 {
 		return router.ErrResourceNotFound
 	}
-	return r.routeToAllocation(ctx, stanza, allocID)
+	return r.clusterRouter.route(ctx, stanza, allocID)
 }
 
 func (r *c2sRouter) routeMessageToPrioritaryResource(ctx context.Context, msg *xmpp.Message) (routed bool, err error) {
