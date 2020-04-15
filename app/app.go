@@ -187,9 +187,6 @@ func (a *Application) Run() error {
 	if err != nil {
 		return err
 	}
-	if a.cluster != nil {
-		a.cluster.RegisterStanzaHandler(a.router.Route)
-	}
 
 	// initialize modules & components...
 	a.mods = module.New(&cfg.Modules, a.router, a.storage, a.allocID)

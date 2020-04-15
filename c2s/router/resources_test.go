@@ -10,7 +10,6 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-
 	"github.com/ortuman/jackal/router"
 	"github.com/ortuman/jackal/stream"
 	"github.com/ortuman/jackal/xmpp"

@@ -11,6 +11,8 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/ortuman/jackal/model"
+
 	"github.com/ortuman/jackal/storage"
 
 	"github.com/ortuman/jackal/log"
@@ -94,7 +96,7 @@ func (x *EntityCaps) Shutdown() error {
 }
 
 // PresencesMatchingJID returns current online presences matching a given JID.
-func (x *EntityCaps) PresencesMatchingJID(ctx context.Context, jid *jid.JID) ([]capsmodel.PresenceCaps, error) {
+func (x *EntityCaps) PresencesMatchingJID(ctx context.Context, jid *jid.JID) ([]model.ExtPresence, error) {
 	return x.presencesSt.FetchPresencesMatchingJID(ctx, jid)
 }
 

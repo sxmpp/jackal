@@ -9,6 +9,7 @@ import (
 	"context"
 	"sync"
 
+	"github.com/ortuman/jackal/router"
 	"github.com/ortuman/jackal/stream"
 	"github.com/ortuman/jackal/xmpp"
 )
@@ -68,11 +69,34 @@ func (r *resources) unbind(res string) {
 	}
 }
 
-func (r *resources) route(ctx context.Context, stanza xmpp.Stanza, resource string) {
+func (r *resources) route(ctx context.Context, stanza xmpp.Stanza) error {
+	toJID := stanza.ToJID()
+	if toJID.IsFullWithUser() {
+		return r.routeToResource(ctx, stanza, toJID.Resource())
+	}
+	return r.broadcast(ctx, stanza)
+}
+
+func (r *resources) routeToResource(ctx context.Context, stanza xmpp.Stanza, resource string) error {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+
 	for _, s := range r.streams {
 		if s.Resource() != resource {
 			continue
 		}
 		s.SendElement(ctx, stanza)
+		return nil
 	}
+	return router.ErrResourceNotFound
+}
+
+func (r *resources) broadcast(ctx context.Context, stanza xmpp.Stanza) error {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+
+	for _, s := range r.streams {
+		s.SendElement(ctx, stanza)
+	}
+	return nil
 }

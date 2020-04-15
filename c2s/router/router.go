@@ -19,30 +19,31 @@ import (
 )
 
 type c2sRouter struct {
-	mu            sync.RWMutex
-	tbl           map[string]*resources
 	userSt        storage.User
 	blockListSt   storage.BlockList
 	presencesSt   storage.Presences
 	cluster       *cluster.Cluster
+	localRouter   *localRouter
 	clusterRouter *clusterRouter
 }
 
 func New(userSt storage.User, blockListSt storage.BlockList, presencesSt storage.Presences, cluster *cluster.Cluster) (router.C2SRouter, error) {
 	r := &c2sRouter{
-		tbl:         make(map[string]*resources),
 		userSt:      userSt,
 		blockListSt: blockListSt,
 		presencesSt: presencesSt,
+		localRouter: newLocalRouter(),
 	}
-	if cluster != nil {
-		clusterRouter, err := newClusterRouter(cluster, presencesSt)
-		if err != nil {
-			return nil, err
-		}
-		r.cluster = cluster
-		r.clusterRouter = clusterRouter
+	clusterRouter, err := newClusterRouter(cluster, presencesSt)
+	if err != nil {
+		return nil, err
 	}
+	r.cluster = cluster
+	r.clusterRouter = clusterRouter
+
+	// register local router as cluster stanza handler
+	cluster.RegisterStanzaHandler(r.localRouter.route)
+
 	return r, nil
 }
 
@@ -70,63 +71,23 @@ func (r *c2sRouter) Route(ctx context.Context, stanza xmpp.Stanza, validations r
 }
 
 func (r *c2sRouter) Bind(stm stream.C2S) {
-	user := stm.Username()
-	r.mu.RLock()
-	rs := r.tbl[user]
-	r.mu.RUnlock()
-
-	if rs == nil {
-		r.mu.Lock()
-		rs = r.tbl[user] // avoid double initialization
-		if rs == nil {
-			rs = &resources{}
-			r.tbl[user] = rs
-		}
-		r.mu.Unlock()
-	}
-	rs.bind(stm)
+	r.localRouter.bind(stm)
 
 	log.Infof("bound c2s stream... (%s/%s)", stm.Username(), stm.Resource())
 }
 
 func (r *c2sRouter) Unbind(user, resource string) {
-	r.mu.RLock()
-	rs := r.tbl[user]
-	r.mu.RUnlock()
-
-	if rs == nil {
-		return
-	}
-	r.mu.Lock()
-	rs.unbind(resource)
-	if rs.len() == 0 {
-		delete(r.tbl, user)
-	}
-	r.mu.Unlock()
+	r.localRouter.unbind(user, resource)
 
 	log.Infof("unbound c2s stream... (%s/%s)", user, resource)
 }
 
 func (r *c2sRouter) Stream(username, resource string) stream.C2S {
-	r.mu.RLock()
-	rs := r.tbl[username]
-	r.mu.RUnlock()
-
-	if rs == nil {
-		return nil
-	}
-	return rs.stream(resource)
+	return r.localRouter.stream(username, resource)
 }
 
 func (r *c2sRouter) Streams(username string) []stream.C2S {
-	r.mu.RLock()
-	rs := r.tbl[username]
-	r.mu.RUnlock()
-
-	if rs == nil {
-		return nil
-	}
-	return rs.allStreams()
+	return r.localRouter.streams(username)
 }
 
 func (r *c2sRouter) route(ctx context.Context, stanza xmpp.Stanza) error {
@@ -134,9 +95,9 @@ func (r *c2sRouter) route(ctx context.Context, stanza xmpp.Stanza) error {
 	if toJID.IsFullWithUser() {
 		return r.routeToResource(ctx, stanza)
 	}
-	switch stanza.(type) {
+	switch msg := stanza.(type) {
 	case *xmpp.Message:
-		routed, err := r.routeToPrioritaryResource(ctx, stanza)
+		routed, err := r.routeMessageToPrioritaryResource(ctx, msg)
 		if err != nil {
 			return err
 		}
@@ -158,24 +119,56 @@ func (r *c2sRouter) routeToResource(ctx context.Context, stanza xmpp.Stanza) err
 	if len(allocID) == 0 {
 		return router.ErrResourceNotFound
 	}
-	if r.clusterRouter == nil || r.cluster.IsLocalAllocationID(allocID) {
-		r.mu.RLock()
-		rs := r.tbl[toJID.Node()]
-		r.mu.RUnlock()
-		if rs != nil {
-			rs.route(ctx, stanza, toJID.Resource())
-		}
-		return nil
-	}
-	return r.clusterRouter.route(ctx, stanza, allocID)
+	return r.routeToAllocation(ctx, stanza, allocID)
 }
 
-func (r *c2sRouter) routeToPrioritaryResource(ctx context.Context, stanza xmpp.Stanza) (routed bool, err error) {
-	return false, nil
+func (r *c2sRouter) routeMessageToPrioritaryResource(ctx context.Context, msg *xmpp.Message) (routed bool, err error) {
+	extPresence, err := r.presencesSt.FetchPrioritaryPresence(ctx, msg.ToJID())
+	if err != nil {
+		return false, err
+	}
+	if extPresence == nil { // no prioritary presence found
+		return false, nil
+	}
+	// rewrite message stanza pointing to prioritary resource
+	rwMessage, err := xmpp.NewMessageFromElement(msg, msg.FromJID(), extPresence.Presence.FromJID())
+	if err != nil {
+		return false, err
+	}
+	if err := r.routeToAllocation(ctx, rwMessage, extPresence.AllocationID); err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 func (r *c2sRouter) routeToAllResources(ctx context.Context, stanza xmpp.Stanza) error {
+	toJID := stanza.ToJID().ToBareJID()
+
+	extPresences, err := r.presencesSt.FetchPresencesMatchingJID(ctx, toJID)
+	if err != nil {
+		return err
+	}
+	allocationIDs := make(map[string]struct{})
+	for _, extPresence := range extPresences {
+		allocationIDs[extPresence.AllocationID] = struct{}{}
+	}
+	var wg sync.WaitGroup
+	for k := range allocationIDs {
+		wg.Add(1)
+		go func(allocationID string) {
+			if err := r.routeToAllocation(ctx, stanza, allocationID); err != nil {
+				log.Warnf("%v", err)
+			}
+		}(k)
+	}
 	return nil
+}
+
+func (r *c2sRouter) routeToAllocation(ctx context.Context, stanza xmpp.Stanza, allocID string) error {
+	if r.cluster.IsLocalAllocationID(allocID) {
+		return r.localRouter.route(ctx, stanza)
+	}
+	return r.clusterRouter.route(ctx, stanza, allocID)
 }
 
 func (r *c2sRouter) isBlockedJID(ctx context.Context, j *jid.JID, username string) bool {

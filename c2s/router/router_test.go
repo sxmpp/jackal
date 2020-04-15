@@ -9,10 +9,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/ortuman/jackal/storage"
-
 	"github.com/ortuman/jackal/model"
 	"github.com/ortuman/jackal/router"
+	"github.com/ortuman/jackal/storage"
 	memorystorage "github.com/ortuman/jackal/storage/memory"
 	"github.com/ortuman/jackal/stream"
 	"github.com/ortuman/jackal/xmpp"
