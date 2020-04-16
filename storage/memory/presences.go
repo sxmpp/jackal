@@ -66,8 +66,33 @@ func (m *Presences) FetchPresence(_ context.Context, jid *jid.JID) (*model.ExtPr
 }
 
 func (m *Presences) FetchPrioritaryPresence(ctx context.Context, jid *jid.JID) (*model.ExtPresence, error) {
-	// TODO(ortuman): implement me!
-	return nil, nil
+	var res *model.ExtPresence
+
+	if err := m.inReadLock(func() error {
+		var currentPriority int8
+		for k, v := range m.b {
+			if !strings.HasPrefix(k, "presences:"+jid.String()) {
+				continue
+			}
+			extPresence, err := m.deserializePresence(v)
+			if err != nil {
+				return err
+			}
+			priority := extPresence.Presence.Priority()
+			if priority == 0 {
+				continue
+			}
+			if priority < currentPriority {
+				continue
+			}
+			extPresence.AllocationID = allocationIDFromKey(k)
+			res = extPresence
+		}
+		return nil
+	}); err != nil {
+		return nil, err
+	}
+	return res, nil
 }
 
 func (m *Presences) FetchPresencesMatchingJID(ctx context.Context, j *jid.JID) ([]model.ExtPresence, error) {

@@ -162,11 +162,12 @@ type record struct {
 }
 
 type logger struct {
-	level  Level
-	output io.Writer
-	files  []io.WriteCloser
-	b      strings.Builder
-	recCh  chan record
+	level   Level
+	output  io.Writer
+	files   []io.WriteCloser
+	b       strings.Builder
+	recCh   chan record
+	closeCh chan struct{}
 }
 
 // New returns a default logger instance.
@@ -176,12 +177,14 @@ func New(level string, output io.Writer, files ...io.WriteCloser) (Logger, error
 		return nil, err
 	}
 	l := &logger{
-		level:  lvl,
-		output: output,
-		files:  files,
+		level:   lvl,
+		output:  output,
+		files:   files,
+		recCh:   make(chan record, logChanBufferSize),
+		closeCh: make(chan struct{}, 1),
 	}
-	l.recCh = make(chan record, logChanBufferSize)
 	go l.loop()
+
 	return l, nil
 }
 
@@ -210,6 +213,7 @@ func (l *logger) Log(level Level, pkg string, file string, line int, format stri
 
 func (l *logger) Close() error {
 	close(l.recCh)
+	<-l.closeCh // wait until closed...
 	return nil
 }
 
@@ -222,6 +226,7 @@ func (l *logger) loop() {
 				for _, w := range l.files {
 					_ = w.Close()
 				}
+				l.closeCh <- struct{}{}
 				return
 			}
 			l.b.Reset()
