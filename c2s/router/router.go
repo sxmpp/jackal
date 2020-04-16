@@ -163,7 +163,7 @@ func (r *c2sRouter) routeToAllResources(ctx context.Context, stanza xmpp.Stanza)
 	errCh := make(chan error, len(allocationIDs))
 
 	var wg sync.WaitGroup
-	for allocationID := range allocationIDs {
+	for allocID := range allocationIDs {
 		wg.Add(1)
 
 		go func(allocationID string) {
@@ -171,7 +171,7 @@ func (r *c2sRouter) routeToAllResources(ctx context.Context, stanza xmpp.Stanza)
 			if err := r.routeToAllocation(ctx, stanza, allocationID); err != nil {
 				errCh <- err
 			}
-		}(allocationID)
+		}(allocID)
 	}
 	go func() {
 		wg.Wait()
