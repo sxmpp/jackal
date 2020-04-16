@@ -7,6 +7,7 @@ package c2srouter
 
 import (
 	"context"
+	"sync"
 
 	"github.com/ortuman/jackal/cluster"
 	"github.com/ortuman/jackal/log"
@@ -151,9 +152,7 @@ func (r *c2sRouter) routeMessageToPrioritaryResource(ctx context.Context, msg *x
 }
 
 func (r *c2sRouter) routeToAllResources(ctx context.Context, stanza xmpp.Stanza) error {
-	toJID := stanza.ToJID().ToBareJID()
-
-	extPresences, err := r.presencesSt.FetchPresencesMatchingJID(ctx, toJID)
+	extPresences, err := r.presencesSt.FetchPresencesMatchingJID(ctx, stanza.ToJID().ToBareJID())
 	if err != nil {
 		return err
 	}
@@ -161,12 +160,24 @@ func (r *c2sRouter) routeToAllResources(ctx context.Context, stanza xmpp.Stanza)
 	for _, extPresence := range extPresences {
 		allocationIDs[extPresence.AllocationID] = struct{}{}
 	}
+	errCh := make(chan error, len(allocationIDs))
+
+	var wg sync.WaitGroup
 	for allocationID := range allocationIDs {
-		if err := r.routeToAllocation(ctx, stanza, allocationID); err != nil {
-			return err
-		}
+		wg.Add(1)
+
+		go func(allocationID string) {
+			defer wg.Done()
+			if err := r.routeToAllocation(ctx, stanza, allocationID); err != nil {
+				errCh <- err
+			}
+		}(allocationID)
 	}
-	return nil
+	go func() {
+		wg.Wait()
+		errCh <- nil
+	}()
+	return <-errCh
 }
 
 func (r *c2sRouter) routeToAllocation(ctx context.Context, stanza xmpp.Stanza, allocID string) error {
