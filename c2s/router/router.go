@@ -7,7 +7,6 @@ package c2srouter
 
 import (
 	"context"
-	"sync"
 
 	"github.com/ortuman/jackal/cluster"
 	"github.com/ortuman/jackal/log"
@@ -34,16 +33,17 @@ func New(userSt storage.User, blockListSt storage.BlockList, presencesSt storage
 		presencesSt: presencesSt,
 		localRouter: newLocalRouter(),
 	}
-	clusterRouter, err := newClusterRouter(cluster, presencesSt)
-	if err != nil {
-		return nil, err
+	if cluster != nil {
+		clusterRouter, err := newClusterRouter(cluster, presencesSt)
+		if err != nil {
+			return nil, err
+		}
+		r.cluster = cluster
+		r.clusterRouter = clusterRouter
+
+		// register local router as cluster stanza handler
+		cluster.RegisterStanzaHandler(r.localRouter.route)
 	}
-	r.cluster = cluster
-	r.clusterRouter = clusterRouter
-
-	// register local router as cluster stanza handler
-	cluster.RegisterStanzaHandler(r.localRouter.route)
-
 	return r, nil
 }
 
@@ -114,6 +114,9 @@ func (r *c2sRouter) routeToResource(ctx context.Context, stanza xmpp.Stanza) err
 	err := r.localRouter.route(ctx, stanza) // first, try to route locally
 	switch err {
 	case router.ErrResourceNotFound:
+		if r.cluster == nil {
+			return err
+		}
 		break
 	default:
 		return err
@@ -158,22 +161,16 @@ func (r *c2sRouter) routeToAllResources(ctx context.Context, stanza xmpp.Stanza)
 	for _, extPresence := range extPresences {
 		allocationIDs[extPresence.AllocationID] = struct{}{}
 	}
-	var wg sync.WaitGroup
-	for k := range allocationIDs {
-		wg.Add(1)
-		go func(allocationID string) {
-			defer wg.Done()
-
-			if err := r.routeToAllocation(ctx, stanza, allocationID); err != nil {
-				log.Warnf("%v", err)
-			}
-		}(k)
+	for allocationID := range allocationIDs {
+		if err := r.routeToAllocation(ctx, stanza, allocationID); err != nil {
+			return err
+		}
 	}
 	return nil
 }
 
 func (r *c2sRouter) routeToAllocation(ctx context.Context, stanza xmpp.Stanza, allocID string) error {
-	if r.cluster.IsLocalAllocationID(allocID) {
+	if r.cluster == nil || r.cluster.IsLocalAllocationID(allocID) {
 		return r.localRouter.route(ctx, stanza)
 	}
 	return r.clusterRouter.route(ctx, stanza, allocID)

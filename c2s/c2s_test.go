@@ -163,7 +163,6 @@ func setupTest(domain string) (router.Router, storage.User, storage.BlockList) {
 		hosts,
 		c2srouter.New(userRep, blockListRep),
 		nil,
-		nil,
 	)
 	return r, userRep, blockListRep
 }
