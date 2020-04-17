@@ -8,11 +8,11 @@ package module
 import (
 	"fmt"
 
-	"github.com/ortuman/jackal/module/offline"
-	"github.com/ortuman/jackal/module/roster"
-	"github.com/ortuman/jackal/module/xep0077"
-	"github.com/ortuman/jackal/module/xep0092"
-	"github.com/ortuman/jackal/module/xep0199"
+	"github.com/sxmpp/jackal/module/offline"
+	"github.com/sxmpp/jackal/module/roster"
+	"github.com/sxmpp/jackal/module/xep0077"
+	"github.com/sxmpp/jackal/module/xep0092"
+	"github.com/sxmpp/jackal/module/xep0199"
 )
 
 // Config represents C2S modules configuration.

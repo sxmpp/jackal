@@ -11,8 +11,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 )
 
 // MockC2S represents a mocked c2s stream.

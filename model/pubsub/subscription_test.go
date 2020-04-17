@@ -17,7 +17,7 @@ import (
 func TestSubscription_Serialize(t *testing.T) {
 	s := Subscription{
 		SubID:        uuid.New().String(),
-		JID:          "ortuman@jackal.im",
+		JID:          "sxmpp@jackal.im",
 		Subscription: "subscribed",
 	}
 	b := bytes.NewBuffer(nil)

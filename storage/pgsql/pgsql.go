@@ -13,8 +13,8 @@ import (
 
 	sq "github.com/Masterminds/squirrel"
 	_ "github.com/lib/pq" // PostgreSQL driver
-	"github.com/ortuman/jackal/log"
-	"github.com/ortuman/jackal/storage/repository"
+	"github.com/sxmpp/jackal/log"
+	"github.com/sxmpp/jackal/storage/repository"
 )
 
 // pingInterval defines how often to check the connection

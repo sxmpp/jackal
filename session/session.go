@@ -14,12 +14,12 @@ import (
 	"sync"
 	"sync/atomic"
 
-	streamerror "github.com/ortuman/jackal/errors"
-	"github.com/ortuman/jackal/log"
-	"github.com/ortuman/jackal/router/host"
-	"github.com/ortuman/jackal/transport"
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	streamerror "github.com/sxmpp/jackal/errors"
+	"github.com/sxmpp/jackal/log"
+	"github.com/sxmpp/jackal/router/host"
+	"github.com/sxmpp/jackal/transport"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/pborman/uuid"
 	"github.com/pkg/errors"
 )

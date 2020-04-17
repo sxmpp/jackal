@@ -8,7 +8,7 @@ package storage
 import (
 	"testing"
 
-	"github.com/ortuman/jackal/storage/mysql"
+	"github.com/sxmpp/jackal/storage/mysql"
 	"github.com/stretchr/testify/require"
 	yaml "gopkg.in/yaml.v2"
 )

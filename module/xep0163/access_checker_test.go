@@ -9,15 +9,15 @@ import (
 	"context"
 	"testing"
 
-	pubsubmodel "github.com/ortuman/jackal/model/pubsub"
-	rostermodel "github.com/ortuman/jackal/model/roster"
-	memorystorage "github.com/ortuman/jackal/storage/memory"
+	pubsubmodel "github.com/sxmpp/jackal/model/pubsub"
+	rostermodel "github.com/sxmpp/jackal/model/roster"
+	memorystorage "github.com/sxmpp/jackal/storage/memory"
 	"github.com/stretchr/testify/require"
 )
 
 func TestAccessChecker_Open(t *testing.T) {
 	ac := &accessChecker{
-		host:        "ortuman@jackal.im",
+		host:        "sxmpp@jackal.im",
 		nodeID:      "princely_musings",
 		accessModel: pubsubmodel.Open,
 		rosterRep:   memorystorage.NewRoster(),
@@ -29,7 +29,7 @@ func TestAccessChecker_Open(t *testing.T) {
 
 func TestAccessChecker_Outcast(t *testing.T) {
 	ac := &accessChecker{
-		host:        "ortuman@jackal.im",
+		host:        "sxmpp@jackal.im",
 		nodeID:      "princely_musings",
 		accessModel: pubsubmodel.Open,
 		affiliation: &pubsubmodel.Affiliation{JID: "noelia@jackal.im", Affiliation: pubsubmodel.Outcast},
@@ -44,7 +44,7 @@ func TestAccessChecker_Outcast(t *testing.T) {
 func TestAccessChecker_PresenceSubscription(t *testing.T) {
 	rosterRep := memorystorage.NewRoster()
 	ac := &accessChecker{
-		host:        "ortuman@jackal.im",
+		host:        "sxmpp@jackal.im",
 		nodeID:      "princely_musings",
 		accessModel: pubsubmodel.Presence,
 		rosterRep:   rosterRep,
@@ -55,7 +55,7 @@ func TestAccessChecker_PresenceSubscription(t *testing.T) {
 	require.Equal(t, errPresenceSubscriptionRequired, err)
 
 	_, _ = rosterRep.UpsertRosterItem(context.Background(), &rostermodel.Item{
-		Username:     "ortuman",
+		Username:     "sxmpp",
 		JID:          "noelia@jackal.im",
 		Subscription: rostermodel.SubscriptionFrom,
 	})
@@ -67,7 +67,7 @@ func TestAccessChecker_PresenceSubscription(t *testing.T) {
 func TestAccessChecker_RosterGroup(t *testing.T) {
 	rosterRep := memorystorage.NewRoster()
 	ac := &accessChecker{
-		host:                "ortuman@jackal.im",
+		host:                "sxmpp@jackal.im",
 		nodeID:              "princely_musings",
 		rosterAllowedGroups: []string{"Family"},
 		accessModel:         pubsubmodel.Roster,
@@ -79,7 +79,7 @@ func TestAccessChecker_RosterGroup(t *testing.T) {
 	require.Equal(t, errNotInRosterGroup, err)
 
 	_, _ = rosterRep.UpsertRosterItem(context.Background(), &rostermodel.Item{
-		Username:     "ortuman",
+		Username:     "sxmpp",
 		JID:          "noelia@jackal.im",
 		Groups:       []string{"Family"},
 		Subscription: rostermodel.SubscriptionFrom,
@@ -91,7 +91,7 @@ func TestAccessChecker_RosterGroup(t *testing.T) {
 
 func TestAccessChecker_Member(t *testing.T) {
 	ac := &accessChecker{
-		host:        "ortuman@jackal.im",
+		host:        "sxmpp@jackal.im",
 		nodeID:      "princely_musings",
 		accessModel: pubsubmodel.WhiteList,
 		affiliation: &pubsubmodel.Affiliation{JID: "noelia@jackal.im", Affiliation: pubsubmodel.Member},

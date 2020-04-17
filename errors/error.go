@@ -6,7 +6,7 @@
 package streamerror
 
 import (
-	"github.com/ortuman/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp"
 )
 
 // Error represents a "stream:error" element.

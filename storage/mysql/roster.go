@@ -12,9 +12,9 @@ import (
 	"strings"
 
 	sq "github.com/Masterminds/squirrel"
-	rostermodel "github.com/ortuman/jackal/model/roster"
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	rostermodel "github.com/sxmpp/jackal/model/roster"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 )
 
 type mySQLRoster struct {

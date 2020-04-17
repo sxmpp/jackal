@@ -11,7 +11,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/ortuman/jackal/xmpp/jid"
+	"github.com/sxmpp/jackal/xmpp/jid"
 )
 
 const (

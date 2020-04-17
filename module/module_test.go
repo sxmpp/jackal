@@ -12,15 +12,15 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ortuman/jackal/router/host"
+	"github.com/sxmpp/jackal/router/host"
 
 	"github.com/google/uuid"
-	c2srouter "github.com/ortuman/jackal/c2s/router"
-	"github.com/ortuman/jackal/router"
-	"github.com/ortuman/jackal/storage"
-	"github.com/ortuman/jackal/stream"
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	c2srouter "github.com/sxmpp/jackal/c2s/router"
+	"github.com/sxmpp/jackal/router"
+	"github.com/sxmpp/jackal/storage"
+	"github.com/sxmpp/jackal/stream"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/stretchr/testify/require"
 	yaml "gopkg.in/yaml.v2"
 )
@@ -47,8 +47,8 @@ func TestModules_ProcessIQ(t *testing.T) {
 	mods := setupModules(t)
 	defer func() { _ = mods.Shutdown(context.Background()) }()
 
-	j0, _ := jid.NewWithString("ortuman@jackal.im/balcony", true)
-	j1, _ := jid.NewWithString("ortuman@jackal.im/yard", true)
+	j0, _ := jid.NewWithString("sxmpp@jackal.im/balcony", true)
+	j1, _ := jid.NewWithString("sxmpp@jackal.im/yard", true)
 
 	stm := stream.NewMockC2S(uuid.New().String(), j0)
 	stm.SetPresence(xmpp.NewPresence(j0.ToBareJID(), j0, xmpp.AvailableType))

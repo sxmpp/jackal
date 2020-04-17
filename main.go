@@ -9,7 +9,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/ortuman/jackal/app"
+	"github.com/sxmpp/jackal/app"
 )
 
 func main() {

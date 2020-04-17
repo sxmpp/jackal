@@ -9,7 +9,7 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/ortuman/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp"
 	"github.com/stretchr/testify/require"
 )
 
@@ -32,7 +32,7 @@ func TestItemElement(t *testing.T) {
 	require.NotNil(t, err)
 
 	// bad subscription
-	elem.SetAttribute("jid", "ortuman@jackal.im")
+	elem.SetAttribute("jid", "sxmpp@jackal.im")
 	elem.SetAttribute("subscription", "foo")
 	it, err = NewItem(elem)
 	require.Nil(t, it)
@@ -64,7 +64,7 @@ func TestItemElement(t *testing.T) {
 	itElem := it.Element()
 	require.Equal(t, "item", itElem.Name())
 	require.Equal(t, "buddy", itElem.Attributes().Get("name"))
-	require.Equal(t, "ortuman@jackal.im", itElem.Attributes().Get("jid"))
+	require.Equal(t, "sxmpp@jackal.im", itElem.Attributes().Get("jid"))
 	require.Equal(t, "both", itElem.Attributes().Get("subscription"))
 	require.Equal(t, "subscribe", itElem.Attributes().Get("ask"))
 	require.Equal(t, 1, len(itElem.Elements().All()))
@@ -73,7 +73,7 @@ func TestItemElement(t *testing.T) {
 func TestItem_Serialize(t *testing.T) {
 	var ri1 Item
 	ri1 = Item{
-		Username:     "ortuman",
+		Username:     "sxmpp",
 		JID:          "noelia",
 		Ask:          true,
 		Subscription: "none",

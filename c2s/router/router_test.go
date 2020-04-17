@@ -9,19 +9,19 @@ import (
 	"context"
 	"testing"
 
-	"github.com/ortuman/jackal/model"
-	"github.com/ortuman/jackal/router"
-	memorystorage "github.com/ortuman/jackal/storage/memory"
-	"github.com/ortuman/jackal/storage/repository"
-	"github.com/ortuman/jackal/stream"
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	"github.com/sxmpp/jackal/model"
+	"github.com/sxmpp/jackal/router"
+	memorystorage "github.com/sxmpp/jackal/storage/memory"
+	"github.com/sxmpp/jackal/storage/repository"
+	"github.com/sxmpp/jackal/stream"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/stretchr/testify/require"
 )
 
 func TestRouter_Binding(t *testing.T) {
-	j1, _ := jid.NewWithString("ortuman@jackal.im/yard", true)
-	j2, _ := jid.NewWithString("ortuman@jackal.im/balcony", true)
+	j1, _ := jid.NewWithString("sxmpp@jackal.im/yard", true)
+	j2, _ := jid.NewWithString("sxmpp@jackal.im/balcony", true)
 
 	stm1 := stream.NewMockC2S("id-1", j1)
 	stm2 := stream.NewMockC2S("id-1", j2)
@@ -33,15 +33,15 @@ func TestRouter_Binding(t *testing.T) {
 	stm1.SetPresence(xmpp.NewPresence(j1.ToBareJID(), j1, xmpp.AvailableType))
 	stm2.SetPresence(xmpp.NewPresence(j2.ToBareJID(), j2, xmpp.AvailableType))
 
-	require.Len(t, r.Streams("ortuman"), 2)
+	require.Len(t, r.Streams("sxmpp"), 2)
 
-	require.NotNil(t, r.Stream("ortuman", "yard"))
-	require.NotNil(t, r.Stream("ortuman", "balcony"))
+	require.NotNil(t, r.Stream("sxmpp", "yard"))
+	require.NotNil(t, r.Stream("sxmpp", "balcony"))
 
-	r.Unbind("ortuman", "yard")
-	r.Unbind("ortuman", "balcony")
+	r.Unbind("sxmpp", "yard")
+	r.Unbind("sxmpp", "balcony")
 
-	require.Len(t, r.Streams("ortuman"), 0)
+	require.Len(t, r.Streams("sxmpp"), 0)
 
 	r.(*c2sRouter).mu.RLock()
 	require.Len(t, r.(*c2sRouter).tbl, 0)
@@ -49,7 +49,7 @@ func TestRouter_Binding(t *testing.T) {
 }
 
 func TestRouter_Routing(t *testing.T) {
-	j1, _ := jid.NewWithString("ortuman@jackal.im/yard", true)
+	j1, _ := jid.NewWithString("sxmpp@jackal.im/yard", true)
 	j2, _ := jid.NewWithString("romeo@jackal.im/deadlyresource", true)
 	stm1 := stream.NewMockC2S("id-1", j1)
 	stm2 := stream.NewMockC2S("id-2", j2)
@@ -59,7 +59,7 @@ func TestRouter_Routing(t *testing.T) {
 	err := r.Route(context.Background(), xmpp.NewPresence(j1, j1, xmpp.AvailableType), true)
 	require.Equal(t, router.ErrNotExistingAccount, err)
 
-	_ = userRep.UpsertUser(context.Background(), &model.User{Username: "ortuman"})
+	_ = userRep.UpsertUser(context.Background(), &model.User{Username: "sxmpp"})
 	_ = userRep.UpsertUser(context.Background(), &model.User{Username: "romeo"})
 
 	err = r.Route(context.Background(), xmpp.NewPresence(j1, j1, xmpp.AvailableType), true)
@@ -76,7 +76,7 @@ func TestRouter_Routing(t *testing.T) {
 	stm2.SetPresence(xmpp.NewPresence(j2.ToBareJID(), j2, xmpp.AvailableType))
 
 	_ = blockListRep.InsertBlockListItem(context.Background(), &model.BlockListItem{
-		Username: "ortuman",
+		Username: "sxmpp",
 		JID:      "jackal.im/deadlyresource",
 	})
 

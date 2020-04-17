@@ -12,8 +12,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ortuman/jackal/transport/compress"
-	"github.com/ortuman/jackal/xmpp"
+	"github.com/sxmpp/jackal/transport/compress"
+	"github.com/sxmpp/jackal/xmpp"
 	"github.com/stretchr/testify/require"
 )
 

@@ -10,7 +10,7 @@ import (
 	"encoding/gob"
 	"time"
 
-	"github.com/ortuman/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp"
 )
 
 // User represents a user storage entity.

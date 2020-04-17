@@ -8,7 +8,7 @@ package repository
 import (
 	"context"
 
-	"github.com/ortuman/jackal/model"
+	"github.com/sxmpp/jackal/model"
 )
 
 // BlockList defines storage operations for user's block list

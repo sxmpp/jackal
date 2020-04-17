@@ -1,4 +1,4 @@
-module github.com/ortuman/jackal
+module github.com/sxmpp/jackal
 
 go 1.13
 

@@ -7,7 +7,7 @@ GOLDFLAGS =-s -w -extldflags $(LDFLAGS)
 
 .PHONY: install
 install:
-	@go install -ldflags="-s -w" github.com/ortuman/jackal
+	@go install -ldflags="-s -w" github.com/sxmpp/jackal
 
 .PHONY: install-tools
 install-tools:
@@ -60,7 +60,7 @@ dockerimage:
 	@echo "Building binary..."
 	@env GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags="-s -w"
 	@echo "Building docker image..."
-	@docker build -f dockerfiles/Dockerfile -t ortuman/jackal .
+	@docker build -f dockerfiles/Dockerfile -t sxmpp/jackal .
 
 .PHONY: clean
 clean:

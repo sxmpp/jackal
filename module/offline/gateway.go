@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/ortuman/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp"
 	"github.com/sony/gobreaker"
 )
 

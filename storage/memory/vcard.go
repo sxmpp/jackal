@@ -8,7 +8,7 @@ package memorystorage
 import (
 	"context"
 
-	"github.com/ortuman/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp"
 )
 
 // VCard represents an in-memory vCard storage.

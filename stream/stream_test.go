@@ -9,21 +9,21 @@ import (
 	"context"
 	"testing"
 
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/pborman/uuid"
 	"github.com/stretchr/testify/require"
 )
 
 func TestMockC2Stream(t *testing.T) {
-	j1, _ := jid.NewWithString("ortuman@jackal.im/balcony", false)
+	j1, _ := jid.NewWithString("sxmpp@jackal.im/balcony", false)
 	j2, _ := jid.NewWithString("romeo@jackal.im/orchard", false)
 	id := uuid.New()
 	stm := NewMockC2S(id, j1)
-	require.Equal(t, "ortuman", stm.Username())
+	require.Equal(t, "sxmpp", stm.Username())
 	require.Equal(t, "jackal.im", stm.Domain())
 	require.Equal(t, "balcony", stm.Resource())
-	require.Equal(t, "ortuman@jackal.im/balcony", stm.JID().String())
+	require.Equal(t, "sxmpp@jackal.im/balcony", stm.JID().String())
 
 	require.Equal(t, id, stm.ID())
 	stm.SetJID(j2)

@@ -8,17 +8,17 @@ package xep0191
 import (
 	"context"
 
-	"github.com/ortuman/jackal/log"
-	"github.com/ortuman/jackal/model"
-	rostermodel "github.com/ortuman/jackal/model/roster"
-	"github.com/ortuman/jackal/module/xep0030"
-	"github.com/ortuman/jackal/module/xep0115"
-	"github.com/ortuman/jackal/router"
-	"github.com/ortuman/jackal/storage/repository"
-	"github.com/ortuman/jackal/stream"
-	"github.com/ortuman/jackal/util/runqueue"
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	"github.com/sxmpp/jackal/log"
+	"github.com/sxmpp/jackal/model"
+	rostermodel "github.com/sxmpp/jackal/model/roster"
+	"github.com/sxmpp/jackal/module/xep0030"
+	"github.com/sxmpp/jackal/module/xep0115"
+	"github.com/sxmpp/jackal/router"
+	"github.com/sxmpp/jackal/storage/repository"
+	"github.com/sxmpp/jackal/stream"
+	"github.com/sxmpp/jackal/util/runqueue"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/pborman/uuid"
 )
 

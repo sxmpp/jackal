@@ -11,7 +11,7 @@ import (
 	"io"
 	"time"
 
-	"github.com/ortuman/jackal/transport/compress"
+	"github.com/sxmpp/jackal/transport/compress"
 )
 
 // Type represents a stream transport type (socket).

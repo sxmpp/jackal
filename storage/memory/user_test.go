@@ -9,12 +9,12 @@ import (
 	"context"
 	"testing"
 
-	"github.com/ortuman/jackal/model"
+	"github.com/sxmpp/jackal/model"
 	"github.com/stretchr/testify/require"
 )
 
 func TestMemoryStorage_InsertUser(t *testing.T) {
-	u := model.User{Username: "ortuman", Password: "1234"}
+	u := model.User{Username: "sxmpp", Password: "1234"}
 	s := NewUser()
 	EnableMockedError()
 	err := s.UpsertUser(context.Background(), &u)
@@ -27,41 +27,41 @@ func TestMemoryStorage_InsertUser(t *testing.T) {
 func TestMemoryStorage_UserExists(t *testing.T) {
 	s := NewUser()
 	EnableMockedError()
-	_, err := s.UserExists(context.Background(), "ortuman")
+	_, err := s.UserExists(context.Background(), "sxmpp")
 	require.Equal(t, ErrMocked, err)
 	DisableMockedError()
-	ok, err := s.UserExists(context.Background(), "ortuman")
+	ok, err := s.UserExists(context.Background(), "sxmpp")
 	require.Nil(t, err)
 	require.False(t, ok)
 }
 
 func TestMemoryStorage_FetchUser(t *testing.T) {
-	u := model.User{Username: "ortuman", Password: "1234"}
+	u := model.User{Username: "sxmpp", Password: "1234"}
 	s := NewUser()
 	_ = s.UpsertUser(context.Background(), &u)
 
 	EnableMockedError()
-	_, err := s.FetchUser(context.Background(), "ortuman")
+	_, err := s.FetchUser(context.Background(), "sxmpp")
 	require.Equal(t, ErrMocked, err)
 	DisableMockedError()
 
 	usr, _ := s.FetchUser(context.Background(), "romeo")
 	require.Nil(t, usr)
 
-	usr, _ = s.FetchUser(context.Background(), "ortuman")
+	usr, _ = s.FetchUser(context.Background(), "sxmpp")
 	require.NotNil(t, usr)
 }
 
 func TestMemoryStorage_DeleteUser(t *testing.T) {
-	u := model.User{Username: "ortuman", Password: "1234"}
+	u := model.User{Username: "sxmpp", Password: "1234"}
 	s := NewUser()
 	_ = s.UpsertUser(context.Background(), &u)
 
 	EnableMockedError()
-	require.Equal(t, ErrMocked, s.DeleteUser(context.Background(), "ortuman"))
+	require.Equal(t, ErrMocked, s.DeleteUser(context.Background(), "sxmpp"))
 	DisableMockedError()
-	require.Nil(t, s.DeleteUser(context.Background(), "ortuman"))
+	require.Nil(t, s.DeleteUser(context.Background(), "sxmpp"))
 
-	usr, _ := s.FetchUser(context.Background(), "ortuman")
+	usr, _ := s.FetchUser(context.Background(), "sxmpp")
 	require.Nil(t, usr)
 }

@@ -11,8 +11,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 )
 
 // roster item subscription values

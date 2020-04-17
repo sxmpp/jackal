@@ -10,19 +10,19 @@ import (
 	"crypto/tls"
 	"testing"
 
-	c2srouter "github.com/ortuman/jackal/c2s/router"
-	capsmodel "github.com/ortuman/jackal/model/capabilities"
-	pubsubmodel "github.com/ortuman/jackal/model/pubsub"
-	rostermodel "github.com/ortuman/jackal/model/roster"
-	"github.com/ortuman/jackal/module/xep0004"
-	"github.com/ortuman/jackal/module/xep0115"
-	"github.com/ortuman/jackal/router"
-	"github.com/ortuman/jackal/router/host"
-	memorystorage "github.com/ortuman/jackal/storage/memory"
-	"github.com/ortuman/jackal/storage/repository"
-	"github.com/ortuman/jackal/stream"
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	c2srouter "github.com/sxmpp/jackal/c2s/router"
+	capsmodel "github.com/sxmpp/jackal/model/capabilities"
+	pubsubmodel "github.com/sxmpp/jackal/model/pubsub"
+	rostermodel "github.com/sxmpp/jackal/model/roster"
+	"github.com/sxmpp/jackal/module/xep0004"
+	"github.com/sxmpp/jackal/module/xep0115"
+	"github.com/sxmpp/jackal/router"
+	"github.com/sxmpp/jackal/router/host"
+	memorystorage "github.com/sxmpp/jackal/storage/memory"
+	"github.com/sxmpp/jackal/storage/repository"
+	"github.com/sxmpp/jackal/stream"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/pborman/uuid"
 	"github.com/stretchr/testify/require"
 )
@@ -30,7 +30,7 @@ import (
 func TestXEP0163_Matching(t *testing.T) {
 	r, _, rosterRep, pubSubRep := setupTest("jackal.im")
 
-	j, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 
 	stm := stream.NewMockC2S(uuid.New(), j)
 	stm.SetPresence(xmpp.NewPresence(j, j, xmpp.AvailableType))
@@ -51,7 +51,7 @@ func TestXEP0163_Matching(t *testing.T) {
 func TestXEP163_CreateNode(t *testing.T) {
 	r, _, rosterRep, pubSubRep := setupTest("jackal.im")
 
-	j, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 
 	stm := stream.NewMockC2S(uuid.New(), j)
 	stm.SetPresence(xmpp.NewPresence(j, j, xmpp.AvailableType))
@@ -78,7 +78,7 @@ func TestXEP163_CreateNode(t *testing.T) {
 	require.Equal(t, xmpp.ResultType, elem.Type())
 
 	// read node
-	n, _ := pubSubRep.FetchNode(context.Background(), "ortuman@jackal.im", "princely_musings")
+	n, _ := pubSubRep.FetchNode(context.Background(), "sxmpp@jackal.im", "princely_musings")
 	require.NotNil(t, n)
 	require.Equal(t, n.Options, defaultNodeOptions)
 }
@@ -86,7 +86,7 @@ func TestXEP163_CreateNode(t *testing.T) {
 func TestXEP163_GetNodeConfiguration(t *testing.T) {
 	r, _, rosterRep, pubSubRep := setupTest("jackal.im")
 
-	j, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 
 	stm := stream.NewMockC2S(uuid.New(), j)
 	stm.SetPresence(xmpp.NewPresence(j, j, xmpp.AvailableType))
@@ -94,15 +94,15 @@ func TestXEP163_GetNodeConfiguration(t *testing.T) {
 	r.Bind(context.Background(), stm)
 
 	_ = pubSubRep.UpsertNode(context.Background(), &pubsubmodel.Node{
-		Host:    "ortuman@jackal.im",
+		Host:    "sxmpp@jackal.im",
 		Name:    "princely_musings",
 		Options: defaultNodeOptions,
 	})
 
 	_ = pubSubRep.UpsertNodeAffiliation(context.Background(), &pubsubmodel.Affiliation{
-		JID:         "ortuman@jackal.im",
+		JID:         "sxmpp@jackal.im",
 		Affiliation: pubsubmodel.Owner,
-	}, "ortuman@jackal.im", "princely_musings")
+	}, "sxmpp@jackal.im", "princely_musings")
 
 	p := New(nil, nil, r, rosterRep, pubSubRep)
 
@@ -139,7 +139,7 @@ func TestXEP163_GetNodeConfiguration(t *testing.T) {
 func TestXEP163_SetNodeConfiguration(t *testing.T) {
 	r, _, rosterRep, pubSubRep := setupTest("jackal.im")
 
-	j1, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j1, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 	j2, _ := jid.New("noelia", "jackal.im", "balcony", true)
 
 	stm1 := stream.NewMockC2S(uuid.New(), j1)
@@ -155,28 +155,28 @@ func TestXEP163_SetNodeConfiguration(t *testing.T) {
 
 	// create node and affiliations
 	_ = pubSubRep.UpsertNode(context.Background(), &pubsubmodel.Node{
-		Host:    "ortuman@jackal.im",
+		Host:    "sxmpp@jackal.im",
 		Name:    "princely_musings",
 		Options: nodeOpts,
 	})
 
 	_ = pubSubRep.UpsertNodeAffiliation(context.Background(), &pubsubmodel.Affiliation{
-		JID:         "ortuman@jackal.im",
+		JID:         "sxmpp@jackal.im",
 		Affiliation: pubsubmodel.Owner,
-	}, "ortuman@jackal.im", "princely_musings")
+	}, "sxmpp@jackal.im", "princely_musings")
 
 	_ = pubSubRep.UpsertNodeSubscription(context.Background(), &pubsubmodel.Subscription{
-		JID:          "ortuman@jackal.im",
+		JID:          "sxmpp@jackal.im",
 		Subscription: pubsubmodel.Subscribed,
-	}, "ortuman@jackal.im", "princely_musings")
+	}, "sxmpp@jackal.im", "princely_musings")
 
 	_ = pubSubRep.UpsertNodeSubscription(context.Background(), &pubsubmodel.Subscription{
 		JID:          "noelia@jackal.im",
 		Subscription: pubsubmodel.Subscribed,
-	}, "ortuman@jackal.im", "princely_musings")
+	}, "sxmpp@jackal.im", "princely_musings")
 
 	_, _ = rosterRep.UpsertRosterItem(context.Background(), &rostermodel.Item{
-		Username:     "ortuman",
+		Username:     "sxmpp",
 		JID:          "noelia@jackal.im",
 		Subscription: "both",
 	})
@@ -227,7 +227,7 @@ func TestXEP163_SetNodeConfiguration(t *testing.T) {
 	require.Equal(t, xmpp.ResultType, elem.Type())
 
 	// check if configuration was applied
-	n, _ := pubSubRep.FetchNode(context.Background(), "ortuman@jackal.im", "princely_musings")
+	n, _ := pubSubRep.FetchNode(context.Background(), "sxmpp@jackal.im", "princely_musings")
 	require.NotNil(t, n)
 	require.Equal(t, nodeOpts.Title, n.Options.Title)
 }
@@ -235,7 +235,7 @@ func TestXEP163_SetNodeConfiguration(t *testing.T) {
 func TestXEP163_DeleteNode(t *testing.T) {
 	r, _, rosterRep, pubSubRep := setupTest("jackal.im")
 
-	j1, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j1, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 	j2, _ := jid.New("noelia", "jackal.im", "balcony", true)
 
 	stm1 := stream.NewMockC2S(uuid.New(), j1)
@@ -251,28 +251,28 @@ func TestXEP163_DeleteNode(t *testing.T) {
 
 	// create node and affiliations
 	_ = pubSubRep.UpsertNode(context.Background(), &pubsubmodel.Node{
-		Host:    "ortuman@jackal.im",
+		Host:    "sxmpp@jackal.im",
 		Name:    "princely_musings",
 		Options: nodeOpts,
 	})
 
 	_ = pubSubRep.UpsertNodeAffiliation(context.Background(), &pubsubmodel.Affiliation{
-		JID:         "ortuman@jackal.im",
+		JID:         "sxmpp@jackal.im",
 		Affiliation: pubsubmodel.Owner,
-	}, "ortuman@jackal.im", "princely_musings")
+	}, "sxmpp@jackal.im", "princely_musings")
 
 	_ = pubSubRep.UpsertNodeSubscription(context.Background(), &pubsubmodel.Subscription{
-		JID:          "ortuman@jackal.im",
+		JID:          "sxmpp@jackal.im",
 		Subscription: pubsubmodel.Subscribed,
-	}, "ortuman@jackal.im", "princely_musings")
+	}, "sxmpp@jackal.im", "princely_musings")
 
 	_ = pubSubRep.UpsertNodeSubscription(context.Background(), &pubsubmodel.Subscription{
 		JID:          "noelia@jackal.im",
 		Subscription: pubsubmodel.Subscribed,
-	}, "ortuman@jackal.im", "princely_musings")
+	}, "sxmpp@jackal.im", "princely_musings")
 
 	_, _ = rosterRep.UpsertRosterItem(context.Background(), &rostermodel.Item{
-		Username:     "ortuman",
+		Username:     "sxmpp",
 		JID:          "noelia@jackal.im",
 		Subscription: "both",
 	})
@@ -314,14 +314,14 @@ func TestXEP163_DeleteNode(t *testing.T) {
 	require.Equal(t, xmpp.ResultType, elem.Type())
 
 	// read node
-	n, _ := pubSubRep.FetchNode(context.Background(), "ortuman@jackal.im", "princely_musings")
+	n, _ := pubSubRep.FetchNode(context.Background(), "sxmpp@jackal.im", "princely_musings")
 	require.Nil(t, n)
 }
 
 func TestXEP163_UpdateAffiliations(t *testing.T) {
 	r, _, rosterRep, pubSubRep := setupTest("jackal.im")
 
-	j1, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j1, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 
 	stm1 := stream.NewMockC2S(uuid.New(), j1)
 	stm1.SetPresence(xmpp.NewPresence(j1, j1, xmpp.AvailableType))
@@ -330,15 +330,15 @@ func TestXEP163_UpdateAffiliations(t *testing.T) {
 
 	// create node
 	_ = pubSubRep.UpsertNode(context.Background(), &pubsubmodel.Node{
-		Host:    "ortuman@jackal.im",
+		Host:    "sxmpp@jackal.im",
 		Name:    "princely_musings",
 		Options: defaultNodeOptions,
 	})
 
 	_ = pubSubRep.UpsertNodeAffiliation(context.Background(), &pubsubmodel.Affiliation{
-		JID:         "ortuman@jackal.im",
+		JID:         "sxmpp@jackal.im",
 		Affiliation: pubsubmodel.Owner,
-	}, "ortuman@jackal.im", "princely_musings")
+	}, "sxmpp@jackal.im", "princely_musings")
 
 	// process pubsub command
 	p := New(nil, nil, r, rosterRep, pubSubRep)
@@ -366,7 +366,7 @@ func TestXEP163_UpdateAffiliations(t *testing.T) {
 	require.Equal(t, "iq", elem.Name())
 	require.Equal(t, xmpp.ResultType, elem.Type())
 
-	aff, _ := pubSubRep.FetchNodeAffiliation(context.Background(), "ortuman@jackal.im", "princely_musings", "noelia@jackal.im")
+	aff, _ := pubSubRep.FetchNodeAffiliation(context.Background(), "sxmpp@jackal.im", "princely_musings", "noelia@jackal.im")
 	require.NotNil(t, aff)
 	require.Equal(t, "noelia@jackal.im", aff.JID)
 	require.Equal(t, pubsubmodel.Owner, aff.Affiliation)
@@ -380,14 +380,14 @@ func TestXEP163_UpdateAffiliations(t *testing.T) {
 	require.Equal(t, "iq", elem.Name())
 	require.Equal(t, xmpp.ResultType, elem.Type())
 
-	aff, _ = pubSubRep.FetchNodeAffiliation(context.Background(), "ortuman@jackal.im", "princely_musings", "noelia@jackal.im")
+	aff, _ = pubSubRep.FetchNodeAffiliation(context.Background(), "sxmpp@jackal.im", "princely_musings", "noelia@jackal.im")
 	require.Nil(t, aff)
 }
 
 func TestXEP163_RetrieveAffiliations(t *testing.T) {
 	r, _, rosterRep, pubSubRep := setupTest("jackal.im")
 
-	j1, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j1, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 
 	stm1 := stream.NewMockC2S(uuid.New(), j1)
 	stm1.SetPresence(xmpp.NewPresence(j1, j1, xmpp.AvailableType))
@@ -396,20 +396,20 @@ func TestXEP163_RetrieveAffiliations(t *testing.T) {
 
 	// create node and affiliations
 	_ = pubSubRep.UpsertNode(context.Background(), &pubsubmodel.Node{
-		Host:    "ortuman@jackal.im",
+		Host:    "sxmpp@jackal.im",
 		Name:    "princely_musings",
 		Options: defaultNodeOptions,
 	})
 
 	_ = pubSubRep.UpsertNodeAffiliation(context.Background(), &pubsubmodel.Affiliation{
-		JID:         "ortuman@jackal.im",
+		JID:         "sxmpp@jackal.im",
 		Affiliation: pubsubmodel.Owner,
-	}, "ortuman@jackal.im", "princely_musings")
+	}, "sxmpp@jackal.im", "princely_musings")
 
 	_ = pubSubRep.UpsertNodeAffiliation(context.Background(), &pubsubmodel.Affiliation{
 		JID:         "noelia@jackal.im",
 		Affiliation: pubsubmodel.Owner,
-	}, "ortuman@jackal.im", "princely_musings")
+	}, "sxmpp@jackal.im", "princely_musings")
 
 	// process pubsub command
 	p := New(nil, nil, r, rosterRep, pubSubRep)
@@ -439,7 +439,7 @@ func TestXEP163_RetrieveAffiliations(t *testing.T) {
 	affiliations := affiliationsElem.Elements().Children("affiliation")
 	require.Len(t, affiliations, 2)
 
-	require.Equal(t, "ortuman@jackal.im", affiliations[0].Attributes().Get("jid"))
+	require.Equal(t, "sxmpp@jackal.im", affiliations[0].Attributes().Get("jid"))
 	require.Equal(t, pubsubmodel.Owner, affiliations[0].Attributes().Get("affiliation"))
 	require.Equal(t, "noelia@jackal.im", affiliations[1].Attributes().Get("jid"))
 	require.Equal(t, pubsubmodel.Owner, affiliations[1].Attributes().Get("affiliation"))
@@ -448,7 +448,7 @@ func TestXEP163_RetrieveAffiliations(t *testing.T) {
 func TestXEP163_UpdateSubscriptions(t *testing.T) {
 	r, _, rosterRep, pubSubRep := setupTest("jackal.im")
 
-	j1, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j1, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 
 	stm1 := stream.NewMockC2S(uuid.New(), j1)
 	stm1.SetPresence(xmpp.NewPresence(j1, j1, xmpp.AvailableType))
@@ -457,14 +457,14 @@ func TestXEP163_UpdateSubscriptions(t *testing.T) {
 
 	// create node
 	_ = pubSubRep.UpsertNode(context.Background(), &pubsubmodel.Node{
-		Host:    "ortuman@jackal.im",
+		Host:    "sxmpp@jackal.im",
 		Name:    "princely_musings",
 		Options: defaultNodeOptions,
 	})
 	_ = pubSubRep.UpsertNodeAffiliation(context.Background(), &pubsubmodel.Affiliation{
-		JID:         "ortuman@jackal.im",
+		JID:         "sxmpp@jackal.im",
 		Affiliation: pubsubmodel.Owner,
-	}, "ortuman@jackal.im", "princely_musings")
+	}, "sxmpp@jackal.im", "princely_musings")
 
 	// process pubsub command
 	p := New(nil, nil, r, rosterRep, pubSubRep)
@@ -492,7 +492,7 @@ func TestXEP163_UpdateSubscriptions(t *testing.T) {
 	require.Equal(t, "iq", elem.Name())
 	require.Equal(t, xmpp.ResultType, elem.Type())
 
-	subs, _ := pubSubRep.FetchNodeSubscriptions(context.Background(), "ortuman@jackal.im", "princely_musings")
+	subs, _ := pubSubRep.FetchNodeSubscriptions(context.Background(), "sxmpp@jackal.im", "princely_musings")
 	require.NotNil(t, subs)
 	require.Len(t, subs, 1)
 	require.Equal(t, "noelia@jackal.im", subs[0].JID)
@@ -507,14 +507,14 @@ func TestXEP163_UpdateSubscriptions(t *testing.T) {
 	require.Equal(t, "iq", elem.Name())
 	require.Equal(t, xmpp.ResultType, elem.Type())
 
-	subs, _ = pubSubRep.FetchNodeSubscriptions(context.Background(), "ortuman@jackal.im", "princely_musings")
+	subs, _ = pubSubRep.FetchNodeSubscriptions(context.Background(), "sxmpp@jackal.im", "princely_musings")
 	require.Nil(t, subs)
 }
 
 func TestXEP163_RetrieveSubscriptions(t *testing.T) {
 	r, _, rosterRep, pubSubRep := setupTest("jackal.im")
 
-	j1, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j1, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 
 	stm1 := stream.NewMockC2S(uuid.New(), j1)
 	stm1.SetPresence(xmpp.NewPresence(j1, j1, xmpp.AvailableType))
@@ -523,21 +523,21 @@ func TestXEP163_RetrieveSubscriptions(t *testing.T) {
 
 	// create node and affiliations
 	_ = pubSubRep.UpsertNode(context.Background(), &pubsubmodel.Node{
-		Host:    "ortuman@jackal.im",
+		Host:    "sxmpp@jackal.im",
 		Name:    "princely_musings",
 		Options: defaultNodeOptions,
 	})
 
 	_ = pubSubRep.UpsertNodeAffiliation(context.Background(), &pubsubmodel.Affiliation{
-		JID:         "ortuman@jackal.im",
+		JID:         "sxmpp@jackal.im",
 		Affiliation: pubsubmodel.Owner,
-	}, "ortuman@jackal.im", "princely_musings")
+	}, "sxmpp@jackal.im", "princely_musings")
 
 	_ = pubSubRep.UpsertNodeSubscription(context.Background(), &pubsubmodel.Subscription{
 		SubID:        uuid.New(),
 		JID:          "noelia@jackal.im",
 		Subscription: pubsubmodel.Subscribed,
-	}, "ortuman@jackal.im", "princely_musings")
+	}, "sxmpp@jackal.im", "princely_musings")
 
 	// process pubsub command
 	p := New(nil, nil, r, rosterRep, pubSubRep)
@@ -574,7 +574,7 @@ func TestXEP163_RetrieveSubscriptions(t *testing.T) {
 func TestXEP163_Subscribe(t *testing.T) {
 	r, _, rosterRep, pubSubRep := setupTest("jackal.im")
 
-	j1, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j1, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 	j2, _ := jid.New("noelia", "jackal.im", "balcony", true)
 
 	stm1 := stream.NewMockC2S(uuid.New(), j1)
@@ -590,18 +590,18 @@ func TestXEP163_Subscribe(t *testing.T) {
 	nodeOpts.NotifySub = true
 
 	_ = pubSubRep.UpsertNode(context.Background(), &pubsubmodel.Node{
-		Host:    "ortuman@jackal.im",
+		Host:    "sxmpp@jackal.im",
 		Name:    "princely_musings",
 		Options: nodeOpts,
 	})
 
 	_ = pubSubRep.UpsertNodeAffiliation(context.Background(), &pubsubmodel.Affiliation{
-		JID:         "ortuman@jackal.im",
+		JID:         "sxmpp@jackal.im",
 		Affiliation: pubsubmodel.Owner,
-	}, "ortuman@jackal.im", "princely_musings")
+	}, "sxmpp@jackal.im", "princely_musings")
 
 	_, _ = rosterRep.UpsertRosterItem(context.Background(), &rostermodel.Item{
-		Username:     "ortuman",
+		Username:     "sxmpp",
 		JID:          "noelia@jackal.im",
 		Subscription: "both",
 	})
@@ -652,7 +652,7 @@ func TestXEP163_Subscribe(t *testing.T) {
 	require.Equal(t, "princely_musings", subscriptionElem.Attributes().Get("node"))
 
 	// check storage subscription
-	subs, _ := pubSubRep.FetchNodeSubscriptions(context.Background(), "ortuman@jackal.im", "princely_musings")
+	subs, _ := pubSubRep.FetchNodeSubscriptions(context.Background(), "sxmpp@jackal.im", "princely_musings")
 	require.Len(t, subs, 1)
 	require.Equal(t, "noelia@jackal.im", subs[0].JID)
 	require.Equal(t, pubsubmodel.Subscribed, subs[0].Subscription)
@@ -661,7 +661,7 @@ func TestXEP163_Subscribe(t *testing.T) {
 func TestXEP163_Unsubscribe(t *testing.T) {
 	r, _, rosterRep, pubSubRep := setupTest("jackal.im")
 
-	j1, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j1, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 	j2, _ := jid.New("noelia", "jackal.im", "balcony", true)
 
 	stm2 := stream.NewMockC2S(uuid.New(), j2)
@@ -671,18 +671,18 @@ func TestXEP163_Unsubscribe(t *testing.T) {
 
 	// create node and affiliations
 	_ = pubSubRep.UpsertNode(context.Background(), &pubsubmodel.Node{
-		Host:    "ortuman@jackal.im",
+		Host:    "sxmpp@jackal.im",
 		Name:    "princely_musings",
 		Options: defaultNodeOptions,
 	})
 
 	_ = pubSubRep.UpsertNodeAffiliation(context.Background(), &pubsubmodel.Affiliation{
-		JID:         "ortuman@jackal.im",
+		JID:         "sxmpp@jackal.im",
 		Affiliation: pubsubmodel.Owner,
-	}, "ortuman@jackal.im", "princely_musings")
+	}, "sxmpp@jackal.im", "princely_musings")
 
 	_, _ = rosterRep.UpsertRosterItem(context.Background(), &rostermodel.Item{
-		Username:     "ortuman",
+		Username:     "sxmpp",
 		JID:          "noelia@jackal.im",
 		Subscription: "both",
 	})
@@ -691,7 +691,7 @@ func TestXEP163_Unsubscribe(t *testing.T) {
 		SubID:        uuid.New(),
 		JID:          "noelia@jackal.im",
 		Subscription: pubsubmodel.Subscribed,
-	}, "ortuman@jackal.im", "princely_musings")
+	}, "sxmpp@jackal.im", "princely_musings")
 
 	// process pubsub command
 	p := New(nil, nil, r, rosterRep, pubSubRep)
@@ -717,14 +717,14 @@ func TestXEP163_Unsubscribe(t *testing.T) {
 	require.Equal(t, xmpp.ResultType, elem.Type())
 
 	// check storage subscription
-	subs, _ := pubSubRep.FetchNodeSubscriptions(context.Background(), "ortuman@jackal.im", "princely_musings")
+	subs, _ := pubSubRep.FetchNodeSubscriptions(context.Background(), "sxmpp@jackal.im", "princely_musings")
 	require.Len(t, subs, 0)
 }
 
 func TestXEP163_RetrieveItems(t *testing.T) {
 	r, _, rosterRep, pubSubRep := setupTest("jackal.im")
 
-	j1, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j1, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 	j2, _ := jid.New("noelia", "jackal.im", "balcony", true)
 
 	stm1 := stream.NewMockC2S(uuid.New(), j1)
@@ -736,16 +736,16 @@ func TestXEP163_RetrieveItems(t *testing.T) {
 
 	// create node and affiliations
 	_ = pubSubRep.UpsertNode(context.Background(), &pubsubmodel.Node{
-		Host:    "ortuman@jackal.im",
+		Host:    "sxmpp@jackal.im",
 		Name:    "princely_musings",
 		Options: defaultNodeOptions,
 	})
 	_ = pubSubRep.UpsertNodeAffiliation(context.Background(), &pubsubmodel.Affiliation{
-		JID:         "ortuman@jackal.im",
+		JID:         "sxmpp@jackal.im",
 		Affiliation: pubsubmodel.Owner,
-	}, "ortuman@jackal.im", "princely_musings")
+	}, "sxmpp@jackal.im", "princely_musings")
 	_, _ = rosterRep.UpsertRosterItem(context.Background(), &rostermodel.Item{
-		Username:     "ortuman",
+		Username:     "sxmpp",
 		JID:          "noelia@jackal.im",
 		Subscription: "both",
 	})
@@ -755,13 +755,13 @@ func TestXEP163_RetrieveItems(t *testing.T) {
 		ID:        "i1",
 		Publisher: "noelia@jackal.im",
 		Payload:   xmpp.NewElementName("m1"),
-	}, "ortuman@jackal.im", "princely_musings", 2)
+	}, "sxmpp@jackal.im", "princely_musings", 2)
 
 	_ = pubSubRep.UpsertNodeItem(context.Background(), &pubsubmodel.Item{
 		ID:        "i2",
 		Publisher: "noelia@jackal.im",
 		Payload:   xmpp.NewElementName("m2"),
-	}, "ortuman@jackal.im", "princely_musings", 2)
+	}, "sxmpp@jackal.im", "princely_musings", 2)
 
 	p := New(nil, nil, r, rosterRep, pubSubRep)
 
@@ -815,7 +815,7 @@ func TestXEP163_RetrieveItems(t *testing.T) {
 func TestXEP163_SubscribeToAll(t *testing.T) {
 	r, _, rosterRep, pubSubRep := setupTest("jackal.im")
 
-	j1, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j1, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 
 	// create node and affiliations
 	_ = pubSubRep.UpsertNode(context.Background(), &pubsubmodel.Node{
@@ -836,7 +836,7 @@ func TestXEP163_SubscribeToAll(t *testing.T) {
 
 	_, _ = rosterRep.UpsertRosterItem(context.Background(), &rostermodel.Item{
 		Username:     "noelia",
-		JID:          "ortuman@jackal.im",
+		JID:          "sxmpp@jackal.im",
 		Subscription: "both",
 	})
 	p := New(nil, nil, r, rosterRep, pubSubRep)
@@ -858,7 +858,7 @@ func TestXEP163_SubscribeToAll(t *testing.T) {
 func TestXEP163_FilteredNotifications(t *testing.T) {
 	r, presencesRep, rosterRep, pubSubRep := setupTest("jackal.im")
 
-	j1, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j1, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 	j2, _ := jid.New("noelia", "jackal.im", "balcony", true)
 	stm1 := stream.NewMockC2S(uuid.New(), j1)
 	stm2 := stream.NewMockC2S(uuid.New(), j2)
@@ -869,18 +869,18 @@ func TestXEP163_FilteredNotifications(t *testing.T) {
 
 	// create node, affiliations and subscriptions
 	_ = pubSubRep.UpsertNode(context.Background(), &pubsubmodel.Node{
-		Host:    "ortuman@jackal.im",
+		Host:    "sxmpp@jackal.im",
 		Name:    "princely_musings",
 		Options: defaultNodeOptions,
 	})
 
 	_ = pubSubRep.UpsertNodeAffiliation(context.Background(), &pubsubmodel.Affiliation{
-		JID:         "ortuman@jackal.im",
+		JID:         "sxmpp@jackal.im",
 		Affiliation: pubsubmodel.Owner,
-	}, "ortuman@jackal.im", "princely_musings")
+	}, "sxmpp@jackal.im", "princely_musings")
 
 	_, _ = rosterRep.UpsertRosterItem(context.Background(), &rostermodel.Item{
-		Username:     "ortuman",
+		Username:     "sxmpp",
 		JID:          "noelia@jackal.im",
 		Subscription: "both",
 	})
@@ -889,7 +889,7 @@ func TestXEP163_FilteredNotifications(t *testing.T) {
 		SubID:        uuid.New(),
 		JID:          "noelia@jackal.im",
 		Subscription: pubsubmodel.Subscribed,
-	}, "ortuman@jackal.im", "princely_musings")
+	}, "sxmpp@jackal.im", "princely_musings")
 
 	// set capabilities
 	_ = presencesRep.UpsertCapabilities(context.Background(), &capsmodel.Capabilities{

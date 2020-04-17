@@ -10,9 +10,9 @@ import (
 	"context"
 	"encoding/base64"
 
-	"github.com/ortuman/jackal/storage/repository"
-	"github.com/ortuman/jackal/stream"
-	"github.com/ortuman/jackal/xmpp"
+	"github.com/sxmpp/jackal/storage/repository"
+	"github.com/sxmpp/jackal/stream"
+	"github.com/sxmpp/jackal/xmpp"
 )
 
 // Plain represents a PLAIN authenticator.

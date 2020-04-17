@@ -5,12 +5,12 @@ import (
 	"encoding/json"
 	"testing"
 
-	capsmodel "github.com/ortuman/jackal/model/capabilities"
+	capsmodel "github.com/sxmpp/jackal/model/capabilities"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/ortuman/jackal/util/pool"
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	"github.com/sxmpp/jackal/util/pool"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/stretchr/testify/require"
 )
 
@@ -19,10 +19,10 @@ func TestPgSQLPresences_UpsertPresence(t *testing.T) {
 
 	s, mock := newPresencesMock()
 	mock.ExpectQuery("INSERT INTO presences (.+) VALUES (.+) ON CONFLICT (.+) DO UPDATE SET (.+) RETURNING CASE WHEN updated_at=created_at THEN true ELSE false END AS inserted").
-		WithArgs("ortuman", "jackal.im", "yard", `<presence from="ortuman@jackal.im/yard" to="ortuman@jackal.im"/>`, "", "", "alloc-1234").
+		WithArgs("sxmpp", "jackal.im", "yard", `<presence from="sxmpp@jackal.im/yard" to="sxmpp@jackal.im"/>`, "", "", "alloc-1234").
 		WillReturnRows(sqlmock.NewRows(columns).AddRow(true))
 
-	j, _ := jid.NewWithString("ortuman@jackal.im/yard", true)
+	j, _ := jid.NewWithString("sxmpp@jackal.im/yard", true)
 	inserted, err := s.UpsertPresence(context.Background(), xmpp.NewPresence(j, j.ToBareJID(), xmpp.AvailableType), j, "alloc-1234")
 	require.Nil(t, mock.ExpectationsWereMet())
 	require.Nil(t, err)
@@ -35,11 +35,11 @@ func TestPgSQLPresences_FetchPresence(t *testing.T) {
 
 	s, mock := newPresencesMock()
 	mock.ExpectQuery("SELECT presence, c.node, c.ver, c.features FROM presences AS p, capabilities AS c WHERE \\(username = \\? AND domain = \\? AND resource = \\? AND p.node = c.node AND p.ver = c.ver\\)").
-		WithArgs("ortuman", "jackal.im", "yard").
+		WithArgs("sxmpp", "jackal.im", "yard").
 		WillReturnRows(sqlmock.NewRows(columns).
 			AddRow("<presence/>", "http://jackal.im", "v1234", `["urn:xmpp:ping"]`))
 
-	j, _ := jid.NewWithString("ortuman@jackal.im/yard", true)
+	j, _ := jid.NewWithString("sxmpp@jackal.im/yard", true)
 	presenceCaps, err := s.FetchPresence(context.Background(), j)
 	require.Nil(t, mock.ExpectationsWereMet())
 	require.Nil(t, err)
@@ -57,13 +57,13 @@ func TestPgSQLPresences_FetchPresencesMatchingJID(t *testing.T) {
 
 	s, mock := newPresencesMock()
 	mock.ExpectQuery("SELECT presence, c.node, c.ver, c.features FROM presences AS p, capabilities AS c WHERE \\(username = \\? AND domain = \\? AND resource = \\? AND p.node = c.node AND p.ver = c.ver\\)").
-		WithArgs("ortuman", "jackal.im", "yard").
+		WithArgs("sxmpp", "jackal.im", "yard").
 		WillReturnRows(sqlmock.NewRows(columns).
 			AddRow("<presence/>", "http://jackal.im", "v1234", `["urn:xmpp:ping"]`).
 			AddRow("<presence/>", "http://jackal.im", "v1234", `["urn:xmpp:ping"]`),
 		)
 
-	j, _ := jid.NewWithString("ortuman@jackal.im/yard", true)
+	j, _ := jid.NewWithString("sxmpp@jackal.im/yard", true)
 	presenceCaps, err := s.FetchPresencesMatchingJID(context.Background(), j)
 	require.Nil(t, mock.ExpectationsWereMet())
 	require.Nil(t, err)
@@ -77,7 +77,7 @@ func TestPgSQLPresences_FetchPresencesMatchingJID(t *testing.T) {
 }
 
 func TestPgSQLPresences_DeletePresence(t *testing.T) {
-	j, _ := jid.NewWithString("ortuman@jackal.im/yard", true)
+	j, _ := jid.NewWithString("sxmpp@jackal.im/yard", true)
 
 	s, mock := newPresencesMock()
 	mock.ExpectExec("DELETE FROM presences WHERE \\(username = \\? AND domain = \\? AND resource = \\?\\)").

@@ -11,9 +11,9 @@ import (
 	"encoding/base64"
 	"testing"
 
-	"github.com/ortuman/jackal/model"
-	memorystorage "github.com/ortuman/jackal/storage/memory"
-	"github.com/ortuman/jackal/xmpp"
+	"github.com/sxmpp/jackal/model"
+	memorystorage "github.com/sxmpp/jackal/storage/memory"
+	"github.com/sxmpp/jackal/xmpp"
 	"github.com/stretchr/testify/require"
 )
 
@@ -80,7 +80,7 @@ func TestAuthPlainAuthentication(t *testing.T) {
 	// invalid user
 	buf.Reset()
 	buf.WriteByte(0)
-	buf.WriteString("ortuman")
+	buf.WriteString("sxmpp")
 	buf.WriteByte(0)
 	buf.WriteString("1234")
 	elem.SetText(base64.StdEncoding.EncodeToString(buf.Bytes()))

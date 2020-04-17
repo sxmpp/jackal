@@ -11,17 +11,17 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/ortuman/jackal/component"
-	"github.com/ortuman/jackal/model"
-	"github.com/ortuman/jackal/module"
-	"github.com/ortuman/jackal/router"
-	"github.com/ortuman/jackal/storage"
-	"github.com/ortuman/jackal/storage/repository"
-	"github.com/ortuman/jackal/stream"
-	"github.com/ortuman/jackal/transport"
-	"github.com/ortuman/jackal/transport/compress"
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	"github.com/sxmpp/jackal/component"
+	"github.com/sxmpp/jackal/model"
+	"github.com/sxmpp/jackal/module"
+	"github.com/sxmpp/jackal/router"
+	"github.com/sxmpp/jackal/storage"
+	"github.com/sxmpp/jackal/storage/repository"
+	"github.com/sxmpp/jackal/stream"
+	"github.com/sxmpp/jackal/transport"
+	"github.com/sxmpp/jackal/transport/compress"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/stretchr/testify/require"
 )
 
@@ -297,7 +297,7 @@ func TestStream_SendMessage(t *testing.T) {
 
 	// define a second stream...
 	jFrom, _ := jid.New("user", "localhost", "balcony", true)
-	jTo, _ := jid.New("ortuman", "localhost", "garden", true)
+	jTo, _ := jid.New("sxmpp", "localhost", "garden", true)
 
 	stm2 := stream.NewMockC2S("abcd7890", jTo)
 	stm2.SetPresence(xmpp.NewPresence(jTo, jTo, xmpp.AvailableType))

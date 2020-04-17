@@ -8,8 +8,8 @@ package memorystorage
 import (
 	"context"
 
-	"github.com/ortuman/jackal/model"
-	"github.com/ortuman/jackal/model/serializer"
+	"github.com/sxmpp/jackal/model"
+	"github.com/sxmpp/jackal/model/serializer"
 )
 
 // BlockList represents an in-memory block-list storage.

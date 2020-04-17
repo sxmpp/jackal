@@ -10,31 +10,31 @@ import (
 	"reflect"
 	"testing"
 
-	pubsubmodel "github.com/ortuman/jackal/model/pubsub"
-	"github.com/ortuman/jackal/xmpp"
+	pubsubmodel "github.com/sxmpp/jackal/model/pubsub"
+	"github.com/sxmpp/jackal/xmpp"
 	"github.com/stretchr/testify/require"
 )
 
 func TestStorage_PubSubNode(t *testing.T) {
 	s := NewPubSub()
 	node := &pubsubmodel.Node{
-		Host: "ortuman@jackal.im",
+		Host: "sxmpp@jackal.im",
 		Name: "princely_musings",
 	}
 	require.Nil(t, s.UpsertNode(context.Background(), node))
 
-	n, err := s.FetchNode(context.Background(), "ortuman@jackal.im", "princely_musings")
+	n, err := s.FetchNode(context.Background(), "sxmpp@jackal.im", "princely_musings")
 	require.Nil(t, err)
 	require.NotNil(t, n)
 
 	require.True(t, reflect.DeepEqual(n, node))
 
 	node2 := &pubsubmodel.Node{
-		Host: "ortuman@jackal.im",
+		Host: "sxmpp@jackal.im",
 		Name: "princely_musings_2",
 	}
 	node3 := &pubsubmodel.Node{
-		Host: "ortuman@jackal.im",
+		Host: "sxmpp@jackal.im",
 		Name: "princely_musings_3",
 	}
 	node4 := &pubsubmodel.Node{
@@ -45,7 +45,7 @@ func TestStorage_PubSubNode(t *testing.T) {
 	require.Nil(t, s.UpsertNode(context.Background(), node3))
 	require.Nil(t, s.UpsertNode(context.Background(), node4))
 
-	nodes, err := s.FetchNodes(context.Background(), "ortuman@jackal.im")
+	nodes, err := s.FetchNodes(context.Background(), "sxmpp@jackal.im")
 	require.Nil(t, err)
 	require.NotNil(t, nodes)
 
@@ -54,9 +54,9 @@ func TestStorage_PubSubNode(t *testing.T) {
 	require.Equal(t, "princely_musings_2", nodes[1].Name)
 	require.Equal(t, "princely_musings_3", nodes[2].Name)
 
-	require.Nil(t, s.DeleteNode(context.Background(), "ortuman@jackal.im", "princely_musings_2"))
+	require.Nil(t, s.DeleteNode(context.Background(), "sxmpp@jackal.im", "princely_musings_2"))
 
-	nodes, err = s.FetchNodes(context.Background(), "ortuman@jackal.im")
+	nodes, err = s.FetchNodes(context.Background(), "sxmpp@jackal.im")
 	require.Nil(t, err)
 	require.NotNil(t, nodes)
 
@@ -74,7 +74,7 @@ func TestStorage_PubSubNodeItem(t *testing.T) {
 	s := NewPubSub()
 	item1 := &pubsubmodel.Item{
 		ID:        "id1",
-		Publisher: "ortuman@jackal.im",
+		Publisher: "sxmpp@jackal.im",
 		Payload:   xmpp.NewElementName("a"),
 	}
 	item2 := &pubsubmodel.Item{
@@ -87,10 +87,10 @@ func TestStorage_PubSubNodeItem(t *testing.T) {
 		Publisher: "noelia@jackal.im",
 		Payload:   xmpp.NewElementName("c"),
 	}
-	require.Nil(t, s.UpsertNodeItem(context.Background(), item1, "ortuman@jackal.im", "princely_musings", 1))
-	require.Nil(t, s.UpsertNodeItem(context.Background(), item2, "ortuman@jackal.im", "princely_musings", 1))
+	require.Nil(t, s.UpsertNodeItem(context.Background(), item1, "sxmpp@jackal.im", "princely_musings", 1))
+	require.Nil(t, s.UpsertNodeItem(context.Background(), item2, "sxmpp@jackal.im", "princely_musings", 1))
 
-	items, err := s.FetchNodeItems(context.Background(), "ortuman@jackal.im", "princely_musings")
+	items, err := s.FetchNodeItems(context.Background(), "sxmpp@jackal.im", "princely_musings")
 	require.Nil(t, err)
 	require.NotNil(t, items)
 
@@ -98,9 +98,9 @@ func TestStorage_PubSubNodeItem(t *testing.T) {
 	require.True(t, reflect.DeepEqual(&items[0], item2))
 
 	// update item
-	require.Nil(t, s.UpsertNodeItem(context.Background(), item3, "ortuman@jackal.im", "princely_musings", 2))
+	require.Nil(t, s.UpsertNodeItem(context.Background(), item3, "sxmpp@jackal.im", "princely_musings", 2))
 
-	items, err = s.FetchNodeItems(context.Background(), "ortuman@jackal.im", "princely_musings")
+	items, err = s.FetchNodeItems(context.Background(), "sxmpp@jackal.im", "princely_musings")
 	require.Nil(t, err)
 	require.NotNil(t, items)
 
@@ -108,7 +108,7 @@ func TestStorage_PubSubNodeItem(t *testing.T) {
 	require.True(t, reflect.DeepEqual(&items[0], item2))
 	require.True(t, reflect.DeepEqual(&items[1], item3))
 
-	items, err = s.FetchNodeItemsWithIDs(context.Background(), "ortuman@jackal.im", "princely_musings", []string{"id3"})
+	items, err = s.FetchNodeItemsWithIDs(context.Background(), "sxmpp@jackal.im", "princely_musings", []string{"id3"})
 	require.Nil(t, err)
 	require.NotNil(t, items)
 
@@ -119,17 +119,17 @@ func TestStorage_PubSubNodeItem(t *testing.T) {
 func TestStorage_PubSubNodeAffiliation(t *testing.T) {
 	s := NewPubSub()
 	aff1 := &pubsubmodel.Affiliation{
-		JID:         "ortuman@jackal.im",
+		JID:         "sxmpp@jackal.im",
 		Affiliation: "publisher",
 	}
 	aff2 := &pubsubmodel.Affiliation{
 		JID:         "noelia@jackal.im",
 		Affiliation: "publisher",
 	}
-	require.Nil(t, s.UpsertNodeAffiliation(context.Background(), aff1, "ortuman@jackal.im", "princely_musings"))
-	require.Nil(t, s.UpsertNodeAffiliation(context.Background(), aff2, "ortuman@jackal.im", "princely_musings"))
+	require.Nil(t, s.UpsertNodeAffiliation(context.Background(), aff1, "sxmpp@jackal.im", "princely_musings"))
+	require.Nil(t, s.UpsertNodeAffiliation(context.Background(), aff2, "sxmpp@jackal.im", "princely_musings"))
 
-	affiliations, err := s.FetchNodeAffiliations(context.Background(), "ortuman@jackal.im", "princely_musings")
+	affiliations, err := s.FetchNodeAffiliations(context.Background(), "sxmpp@jackal.im", "princely_musings")
 	require.Nil(t, err)
 	require.NotNil(t, affiliations)
 
@@ -137,9 +137,9 @@ func TestStorage_PubSubNodeAffiliation(t *testing.T) {
 
 	// update affiliation
 	aff2.Affiliation = "owner"
-	require.Nil(t, s.UpsertNodeAffiliation(context.Background(), aff2, "ortuman@jackal.im", "princely_musings"))
+	require.Nil(t, s.UpsertNodeAffiliation(context.Background(), aff2, "sxmpp@jackal.im", "princely_musings"))
 
-	affiliations, err = s.FetchNodeAffiliations(context.Background(), "ortuman@jackal.im", "princely_musings")
+	affiliations, err = s.FetchNodeAffiliations(context.Background(), "sxmpp@jackal.im", "princely_musings")
 	require.Nil(t, err)
 	require.NotNil(t, affiliations)
 
@@ -158,10 +158,10 @@ func TestStorage_PubSubNodeAffiliation(t *testing.T) {
 	}
 
 	// delete affiliation
-	err = s.DeleteNodeAffiliation(context.Background(), "noelia@jackal.im", "ortuman@jackal.im", "princely_musings")
+	err = s.DeleteNodeAffiliation(context.Background(), "noelia@jackal.im", "sxmpp@jackal.im", "princely_musings")
 	require.Nil(t, err)
 
-	affiliations, err = s.FetchNodeAffiliations(context.Background(), "ortuman@jackal.im", "princely_musings")
+	affiliations, err = s.FetchNodeAffiliations(context.Background(), "sxmpp@jackal.im", "princely_musings")
 	require.Nil(t, err)
 	require.NotNil(t, affiliations)
 
@@ -171,7 +171,7 @@ func TestStorage_PubSubNodeAffiliation(t *testing.T) {
 func TestStorage_PubSubNodeSubscription(t *testing.T) {
 	s := NewPubSub()
 	node := &pubsubmodel.Node{
-		Host: "ortuman@jackal.im",
+		Host: "sxmpp@jackal.im",
 		Name: "princely_musings",
 	}
 	_ = s.UpsertNode(context.Background(), node)
@@ -184,7 +184,7 @@ func TestStorage_PubSubNodeSubscription(t *testing.T) {
 
 	sub1 := &pubsubmodel.Subscription{
 		SubID:        "1234",
-		JID:          "ortuman@jackal.im",
+		JID:          "sxmpp@jackal.im",
 		Subscription: "subscribed",
 	}
 	sub2 := &pubsubmodel.Subscription{
@@ -194,19 +194,19 @@ func TestStorage_PubSubNodeSubscription(t *testing.T) {
 	}
 	sub3 := &pubsubmodel.Subscription{
 		SubID:        "9012",
-		JID:          "ortuman@jackal.im",
+		JID:          "sxmpp@jackal.im",
 		Subscription: "subscribed",
 	}
-	require.Nil(t, s.UpsertNodeSubscription(context.Background(), sub1, "ortuman@jackal.im", "princely_musings"))
-	require.Nil(t, s.UpsertNodeSubscription(context.Background(), sub2, "ortuman@jackal.im", "princely_musings"))
+	require.Nil(t, s.UpsertNodeSubscription(context.Background(), sub1, "sxmpp@jackal.im", "princely_musings"))
+	require.Nil(t, s.UpsertNodeSubscription(context.Background(), sub2, "sxmpp@jackal.im", "princely_musings"))
 	require.Nil(t, s.UpsertNodeSubscription(context.Background(), sub3, "noelia@jackal.im", "princely_musings"))
 
 	// fetch user subscribed nodes
-	nodes, err := s.FetchSubscribedNodes(context.Background(), "ortuman@jackal.im")
+	nodes, err := s.FetchSubscribedNodes(context.Background(), "sxmpp@jackal.im")
 	require.Nil(t, err)
 	require.Len(t, nodes, 2)
 
-	subscriptions, err := s.FetchNodeSubscriptions(context.Background(), "ortuman@jackal.im", "princely_musings")
+	subscriptions, err := s.FetchNodeSubscriptions(context.Background(), "sxmpp@jackal.im", "princely_musings")
 	require.Nil(t, err)
 	require.NotNil(t, subscriptions)
 
@@ -214,9 +214,9 @@ func TestStorage_PubSubNodeSubscription(t *testing.T) {
 
 	// update affiliation
 	sub2.Subscription = "subscribed"
-	require.Nil(t, s.UpsertNodeSubscription(context.Background(), sub2, "ortuman@jackal.im", "princely_musings"))
+	require.Nil(t, s.UpsertNodeSubscription(context.Background(), sub2, "sxmpp@jackal.im", "princely_musings"))
 
-	subscriptions, err = s.FetchNodeSubscriptions(context.Background(), "ortuman@jackal.im", "princely_musings")
+	subscriptions, err = s.FetchNodeSubscriptions(context.Background(), "sxmpp@jackal.im", "princely_musings")
 	require.Nil(t, err)
 	require.NotNil(t, subscriptions)
 
@@ -235,10 +235,10 @@ func TestStorage_PubSubNodeSubscription(t *testing.T) {
 	}
 
 	// delete subscription
-	err = s.DeleteNodeSubscription(context.Background(), "noelia@jackal.im", "ortuman@jackal.im", "princely_musings")
+	err = s.DeleteNodeSubscription(context.Background(), "noelia@jackal.im", "sxmpp@jackal.im", "princely_musings")
 	require.Nil(t, err)
 
-	subscriptions, err = s.FetchNodeSubscriptions(context.Background(), "ortuman@jackal.im", "princely_musings")
+	subscriptions, err = s.FetchNodeSubscriptions(context.Background(), "sxmpp@jackal.im", "princely_musings")
 	require.Nil(t, err)
 	require.NotNil(t, subscriptions)
 

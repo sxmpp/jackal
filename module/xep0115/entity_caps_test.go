@@ -12,7 +12,7 @@ func TestEntityCaps_RegisterPresence(t *testing.T) {
 func TestEntityCaps_RequestCapabilities(t *testing.T) {
 	r, s := setupTest("jackal.im")
 
-	j1, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j1, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 
 	stm1 := stream.NewMockC2S(uuid.New(), j1)
 	stm1.SetPresence(xmpp.NewPresence(j1, j1, xmpp.AvailableType))
@@ -44,7 +44,7 @@ func TestEntityCaps_RequestCapabilities(t *testing.T) {
 func TestEntityCaps_ProcessCapabilities(t *testing.T) {
 	r, s := setupTest("jackal.im")
 
-	j1, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j1, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 
 	iqID := uuid.New()
 

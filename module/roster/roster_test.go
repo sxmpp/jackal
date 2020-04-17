@@ -11,17 +11,17 @@ import (
 	"testing"
 	"time"
 
-	c2srouter "github.com/ortuman/jackal/c2s/router"
-	"github.com/ortuman/jackal/model"
-	rostermodel "github.com/ortuman/jackal/model/roster"
-	"github.com/ortuman/jackal/module/xep0115"
-	"github.com/ortuman/jackal/router"
-	"github.com/ortuman/jackal/router/host"
-	memorystorage "github.com/ortuman/jackal/storage/memory"
-	"github.com/ortuman/jackal/storage/repository"
-	"github.com/ortuman/jackal/stream"
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	c2srouter "github.com/sxmpp/jackal/c2s/router"
+	"github.com/sxmpp/jackal/model"
+	rostermodel "github.com/sxmpp/jackal/model/roster"
+	"github.com/sxmpp/jackal/module/xep0115"
+	"github.com/sxmpp/jackal/router"
+	"github.com/sxmpp/jackal/router/host"
+	memorystorage "github.com/sxmpp/jackal/storage/memory"
+	"github.com/sxmpp/jackal/storage/repository"
+	"github.com/sxmpp/jackal/stream"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/pborman/uuid"
 	"github.com/stretchr/testify/require"
 )
@@ -41,7 +41,7 @@ func TestRoster_MatchesIQ(t *testing.T) {
 func TestRoster_FetchRoster(t *testing.T) {
 	rtr, userRep, presencesRep, rosterRep := setupTest("jackal.im")
 
-	j1, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j1, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 
 	stm := stream.NewMockC2S(uuid.New(), j1)
 	rtr.Bind(context.Background(), stm)
@@ -75,7 +75,7 @@ func TestRoster_FetchRoster(t *testing.T) {
 	require.Equal(t, 0, query.Elements().Count())
 
 	ri1 := &rostermodel.Item{
-		Username:     "ortuman",
+		Username:     "sxmpp",
 		JID:          "noelia@jackal.im",
 		Name:         "My Juliet",
 		Subscription: rostermodel.SubscriptionNone,
@@ -85,7 +85,7 @@ func TestRoster_FetchRoster(t *testing.T) {
 	_, _ = rosterRep.UpsertRosterItem(context.Background(), ri1)
 
 	ri2 := &rostermodel.Item{
-		Username:     "ortuman",
+		Username:     "sxmpp",
 		JID:          "romeo@jackal.im",
 		Name:         "Rome",
 		Subscription: rostermodel.SubscriptionNone,
@@ -143,8 +143,8 @@ func TestRoster_FetchRoster(t *testing.T) {
 func TestRoster_Update(t *testing.T) {
 	rtr, userRep, presencesRep, rosterRep := setupTest("jackal.im")
 
-	j1, _ := jid.New("ortuman", "jackal.im", "garden", true)
-	j2, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j1, _ := jid.New("sxmpp", "jackal.im", "garden", true)
+	j2, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 
 	stm1 := stream.NewMockC2S(uuid.New(), j1)
 	stm1.SetAuthenticated(true)
@@ -199,10 +199,10 @@ func TestRoster_Update(t *testing.T) {
 	require.Equal(t, xmpp.ResultType, elem.Type())
 	require.Equal(t, iqID, elem.ID())
 
-	ri, err := rosterRep.FetchRosterItem(context.Background(), "ortuman", "noelia@jackal.im")
+	ri, err := rosterRep.FetchRosterItem(context.Background(), "sxmpp", "noelia@jackal.im")
 	require.Nil(t, err)
 	require.NotNil(t, ri)
-	require.Equal(t, "ortuman", ri.Username)
+	require.Equal(t, "sxmpp", ri.Username)
 	require.Equal(t, "noelia@jackal.im", ri.JID)
 	require.Equal(t, "My Girl", ri.Name)
 }
@@ -212,18 +212,18 @@ func TestRoster_RemoveItem(t *testing.T) {
 
 	// insert contact's roster item
 	_, _ = rosterRep.UpsertRosterItem(context.Background(), &rostermodel.Item{
-		Username:     "ortuman",
+		Username:     "sxmpp",
 		JID:          "noelia@jackal.im",
 		Name:         "My Juliet",
 		Subscription: rostermodel.SubscriptionBoth,
 	})
 	_, _ = rosterRep.UpsertRosterItem(context.Background(), &rostermodel.Item{
 		Username:     "noelia",
-		JID:          "ortuman@jackal.im",
+		JID:          "sxmpp@jackal.im",
 		Name:         "My Romeo",
 		Subscription: rostermodel.SubscriptionBoth,
 	})
-	j, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 
 	stm := stream.NewMockC2S(uuid.New(), j)
 	stm.SetPresence(xmpp.NewPresence(j, j, xmpp.AvailableType))
@@ -250,7 +250,7 @@ func TestRoster_RemoveItem(t *testing.T) {
 	elem := stm.ReceiveElement()
 	require.Equal(t, iqID, elem.ID())
 
-	ri, err := rosterRep.FetchRosterItem(context.Background(), "ortuman", "noelia@jackal.im")
+	ri, err := rosterRep.FetchRosterItem(context.Background(), "sxmpp", "noelia@jackal.im")
 	require.Nil(t, err)
 	require.Nil(t, ri)
 }
@@ -258,10 +258,10 @@ func TestRoster_RemoveItem(t *testing.T) {
 func TestRoster_OnlineJIDs(t *testing.T) {
 	rtr, userRep, presencesRep, rosterRep := setupTest("jackal.im")
 
-	j1, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j1, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 	j2, _ := jid.New("noelia", "jackal.im", "garden", true)
 	j3, _ := jid.New("fruela", "jackal.im", "balcony", true)
-	j4, _ := jid.New("ortuman", "jackal.im", "yard", true)
+	j4, _ := jid.New("sxmpp", "jackal.im", "yard", true)
 	j5, _ := jid.New("boss", "jabber.org", "yard", true)
 
 	stm1 := stream.NewMockC2S(uuid.New(), j1)
@@ -277,25 +277,25 @@ func TestRoster_OnlineJIDs(t *testing.T) {
 
 	// user entity
 	_ = userRep.UpsertUser(context.Background(), &model.User{
-		Username:     "ortuman",
+		Username:     "sxmpp",
 		LastPresence: xmpp.NewPresence(j1, j1.ToBareJID(), xmpp.UnavailableType),
 	})
 
 	// roster items
 	_, _ = rosterRep.UpsertRosterItem(context.Background(), &rostermodel.Item{
 		Username:     "noelia",
-		JID:          "ortuman@jackal.im",
+		JID:          "sxmpp@jackal.im",
 		Subscription: rostermodel.SubscriptionBoth,
 	})
 	_, _ = rosterRep.UpsertRosterItem(context.Background(), &rostermodel.Item{
-		Username:     "ortuman",
+		Username:     "sxmpp",
 		JID:          "noelia@jackal.im",
 		Subscription: rostermodel.SubscriptionBoth,
 	})
 
 	// pending notification
 	_ = rosterRep.UpsertRosterNotification(context.Background(), &rostermodel.Notification{
-		Contact:  "ortuman",
+		Contact:  "sxmpp",
 		JID:      j3.ToBareJID().String(),
 		Presence: xmpp.NewPresence(j3.ToBareJID(), j1.ToBareJID(), xmpp.SubscribeType),
 	})
@@ -322,7 +322,7 @@ func TestRoster_OnlineJIDs(t *testing.T) {
 	require.Equal(t, xmpp.AvailableType, elem.Type())
 
 	// check if last presence was updated
-	usr, err := userRep.FetchUser(context.Background(), "ortuman")
+	usr, err := userRep.FetchUser(context.Background(), "sxmpp")
 	require.Nil(t, err)
 	require.NotNil(t, usr)
 	require.NotNil(t, usr.LastPresence)
@@ -351,7 +351,7 @@ func TestRoster_OnlineJIDs(t *testing.T) {
 	ln8, _ := ph.PresencesMatchingJID(context.Background(), j8)
 	require.Equal(t, 2, len(ln8))
 
-	j9, _ := jid.NewWithString("ortuman@jackal.im", true)
+	j9, _ := jid.NewWithString("sxmpp@jackal.im", true)
 	ln9, _ := ph.PresencesMatchingJID(context.Background(), j9)
 	require.Equal(t, 2, len(ln9))
 
@@ -379,7 +379,7 @@ func TestRoster_OnlineJIDs(t *testing.T) {
 func TestRoster_Probe(t *testing.T) {
 	rtr, userRep, presencesRep, rosterRep := setupTest("jackal.im")
 
-	j1, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j1, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 	j2, _ := jid.New("noelia", "jackal.im", "garden", true)
 
 	stm := stream.NewMockC2S(uuid.New(), j1)
@@ -399,7 +399,7 @@ func TestRoster_Probe(t *testing.T) {
 
 	_, _ = rosterRep.UpsertRosterItem(context.Background(), &rostermodel.Item{
 		Username:     "noelia",
-		JID:          "ortuman@jackal.im",
+		JID:          "sxmpp@jackal.im",
 		Subscription: rostermodel.SubscriptionFrom,
 	})
 	r.ProcessPresence(context.Background(), xmpp.NewPresence(j1, j2, xmpp.ProbeType))
@@ -421,7 +421,7 @@ func TestRoster_Probe(t *testing.T) {
 func TestRoster_Subscription(t *testing.T) {
 	rtr, userRep, presencesRep, rosterRep := setupTest("jackal.im")
 
-	j1, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j1, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 	j2, _ := jid.New("noelia", "jackal.im", "garden", true)
 
 	r := New(&Config{}, xep0115.New(rtr, presencesRep, "alloc-1234"), nil, rtr, userRep, rosterRep)
@@ -445,7 +445,7 @@ func TestRoster_Subscription(t *testing.T) {
 	require.Nil(t, err)
 	require.Equal(t, 0, len(rns))
 
-	ri, err := rosterRep.FetchRosterItem(context.Background(), "ortuman", "noelia@jackal.im")
+	ri, err := rosterRep.FetchRosterItem(context.Background(), "sxmpp", "noelia@jackal.im")
 	require.Nil(t, err)
 	require.Equal(t, rostermodel.SubscriptionNone, ri.Subscription)
 
@@ -454,7 +454,7 @@ func TestRoster_Subscription(t *testing.T) {
 	r.ProcessPresence(context.Background(), xmpp.NewPresence(j2.ToBareJID(), j1.ToBareJID(), xmpp.SubscribedType))
 	time.Sleep(time.Millisecond * 150) // wait until processed...
 
-	ri, err = rosterRep.FetchRosterItem(context.Background(), "ortuman", "noelia@jackal.im")
+	ri, err = rosterRep.FetchRosterItem(context.Background(), "sxmpp", "noelia@jackal.im")
 	require.Nil(t, err)
 	require.Equal(t, rostermodel.SubscriptionTo, ri.Subscription)
 
@@ -463,7 +463,7 @@ func TestRoster_Subscription(t *testing.T) {
 	r.ProcessPresence(context.Background(), xmpp.NewPresence(j1.ToBareJID(), j2.ToBareJID(), xmpp.SubscribedType))
 	time.Sleep(time.Millisecond * 150) // wait until processed...
 
-	ri, err = rosterRep.FetchRosterItem(context.Background(), "noelia", "ortuman@jackal.im")
+	ri, err = rosterRep.FetchRosterItem(context.Background(), "noelia", "sxmpp@jackal.im")
 	require.Nil(t, err)
 	require.Equal(t, rostermodel.SubscriptionBoth, ri.Subscription)
 
@@ -471,7 +471,7 @@ func TestRoster_Subscription(t *testing.T) {
 	r.ProcessPresence(context.Background(), xmpp.NewPresence(j1.ToBareJID(), j2.ToBareJID(), xmpp.UnsubscribeType))
 	time.Sleep(time.Millisecond * 150) // wait until processed...
 
-	ri, err = rosterRep.FetchRosterItem(context.Background(), "ortuman", "noelia@jackal.im")
+	ri, err = rosterRep.FetchRosterItem(context.Background(), "sxmpp", "noelia@jackal.im")
 	require.Nil(t, err)
 	require.Equal(t, rostermodel.SubscriptionFrom, ri.Subscription)
 
@@ -479,11 +479,11 @@ func TestRoster_Subscription(t *testing.T) {
 	r.ProcessPresence(context.Background(), xmpp.NewPresence(j1.ToBareJID(), j2.ToBareJID(), xmpp.UnsubscribedType))
 	time.Sleep(time.Millisecond * 150) // wait until processed...
 
-	ri, err = rosterRep.FetchRosterItem(context.Background(), "ortuman", "noelia@jackal.im")
+	ri, err = rosterRep.FetchRosterItem(context.Background(), "sxmpp", "noelia@jackal.im")
 	require.Nil(t, err)
 	require.Equal(t, rostermodel.SubscriptionNone, ri.Subscription)
 
-	ri, err = rosterRep.FetchRosterItem(context.Background(), "noelia", "ortuman@jackal.im")
+	ri, err = rosterRep.FetchRosterItem(context.Background(), "noelia", "sxmpp@jackal.im")
 	require.Nil(t, err)
 	require.Equal(t, rostermodel.SubscriptionNone, ri.Subscription)
 }

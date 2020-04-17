@@ -8,7 +8,7 @@ package xmpp
 import (
 	"testing"
 
-	"github.com/ortuman/jackal/xmpp/jid"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/pborman/uuid"
 	"github.com/stretchr/testify/require"
 )

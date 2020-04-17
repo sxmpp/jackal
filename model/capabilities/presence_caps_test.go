@@ -9,13 +9,13 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/stretchr/testify/require"
 )
 
 func TestPresenceCapabilities(t *testing.T) {
-	j1, _ := jid.NewWithString("ortuman@jackal.im", true)
+	j1, _ := jid.NewWithString("sxmpp@jackal.im", true)
 
 	var p1, p2 PresenceCaps
 	p1 = PresenceCaps{

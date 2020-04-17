@@ -9,8 +9,8 @@ import (
 	"context"
 	"sync"
 
-	"github.com/ortuman/jackal/stream"
-	"github.com/ortuman/jackal/xmpp"
+	"github.com/sxmpp/jackal/stream"
+	"github.com/sxmpp/jackal/xmpp"
 )
 
 type OutProvider interface {

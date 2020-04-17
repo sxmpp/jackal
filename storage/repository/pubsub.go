@@ -8,7 +8,7 @@ package repository
 import (
 	"context"
 
-	pubsubmodel "github.com/ortuman/jackal/model/pubsub"
+	pubsubmodel "github.com/sxmpp/jackal/model/pubsub"
 )
 
 // PubSub defines storage operations for pubsub management.

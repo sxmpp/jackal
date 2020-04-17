@@ -8,9 +8,9 @@ package xep0030
 import (
 	"context"
 
-	"github.com/ortuman/jackal/module/xep0004"
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	"github.com/sxmpp/jackal/module/xep0004"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 )
 
 // Feature represents a disco info feature entity.

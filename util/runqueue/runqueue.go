@@ -9,8 +9,8 @@ import (
 	"runtime"
 	"sync/atomic"
 
-	"github.com/ortuman/jackal/log"
-	"github.com/ortuman/jackal/util/runqueue/mpsc"
+	"github.com/sxmpp/jackal/log"
+	"github.com/sxmpp/jackal/util/runqueue/mpsc"
 )
 
 const (

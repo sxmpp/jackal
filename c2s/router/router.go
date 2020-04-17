@@ -9,12 +9,12 @@ import (
 	"context"
 	"sync"
 
-	"github.com/ortuman/jackal/log"
-	"github.com/ortuman/jackal/router"
-	"github.com/ortuman/jackal/storage/repository"
-	"github.com/ortuman/jackal/stream"
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	"github.com/sxmpp/jackal/log"
+	"github.com/sxmpp/jackal/router"
+	"github.com/sxmpp/jackal/storage/repository"
+	"github.com/sxmpp/jackal/stream"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 )
 
 type c2sRouter struct {

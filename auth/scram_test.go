@@ -22,11 +22,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ortuman/jackal/model"
-	"github.com/ortuman/jackal/transport"
-	"github.com/ortuman/jackal/transport/compress"
-	utilstring "github.com/ortuman/jackal/util/string"
-	"github.com/ortuman/jackal/xmpp"
+	"github.com/sxmpp/jackal/model"
+	"github.com/sxmpp/jackal/transport"
+	"github.com/sxmpp/jackal/transport/compress"
+	utilstring "github.com/sxmpp/jackal/util/string"
+	"github.com/sxmpp/jackal/xmpp"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/pbkdf2"
 )
@@ -85,7 +85,7 @@ var tt = []scramAuthTestCase{
 		scramType:   ScramSHA1,
 		usesCb:      false,
 		gs2BindFlag: "n",
-		n:           "ortuman",
+		n:           "sxmpp",
 		r:           "bb769406-eaa4-4f38-a279-2b90e596f6dd",
 		password:    "1234",
 	},
@@ -95,7 +95,7 @@ var tt = []scramAuthTestCase{
 		scramType:   ScramSHA256,
 		usesCb:      false,
 		gs2BindFlag: "n",
-		n:           "ortuman",
+		n:           "sxmpp",
 		r:           "6d805d99-6dc3-4e5a-9a68-653856fc5129",
 		password:    "1234",
 	},
@@ -107,7 +107,7 @@ var tt = []scramAuthTestCase{
 		cbBytes:     randomBytes(23),
 		gs2BindFlag: "p=tls-unique",
 		authID:      "a=jackal.im",
-		n:           "ortuman",
+		n:           "sxmpp",
 		r:           "7e51aff7-6875-4dce-820a-6d4970635006",
 		password:    "1234",
 	},
@@ -119,7 +119,7 @@ var tt = []scramAuthTestCase{
 		cbBytes:     randomBytes(32),
 		gs2BindFlag: "p=tls-unique",
 		authID:      "a=jackal.im",
-		n:           "ortuman",
+		n:           "sxmpp",
 		r:           "d712875c-bd3b-4b41-801d-eb9c541d9884",
 		password:    "1234",
 	},
@@ -142,7 +142,7 @@ var tt = []scramAuthTestCase{
 		scramType:   ScramSHA1,
 		usesCb:      false,
 		gs2BindFlag: "n",
-		n:           "ortuman",
+		n:           "sxmpp",
 		r:           "bb769406-eaa4-4f38-a279-2b90e596f6dd",
 		password:    "12345678",
 		expectedErr: ErrSASLNotAuthorized,
@@ -153,7 +153,7 @@ var tt = []scramAuthTestCase{
 		scramType:   ScramSHA1,
 		usesCb:      false,
 		gs2BindFlag: "y",
-		n:           "ortuman",
+		n:           "sxmpp",
 		r:           "bb769406-eaa4-4f38-a279-2b90e596f6dd",
 		password:    "1234",
 		expectedErr: ErrSASLNotAuthorized,
@@ -165,7 +165,7 @@ var tt = []scramAuthTestCase{
 		usesCb:      false,
 		gs2BindFlag: "n",
 		authID:      "b=jackal.im",
-		n:           "ortuman",
+		n:           "sxmpp",
 		r:           "bb769406-eaa4-4f38-a279-2b90e596f6dd",
 		password:    "1234",
 		expectedErr: ErrSASLMalformedRequest,
@@ -177,7 +177,7 @@ var tt = []scramAuthTestCase{
 		usesCb:      false,
 		gs2BindFlag: "p=tls-unique",
 		authID:      "a=jackal.im",
-		n:           "ortuman",
+		n:           "sxmpp",
 		r:           "bb769406-eaa4-4f38-a279-2b90e596f6dd",
 		password:    "1234",
 		expectedErr: ErrSASLNotAuthorized,
@@ -189,7 +189,7 @@ var tt = []scramAuthTestCase{
 		usesCb:      false,
 		gs2BindFlag: "q=tls-unique",
 		authID:      "a=jackal.im",
-		n:           "ortuman",
+		n:           "sxmpp",
 		r:           "bb769406-eaa4-4f38-a279-2b90e596f6dd",
 		password:    "1234",
 		expectedErr: ErrSASLMalformedRequest,
@@ -210,7 +210,7 @@ var tt = []scramAuthTestCase{
 
 func TestScramMechanisms(t *testing.T) {
 	testTr := &fakeTransport{}
-	testStm, s := authTestSetup(&model.User{Username: "ortuman", Password: "1234"})
+	testStm, s := authTestSetup(&model.User{Username: "sxmpp", Password: "1234"})
 
 	authr := NewScram(testStm, testTr, ScramSHA1, false, s)
 	require.Equal(t, authr.Mechanism(), "SCRAM-SHA-1")
@@ -234,7 +234,7 @@ func TestScramMechanisms(t *testing.T) {
 
 func TestScramBadPayload(t *testing.T) {
 	testTr := &fakeTransport{}
-	testStm, s := authTestSetup(&model.User{Username: "ortuman", Password: "1234"})
+	testStm, s := authTestSetup(&model.User{Username: "sxmpp", Password: "1234"})
 
 	authr := NewScram(testStm, testTr, ScramSHA1, false, s)
 
@@ -265,7 +265,7 @@ func processScramTestCase(t *testing.T, tc *scramAuthTestCase) error {
 	if tc.usesCb {
 		tr.cbBytes = tc.cbBytes
 	}
-	testStm, s := authTestSetup(&model.User{Username: "ortuman", Password: "1234"})
+	testStm, s := authTestSetup(&model.User{Username: "sxmpp", Password: "1234"})
 
 	authr := NewScram(testStm, tr, tc.scramType, tc.usesCb, s)
 

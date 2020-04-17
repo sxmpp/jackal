@@ -7,7 +7,7 @@ package mysql
 
 import (
 	sqlmock "github.com/DATA-DOG/go-sqlmock"
-	"github.com/ortuman/jackal/log"
+	"github.com/sxmpp/jackal/log"
 )
 
 // newMock returns a mocked MySQL storage instance.

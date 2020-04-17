@@ -10,18 +10,18 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/stretchr/testify/require"
 )
 
 func TestModelUser(t *testing.T) {
 	var usr1 User
 
-	j1, _ := jid.NewWithString("ortuman@jackal.im", true)
-	j2, _ := jid.NewWithString("ortuman@jackal.im", true)
+	j1, _ := jid.NewWithString("sxmpp@jackal.im", true)
+	j2, _ := jid.NewWithString("sxmpp@jackal.im", true)
 
-	usr1.Username = "ortuman"
+	usr1.Username = "sxmpp"
 	usr1.Password = "1234"
 	usr1.LastPresence = xmpp.NewPresence(j1, j2, xmpp.AvailableType)
 

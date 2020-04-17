@@ -8,7 +8,7 @@ package host
 import (
 	"crypto/tls"
 
-	utiltls "github.com/ortuman/jackal/util/tls"
+	utiltls "github.com/sxmpp/jackal/util/tls"
 )
 
 type TLSConfig struct {

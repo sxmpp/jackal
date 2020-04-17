@@ -9,7 +9,7 @@ import (
 	"bytes"
 	"encoding/gob"
 
-	"github.com/ortuman/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp"
 )
 
 // PresenceCaps represents the combination of along with its capabilities.

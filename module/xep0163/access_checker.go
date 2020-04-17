@@ -10,10 +10,10 @@ import (
 	"errors"
 	"fmt"
 
-	pubsubmodel "github.com/ortuman/jackal/model/pubsub"
-	rostermodel "github.com/ortuman/jackal/model/roster"
-	"github.com/ortuman/jackal/storage/repository"
-	"github.com/ortuman/jackal/xmpp/jid"
+	pubsubmodel "github.com/sxmpp/jackal/model/pubsub"
+	rostermodel "github.com/sxmpp/jackal/model/roster"
+	"github.com/sxmpp/jackal/storage/repository"
+	"github.com/sxmpp/jackal/xmpp/jid"
 )
 
 var (

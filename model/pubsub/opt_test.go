@@ -9,7 +9,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/ortuman/jackal/module/xep0004"
+	"github.com/sxmpp/jackal/module/xep0004"
 	"github.com/stretchr/testify/require"
 )
 

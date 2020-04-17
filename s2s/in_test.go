@@ -14,13 +14,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ortuman/jackal/module"
-	"github.com/ortuman/jackal/router"
-	"github.com/ortuman/jackal/stream"
-	"github.com/ortuman/jackal/transport"
-	utiltls "github.com/ortuman/jackal/util/tls"
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	"github.com/sxmpp/jackal/module"
+	"github.com/sxmpp/jackal/router"
+	"github.com/sxmpp/jackal/stream"
+	"github.com/sxmpp/jackal/transport"
+	utiltls "github.com/sxmpp/jackal/util/tls"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/pborman/uuid"
 	"github.com/stretchr/testify/require"
 )
@@ -321,8 +321,8 @@ func TestStream_SendElement(t *testing.T) {
 
 	op := NewOutProvider(&Config{KeepAlive: time.Second}, h)
 
-	fromJID, _ := jid.New("ortuman", "localhost", "garden", true)
-	toJID, _ := jid.New("ortuman", "jackal.im", "garden", true)
+	fromJID, _ := jid.New("sxmpp", "localhost", "garden", true)
+	toJID, _ := jid.New("sxmpp", "jackal.im", "garden", true)
 
 	stm2 := stream.NewMockC2S("abcd7890", toJID)
 	stm2.SetPresence(xmpp.NewPresence(toJID, toJID, xmpp.AvailableType))

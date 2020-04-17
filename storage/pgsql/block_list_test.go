@@ -10,7 +10,7 @@ import (
 	"testing"
 
 	sqlmock "github.com/DATA-DOG/go-sqlmock"
-	"github.com/ortuman/jackal/model"
+	"github.com/sxmpp/jackal/model"
 	"github.com/stretchr/testify/require"
 )
 
@@ -21,7 +21,7 @@ func TestInsertValidBlockListItem(t *testing.T) {
 	mock.ExpectExec("INSERT INTO blocklist_items (.+)").
 		WillReturnResult(sqlmock.NewResult(0, 1))
 
-	err := s.InsertBlockListItem(context.Background(), &model.BlockListItem{Username: "ortuman", JID: "noelia@jackal.im"})
+	err := s.InsertBlockListItem(context.Background(), &model.BlockListItem{Username: "sxmpp", JID: "noelia@jackal.im"})
 	require.Nil(t, err)
 	require.Nil(t, mock.ExpectationsWereMet())
 }
@@ -38,10 +38,10 @@ func TestInsertDoubleBlockListItem(t *testing.T) {
 	mock.ExpectExec("INSERT INTO blocklist_items (.+)").
 		WillReturnError(errGeneric)
 
-	err := s.InsertBlockListItem(context.Background(), &model.BlockListItem{Username: "ortuman", JID: "noelia@jackal.im"})
+	err := s.InsertBlockListItem(context.Background(), &model.BlockListItem{Username: "sxmpp", JID: "noelia@jackal.im"})
 	require.Nil(t, err)
 
-	err = s.InsertBlockListItem(context.Background(), &model.BlockListItem{Username: "ortuman", JID: "noelia@jackal.im"})
+	err = s.InsertBlockListItem(context.Background(), &model.BlockListItem{Username: "sxmpp", JID: "noelia@jackal.im"})
 	require.Equal(t, errGeneric, err)
 	require.Nil(t, mock.ExpectationsWereMet())
 }
@@ -52,10 +52,10 @@ func TestFetchBlockListItems(t *testing.T) {
 	s, mock := newBlockListMock()
 
 	mock.ExpectQuery("SELECT (.+) FROM blocklist_items (.+)").
-		WithArgs("ortuman").
-		WillReturnRows(sqlmock.NewRows(blockListColumns).AddRow("ortuman", "noelia@jackal.im"))
+		WithArgs("sxmpp").
+		WillReturnRows(sqlmock.NewRows(blockListColumns).AddRow("sxmpp", "noelia@jackal.im"))
 
-	_, err := s.FetchBlockListItems(context.Background(), "ortuman")
+	_, err := s.FetchBlockListItems(context.Background(), "sxmpp")
 	require.Nil(t, err)
 	require.Nil(t, mock.ExpectationsWereMet())
 }
@@ -65,10 +65,10 @@ func TestFetchBlockListItemsError(t *testing.T) {
 	s, mock := newBlockListMock()
 
 	mock.ExpectQuery("SELECT (.+) FROM blocklist_items (.+)").
-		WithArgs("ortuman").
+		WithArgs("sxmpp").
 		WillReturnError(errGeneric)
 
-	_, err := s.FetchBlockListItems(context.Background(), "ortuman")
+	_, err := s.FetchBlockListItems(context.Background(), "sxmpp")
 	require.Equal(t, errGeneric, err)
 	require.Nil(t, mock.ExpectationsWereMet())
 }
@@ -78,10 +78,10 @@ func TestDeleteBlockListItems(t *testing.T) {
 	s, mock := newBlockListMock()
 
 	mock.ExpectExec("DELETE FROM blocklist_items (.+)").
-		WithArgs("ortuman", "noelia@jackal.im").
+		WithArgs("sxmpp", "noelia@jackal.im").
 		WillReturnResult(sqlmock.NewResult(0, 1))
 
-	err := s.DeleteBlockListItem(context.Background(), &model.BlockListItem{Username: "ortuman", JID: "noelia@jackal.im"})
+	err := s.DeleteBlockListItem(context.Background(), &model.BlockListItem{Username: "sxmpp", JID: "noelia@jackal.im"})
 	require.Nil(t, err)
 	require.Nil(t, mock.ExpectationsWereMet())
 }
@@ -91,10 +91,10 @@ func TestDeleteBlockListItemsError(t *testing.T) {
 	s, mock := newBlockListMock()
 
 	mock.ExpectExec("DELETE FROM blocklist_items (.+)").
-		WithArgs("ortuman", "noelia@jackal.im").
+		WithArgs("sxmpp", "noelia@jackal.im").
 		WillReturnError(errGeneric)
 
-	err := s.DeleteBlockListItem(context.Background(), &model.BlockListItem{Username: "ortuman", JID: "noelia@jackal.im"})
+	err := s.DeleteBlockListItem(context.Background(), &model.BlockListItem{Username: "sxmpp", JID: "noelia@jackal.im"})
 	require.Equal(t, errGeneric, err)
 	require.Nil(t, mock.ExpectationsWereMet())
 }

@@ -15,14 +15,14 @@ import (
 	"testing"
 	"time"
 
-	c2srouter "github.com/ortuman/jackal/c2s/router"
-	"github.com/ortuman/jackal/component"
-	"github.com/ortuman/jackal/module"
-	"github.com/ortuman/jackal/router"
-	"github.com/ortuman/jackal/router/host"
-	memorystorage "github.com/ortuman/jackal/storage/memory"
-	"github.com/ortuman/jackal/storage/repository"
-	"github.com/ortuman/jackal/xmpp"
+	c2srouter "github.com/sxmpp/jackal/c2s/router"
+	"github.com/sxmpp/jackal/component"
+	"github.com/sxmpp/jackal/module"
+	"github.com/sxmpp/jackal/router"
+	"github.com/sxmpp/jackal/router/host"
+	memorystorage "github.com/sxmpp/jackal/storage/memory"
+	"github.com/sxmpp/jackal/storage/repository"
+	"github.com/sxmpp/jackal/xmpp"
 	"github.com/stretchr/testify/require"
 )
 

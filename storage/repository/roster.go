@@ -8,7 +8,7 @@ package repository
 import (
 	"context"
 
-	rostermodel "github.com/ortuman/jackal/model/roster"
+	rostermodel "github.com/sxmpp/jackal/model/roster"
 )
 
 // Roster defines storage operations for user's roster.

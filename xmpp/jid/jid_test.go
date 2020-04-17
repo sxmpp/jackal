@@ -8,12 +8,12 @@ package jid_test
 import (
 	"testing"
 
-	"github.com/ortuman/jackal/xmpp/jid"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/stretchr/testify/require"
 )
 
 func TestBadJID(t *testing.T) {
-	_, err := jid.NewWithString("ortuman@", false)
+	_, err := jid.NewWithString("sxmpp@", false)
 	require.NotNil(t, err)
 	longStr := ""
 	for i := 0; i < 1074; i++ {
@@ -21,21 +21,21 @@ func TestBadJID(t *testing.T) {
 	}
 	_, err2 := jid.New(longStr, "example.org", "res", false)
 	require.NotNil(t, err2)
-	_, err3 := jid.New("ortuman", longStr, "res", false)
+	_, err3 := jid.New("sxmpp", longStr, "res", false)
 	require.NotNil(t, err3)
-	_, err4 := jid.New("ortuman", "example.org", longStr, false)
+	_, err4 := jid.New("sxmpp", "example.org", longStr, false)
 	require.NotNil(t, err4)
 }
 
 func TestNewJID(t *testing.T) {
-	j1, err := jid.New("ortuman", "example.org", "res", false)
+	j1, err := jid.New("sxmpp", "example.org", "res", false)
 	require.Nil(t, err)
-	require.Equal(t, "ortuman", j1.Node())
+	require.Equal(t, "sxmpp", j1.Node())
 	require.Equal(t, "example.org", j1.Domain())
 	require.Equal(t, "res", j1.Resource())
-	j2, err := jid.New("ortuman", "example.org", "res", true)
+	j2, err := jid.New("sxmpp", "example.org", "res", true)
 	require.Nil(t, err)
-	require.Equal(t, "ortuman", j2.Node())
+	require.Equal(t, "sxmpp", j2.Node())
 	require.Equal(t, "example.org", j2.Domain())
 	require.Equal(t, "res", j2.Resource())
 }
@@ -49,13 +49,13 @@ func TestEmptyJID(t *testing.T) {
 }
 
 func TestNewJIDString(t *testing.T) {
-	j, err := jid.NewWithString("ortuman@jackal.im/res", false)
+	j, err := jid.NewWithString("sxmpp@jackal.im/res", false)
 	require.Nil(t, err)
-	require.Equal(t, "ortuman", j.Node())
+	require.Equal(t, "sxmpp", j.Node())
 	require.Equal(t, "jackal.im", j.Domain())
 	require.Equal(t, "res", j.Resource())
-	require.Equal(t, "ortuman@jackal.im", j.ToBareJID().String())
-	require.Equal(t, "ortuman@jackal.im/res", j.String())
+	require.Equal(t, "sxmpp@jackal.im", j.ToBareJID().String())
+	require.Equal(t, "sxmpp@jackal.im/res", j.String())
 }
 
 func TestServerJID(t *testing.T) {
@@ -68,25 +68,25 @@ func TestServerJID(t *testing.T) {
 }
 
 func TestBareJID(t *testing.T) {
-	j1, _ := jid.New("ortuman", "example.org", "res", false)
+	j1, _ := jid.New("sxmpp", "example.org", "res", false)
 	require.True(t, j1.ToBareJID().IsBare())
 	j2, _ := jid.NewWithString("example.org/res", false)
 	require.False(t, j2.ToBareJID().IsBare())
 }
 
 func TestFullJID(t *testing.T) {
-	j1, _ := jid.New("ortuman", "example.org", "res", false)
+	j1, _ := jid.New("sxmpp", "example.org", "res", false)
 	j2, _ := jid.New("", "example.org", "res", false)
 	require.True(t, j1.IsFullWithUser())
 	require.True(t, j2.IsFullWithServer())
 }
 
 func TestMatchesJID(t *testing.T) {
-	j1, _ := jid.NewWithString("ortuman@example.org/res1", false)
-	j2, _ := jid.NewWithString("ortuman@example.org", false)
+	j1, _ := jid.NewWithString("sxmpp@example.org/res1", false)
+	j2, _ := jid.NewWithString("sxmpp@example.org", false)
 	j3, _ := jid.NewWithString("example.org", false)
 	j4, _ := jid.NewWithString("example.org/res1", false)
-	j6, _ := jid.NewWithString("ortuman@example2.org/res2", false)
+	j6, _ := jid.NewWithString("sxmpp@example2.org/res2", false)
 	require.True(t, j1.MatchesWithOptions(j1, jid.MatchesNode|jid.MatchesDomain|jid.MatchesResource))
 	require.True(t, j1.MatchesWithOptions(j2, jid.MatchesNode|jid.MatchesDomain))
 	require.True(t, j1.MatchesWithOptions(j3, jid.MatchesDomain))
@@ -105,10 +105,10 @@ func TestBadPrep(t *testing.T) {
 	j, err := jid.New(badNode, "example.org", "res", false)
 	require.Nil(t, j)
 	require.NotNil(t, err)
-	j2, err := jid.New("ortuman", badDomain, "res", false)
+	j2, err := jid.New("sxmpp", badDomain, "res", false)
 	require.Nil(t, j2)
 	require.NotNil(t, err)
-	j3, err := jid.New("ortuman", "example.org", badResource, false)
+	j3, err := jid.New("sxmpp", "example.org", badResource, false)
 	require.Nil(t, j3)
 	require.NotNil(t, err)
 }

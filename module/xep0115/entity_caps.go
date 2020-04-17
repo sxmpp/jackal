@@ -11,13 +11,13 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/ortuman/jackal/log"
-	capsmodel "github.com/ortuman/jackal/model/capabilities"
-	"github.com/ortuman/jackal/router"
-	"github.com/ortuman/jackal/storage/repository"
-	"github.com/ortuman/jackal/util/runqueue"
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	"github.com/sxmpp/jackal/log"
+	capsmodel "github.com/sxmpp/jackal/model/capabilities"
+	"github.com/sxmpp/jackal/router"
+	"github.com/sxmpp/jackal/storage/repository"
+	"github.com/sxmpp/jackal/util/runqueue"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/pborman/uuid"
 )
 

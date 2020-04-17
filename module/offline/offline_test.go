@@ -11,14 +11,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ortuman/jackal/router/host"
+	"github.com/sxmpp/jackal/router/host"
 
-	c2srouter "github.com/ortuman/jackal/c2s/router"
-	"github.com/ortuman/jackal/router"
-	memorystorage "github.com/ortuman/jackal/storage/memory"
-	"github.com/ortuman/jackal/stream"
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	c2srouter "github.com/sxmpp/jackal/c2s/router"
+	"github.com/sxmpp/jackal/router"
+	memorystorage "github.com/sxmpp/jackal/storage/memory"
+	"github.com/sxmpp/jackal/stream"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/pborman/uuid"
 	"github.com/stretchr/testify/require"
 )
@@ -26,7 +26,7 @@ import (
 func TestOffline_ArchiveMessage(t *testing.T) {
 	r, s := setupTest("jackal.im")
 
-	j1, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j1, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 	j2, _ := jid.New("juliet", "jackal.im", "garden", true)
 
 	stm := stream.NewMockC2S(uuid.New(), j1)

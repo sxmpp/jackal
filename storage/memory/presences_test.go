@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
-	capsmodel "github.com/ortuman/jackal/model/capabilities"
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	capsmodel "github.com/sxmpp/jackal/model/capabilities"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/stretchr/testify/require"
 )
 
@@ -14,7 +14,7 @@ func TestMemoryStorage_FetchPresencesMatchingJID(t *testing.T) {
 	const allocID = "1234"
 
 	j1, _ := jid.NewWithString("noelia@jackal.im/garden", true)
-	j2, _ := jid.NewWithString("ortuman@jackal.im/yard", true)
+	j2, _ := jid.NewWithString("sxmpp@jackal.im/yard", true)
 	j3, _ := jid.NewWithString("noelia@jackal.im/yard", true)
 	j4, _ := jid.NewWithString("boss@jabber.org/balcony", true)
 

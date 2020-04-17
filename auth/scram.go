@@ -18,12 +18,12 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
-	"github.com/ortuman/jackal/model"
-	"github.com/ortuman/jackal/storage/repository"
-	"github.com/ortuman/jackal/stream"
-	"github.com/ortuman/jackal/transport"
-	utilstring "github.com/ortuman/jackal/util/string"
-	"github.com/ortuman/jackal/xmpp"
+	"github.com/sxmpp/jackal/model"
+	"github.com/sxmpp/jackal/storage/repository"
+	"github.com/sxmpp/jackal/stream"
+	"github.com/sxmpp/jackal/transport"
+	utilstring "github.com/sxmpp/jackal/util/string"
+	"github.com/sxmpp/jackal/xmpp"
 	"golang.org/x/crypto/pbkdf2"
 )
 

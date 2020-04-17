@@ -8,13 +8,13 @@ package xmpp_test
 import (
 	"testing"
 
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/stretchr/testify/require"
 )
 
 func TestPresenceBuild(t *testing.T) {
-	j, _ := jid.New("ortuman", "example.org", "balcony", false)
+	j, _ := jid.New("sxmpp", "example.org", "balcony", false)
 
 	elem := xmpp.NewElementName("message")
 	_, err := xmpp.NewPresenceFromElement(elem, j, j) // wrong name...
@@ -158,8 +158,8 @@ func TestPresenceType(t *testing.T) {
 }
 
 func TestPresenceJID(t *testing.T) {
-	from, _ := jid.New("ortuman", "test.org", "balcony", false)
-	to, _ := jid.New("ortuman", "example.org", "garden", false)
+	from, _ := jid.New("sxmpp", "test.org", "balcony", false)
+	to, _ := jid.New("sxmpp", "example.org", "garden", false)
 	presence, _ := xmpp.NewPresenceFromElement(xmpp.NewElementName("presence"), &jid.JID{}, &jid.JID{})
 	presence.SetFromJID(from)
 	require.Equal(t, presence.FromJID().String(), presence.From())

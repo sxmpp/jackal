@@ -8,13 +8,13 @@ package xmpp_test
 import (
 	"testing"
 
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/stretchr/testify/require"
 )
 
 func TestMessageBuild(t *testing.T) {
-	j, _ := jid.New("ortuman", "example.org", "balcony", false)
+	j, _ := jid.New("sxmpp", "example.org", "balcony", false)
 
 	elem := xmpp.NewElementName("iq")
 	_, err := xmpp.NewMessageFromElement(elem, j, j) // wrong name...
@@ -56,8 +56,8 @@ func TestMessageType(t *testing.T) {
 }
 
 func TestMessageJID(t *testing.T) {
-	from, _ := jid.New("ortuman", "test.org", "balcony", false)
-	to, _ := jid.New("ortuman", "example.org", "garden", false)
+	from, _ := jid.New("sxmpp", "test.org", "balcony", false)
+	to, _ := jid.New("sxmpp", "example.org", "garden", false)
 	message, _ := xmpp.NewMessageFromElement(xmpp.NewElementName("message"), &jid.JID{}, &jid.JID{})
 	message.SetFromJID(from)
 	require.Equal(t, message.FromJID().String(), message.From())

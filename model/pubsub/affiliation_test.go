@@ -10,7 +10,7 @@ import (
 
 func TestAffiliation_Serialize(t *testing.T) {
 	a := Affiliation{
-		JID:         "ortuman@jackal.im",
+		JID:         "sxmpp@jackal.im",
 		Affiliation: "owner",
 	}
 	b := bytes.NewBuffer(nil)

@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ortuman/jackal/router"
+	"github.com/sxmpp/jackal/router"
 
 	"github.com/stretchr/testify/require"
 )

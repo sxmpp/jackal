@@ -8,7 +8,7 @@ package memorystorage
 import (
 	"context"
 
-	"github.com/ortuman/jackal/model"
+	"github.com/sxmpp/jackal/model"
 )
 
 // User represents an in-memory user storage.

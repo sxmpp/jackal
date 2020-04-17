@@ -2,14 +2,14 @@
 
 An XMPP server written in Go.
 
-[![Build Status](https://travis-ci.org/ortuman/jackal.svg?branch=master)](https://travis-ci.org/ortuman/jackal)
-[![GoDoc](https://godoc.org/github.com/ortuman/jackal?status.svg)](https://godoc.org/github.com/ortuman/jackal)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/e3bcd6e00a2f4493e175/test_coverage)](https://codeclimate.com/github/ortuman/jackal/test_coverage)
-[![Maintainability](https://api.codeclimate.com/v1/badges/e3bcd6e00a2f4493e175/maintainability)](https://codeclimate.com/github/ortuman/jackal/maintainability)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8e1575d0e64141a8bd4f8656e44052e6)](https://www.codacy.com/app/ortuman/jackal?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ortuman/jackal&amp;utm_campaign=Badge_Grade)
-[![Go Report Card](https://goreportcard.com/badge/github.com/ortuman/jackal)](https://goreportcard.com/report/github.com/ortuman/jackal)
-[![License](https://img.shields.io/badge/license-GPL-blue.svg)](https://github.com/ortuman/jackal/blob/master/LICENSE)
-[![Docker Pulls](https://img.shields.io/docker/pulls/ortuman/jackal.svg)](https://hub.docker.com/r/ortuman/jackal/)
+[![Build Status](https://travis-ci.org/sxmpp/jackal.svg?branch=master)](https://travis-ci.org/sxmpp/jackal)
+[![GoDoc](https://godoc.org/github.com/sxmpp/jackal?status.svg)](https://godoc.org/github.com/sxmpp/jackal)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/e3bcd6e00a2f4493e175/test_coverage)](https://codeclimate.com/github/sxmpp/jackal/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/e3bcd6e00a2f4493e175/maintainability)](https://codeclimate.com/github/sxmpp/jackal/maintainability)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8e1575d0e64141a8bd4f8656e44052e6)](https://www.codacy.com/app/sxmpp/jackal?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=sxmpp/jackal&amp;utm_campaign=Badge_Grade)
+[![Go Report Card](https://goreportcard.com/badge/github.com/sxmpp/jackal)](https://goreportcard.com/report/github.com/sxmpp/jackal)
+[![License](https://img.shields.io/badge/license-GPL-blue.svg)](https://github.com/sxmpp/jackal/blob/master/LICENSE)
+[![Docker Pulls](https://img.shields.io/docker/pulls/sxmpp/jackal.svg)](https://hub.docker.com/r/sxmpp/jackal/)
 [![Join the chat at https://gitter.im/jackal-im/jackal](https://badges.gitter.im/jackal-im/jackal.svg)](https://gitter.im/jackal-im/jackal?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 <div align="center">
@@ -39,8 +39,8 @@ jackal supports the following features:
 To start using jackal, install Go 1.13+ and run the following commands:
 
 ```bash
-$ go get -d github.com/ortuman/jackal
-$ cd $GOPATH/src/github.com/ortuman/jackal
+$ go get -d github.com/sxmpp/jackal
+$ cd $GOPATH/src/github.com/sxmpp/jackal
 $ make install
 ```
 
@@ -49,7 +49,7 @@ This will retrieve the code and install the `jackal` server application into you
 By default the application will try to read server configuration from `/etc/jackal/jackal.yml` file, but alternatively you can specify a custom configuration path from command line.
 
 ```sh
-$ jackal --config=$GOPATH/src/github.com/ortuman/jackal/example.jackal.yml
+$ jackal --config=$GOPATH/src/github.com/sxmpp/jackal/example.jackal.yml
 ```
 
 ### MySQL database creation
@@ -70,7 +70,7 @@ echo "CREATE DATABASE jackal;" | mysql -h localhost -u jackal -p
 Download lastest version of the [MySQL schema](sql/mysql.up.sql) from jackal Github repository.
 
 ```sh
-wget https://raw.githubusercontent.com/ortuman/jackal/master/sql/mysql.up.sql
+wget https://raw.githubusercontent.com/sxmpp/jackal/master/sql/mysql.up.sql
 ```
 
 Load database schema into the database.
@@ -130,11 +130,11 @@ Each time a message is sent to an offline user a `POST` http request to the `pas
 
 ## Run jackal in Docker
 
-Set up `jackal` in the cloud in under 5 minutes with zero knowledge of Golang or Linux shell using our [jackal Docker image](https://hub.docker.com/r/ortuman/jackal/).
+Set up `jackal` in the cloud in under 5 minutes with zero knowledge of Golang or Linux shell using our [jackal Docker image](https://hub.docker.com/r/sxmpp/jackal/).
 
 ```bash
-$ docker pull ortuman/jackal
-$ docker run --name jackal -p 5222:5222 ortuman/jackal
+$ docker pull sxmpp/jackal
+$ docker run --name jackal -p 5222:5222 sxmpp/jackal
 ```
 
 ## Supported Specifications
@@ -169,11 +169,11 @@ Help us keep jackal open and inclusive. Please read and follow our [Code of Cond
 ## Licensing
 
 jackal is licensed under the GNU General Public License, Version 3.0. See
-[LICENSE](https://github.com/ortuman/jackal/blob/master/LICENSE) for the full
+[LICENSE](https://github.com/sxmpp/jackal/blob/master/LICENSE) for the full
 license text.
 
 ## Contact
 
 If you have any suggestion or question:
 
-Miguel Ángel Ortuño, JID: ortuman@jackal.im, email: <ortuman@pm.me>
+Miguel Ángel Ortuño, JID: sxmpp@jackal.im, email: <sxmpp@pm.me>

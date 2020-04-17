@@ -9,7 +9,7 @@ import (
 	"bytes"
 	"encoding/gob"
 
-	"github.com/ortuman/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp"
 )
 
 // Item represents a pubsub node item

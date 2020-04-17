@@ -10,7 +10,7 @@ import (
 	"database/sql"
 
 	sq "github.com/Masterminds/squirrel"
-	"github.com/ortuman/jackal/model"
+	"github.com/sxmpp/jackal/model"
 )
 
 type pgSQLBlockList struct {

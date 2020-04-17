@@ -12,8 +12,8 @@ import (
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	rostermodel "github.com/ortuman/jackal/model/roster"
-	"github.com/ortuman/jackal/xmpp"
+	rostermodel "github.com/sxmpp/jackal/model/roster"
+	"github.com/sxmpp/jackal/xmpp"
 	"github.com/stretchr/testify/require"
 )
 
@@ -112,79 +112,79 @@ func TestMySQLStorageFetchRosterItems(t *testing.T) {
 
 	s, mock := newRosterMock()
 	mock.ExpectQuery("SELECT (.+) FROM roster_items (.+)").
-		WithArgs("ortuman").
-		WillReturnRows(sqlmock.NewRows(riColumns).AddRow("ortuman", "romeo", "Romeo", "both", "", false, 0))
+		WithArgs("sxmpp").
+		WillReturnRows(sqlmock.NewRows(riColumns).AddRow("sxmpp", "romeo", "Romeo", "both", "", false, 0))
 	mock.ExpectQuery("SELECT (.+) FROM roster_versions (.+)").
-		WithArgs("ortuman").
+		WithArgs("sxmpp").
 		WillReturnRows(sqlmock.NewRows([]string{"ver", "deletionVer"}).AddRow(0, 0))
 
-	rosterItems, _, err := s.FetchRosterItems(context.Background(), "ortuman")
+	rosterItems, _, err := s.FetchRosterItems(context.Background(), "sxmpp")
 	require.Nil(t, mock.ExpectationsWereMet())
 	require.Nil(t, err)
 	require.Equal(t, 1, len(rosterItems))
 
 	s, mock = newRosterMock()
 	mock.ExpectQuery("SELECT (.+) FROM roster_items (.+)").
-		WithArgs("ortuman").
+		WithArgs("sxmpp").
 		WillReturnError(errMySQLStorage)
 
-	_, _, err = s.FetchRosterItems(context.Background(), "ortuman")
+	_, _, err = s.FetchRosterItems(context.Background(), "sxmpp")
 	require.Nil(t, mock.ExpectationsWereMet())
 	require.Equal(t, errMySQLStorage, err)
 
 	s, mock = newRosterMock()
 	mock.ExpectQuery("SELECT (.+) FROM roster_items (.+)").
-		WithArgs("ortuman", "romeo").
-		WillReturnRows(sqlmock.NewRows(riColumns).AddRow("ortuman", "romeo", "Romeo", "both", "", false, 0))
+		WithArgs("sxmpp", "romeo").
+		WillReturnRows(sqlmock.NewRows(riColumns).AddRow("sxmpp", "romeo", "Romeo", "both", "", false, 0))
 
-	_, err = s.FetchRosterItem(context.Background(), "ortuman", "romeo")
+	_, err = s.FetchRosterItem(context.Background(), "sxmpp", "romeo")
 	require.Nil(t, mock.ExpectationsWereMet())
 	require.Nil(t, err)
 
 	s, mock = newRosterMock()
 	mock.ExpectQuery("SELECT (.+) FROM roster_items (.+)").
-		WithArgs("ortuman", "romeo").
+		WithArgs("sxmpp", "romeo").
 		WillReturnRows(sqlmock.NewRows(riColumns))
 
-	ri, _ := s.FetchRosterItem(context.Background(), "ortuman", "romeo")
+	ri, _ := s.FetchRosterItem(context.Background(), "sxmpp", "romeo")
 	require.Nil(t, mock.ExpectationsWereMet())
 	require.Nil(t, ri)
 
 	s, mock = newRosterMock()
 	mock.ExpectQuery("SELECT (.+) FROM roster_items (.+)").
-		WithArgs("ortuman", "romeo").
+		WithArgs("sxmpp", "romeo").
 		WillReturnError(errMySQLStorage)
 
-	_, err = s.FetchRosterItem(context.Background(), "ortuman", "romeo")
+	_, err = s.FetchRosterItem(context.Background(), "sxmpp", "romeo")
 	require.Nil(t, mock.ExpectationsWereMet())
 	require.Equal(t, errMySQLStorage, err)
 
 	s, mock = newRosterMock()
 	mock.ExpectQuery("SELECT (.+) FROM roster_items (.+)").
-		WithArgs("ortuman").
+		WithArgs("sxmpp").
 		WillReturnError(errMySQLStorage)
 
-	_, _, err = s.FetchRosterItems(context.Background(), "ortuman")
+	_, _, err = s.FetchRosterItems(context.Background(), "sxmpp")
 	require.Nil(t, mock.ExpectationsWereMet())
 	require.Equal(t, errMySQLStorage, err)
 
 	var riColumns2 = []string{"ris.user", "ris.contact", "ris.name", "ris.subscription", "ris.`groups`", "ris.ask", "ris.ver"}
 	s, mock = newRosterMock()
 	mock.ExpectQuery("SELECT (.+) FROM roster_items ris LEFT JOIN roster_groups g ON ris.username = g.username (.+)").
-		WithArgs("ortuman", "Family").
-		WillReturnRows(sqlmock.NewRows(riColumns2).AddRow("ortuman", "romeo", "Romeo", "both", `["Family"]`, false, 0))
+		WithArgs("sxmpp", "Family").
+		WillReturnRows(sqlmock.NewRows(riColumns2).AddRow("sxmpp", "romeo", "Romeo", "both", `["Family"]`, false, 0))
 	mock.ExpectQuery("SELECT (.+) FROM roster_versions (.+)").
-		WithArgs("ortuman").
+		WithArgs("sxmpp").
 		WillReturnRows(sqlmock.NewRows([]string{"ver", "deletionVer"}).AddRow(0, 0))
 
-	_, _, err = s.FetchRosterItemsInGroups(context.Background(), "ortuman", []string{"Family"})
+	_, _, err = s.FetchRosterItemsInGroups(context.Background(), "sxmpp", []string{"Family"})
 	require.Nil(t, mock.ExpectationsWereMet())
 	require.Nil(t, err)
 }
 
 func TestMySQLStorageInsertRosterNotification(t *testing.T) {
 	rn := rostermodel.Notification{
-		Contact:  "ortuman",
+		Contact:  "sxmpp",
 		JID:      "romeo",
 		Presence: &xmpp.Presence{},
 	}
@@ -238,39 +238,39 @@ func TestMySQLStorageFetchRosterNotifications(t *testing.T) {
 
 	s, mock := newRosterMock()
 	mock.ExpectQuery("SELECT (.+) FROM roster_notifications (.+)").
-		WithArgs("ortuman").
+		WithArgs("sxmpp").
 		WillReturnRows(sqlmock.NewRows(rnColumns).AddRow("romeo", "contact", "<priority>8</priority>"))
 
-	rosterNotifications, err := s.FetchRosterNotifications(context.Background(), "ortuman")
+	rosterNotifications, err := s.FetchRosterNotifications(context.Background(), "sxmpp")
 	require.Nil(t, mock.ExpectationsWereMet())
 	require.Nil(t, err)
 	require.Equal(t, 1, len(rosterNotifications))
 
 	s, mock = newRosterMock()
 	mock.ExpectQuery("SELECT (.+) FROM roster_notifications (.+)").
-		WithArgs("ortuman").
+		WithArgs("sxmpp").
 		WillReturnRows(sqlmock.NewRows(rnColumns))
 
-	rosterNotifications, err = s.FetchRosterNotifications(context.Background(), "ortuman")
+	rosterNotifications, err = s.FetchRosterNotifications(context.Background(), "sxmpp")
 	require.Nil(t, mock.ExpectationsWereMet())
 	require.Nil(t, err)
 	require.Equal(t, 0, len(rosterNotifications))
 
 	s, mock = newRosterMock()
 	mock.ExpectQuery("SELECT (.+) FROM roster_notifications (.+)").
-		WithArgs("ortuman").
+		WithArgs("sxmpp").
 		WillReturnError(errMySQLStorage)
 
-	_, err = s.FetchRosterNotifications(context.Background(), "ortuman")
+	_, err = s.FetchRosterNotifications(context.Background(), "sxmpp")
 	require.Nil(t, mock.ExpectationsWereMet())
 	require.Equal(t, errMySQLStorage, err)
 
 	s, mock = newRosterMock()
 	mock.ExpectQuery("SELECT (.+) FROM roster_notifications (.+)").
-		WithArgs("ortuman").
+		WithArgs("sxmpp").
 		WillReturnRows(sqlmock.NewRows(rnColumns).AddRow("romeo", "contact", "<priority>8"))
 
-	_, err = s.FetchRosterNotifications(context.Background(), "ortuman")
+	_, err = s.FetchRosterNotifications(context.Background(), "sxmpp")
 	require.Nil(t, mock.ExpectationsWereMet())
 	require.NotNil(t, err)
 }
@@ -278,12 +278,12 @@ func TestMySQLStorageFetchRosterNotifications(t *testing.T) {
 func TestMySQLStorageFetchRosterGroups(t *testing.T) {
 	s, mock := newRosterMock()
 	mock.ExpectQuery("SELECT `group` FROM roster_groups WHERE username = (.+) GROUP BY (.+)").
-		WithArgs("ortuman").
+		WithArgs("sxmpp").
 		WillReturnRows(sqlmock.NewRows([]string{"group"}).
 			AddRow("Contacts").
 			AddRow("News"))
 
-	groups, err := s.FetchRosterGroups(context.Background(), "ortuman")
+	groups, err := s.FetchRosterGroups(context.Background(), "sxmpp")
 	require.Nil(t, mock.ExpectationsWereMet())
 	require.Nil(t, err)
 
@@ -293,10 +293,10 @@ func TestMySQLStorageFetchRosterGroups(t *testing.T) {
 
 	s, mock = newRosterMock()
 	mock.ExpectQuery("SELECT `group` FROM roster_groups WHERE username = (.+) GROUP BY (.+)").
-		WithArgs("ortuman").
+		WithArgs("sxmpp").
 		WillReturnError(errMySQLStorage)
 
-	groups, err = s.FetchRosterGroups(context.Background(), "ortuman")
+	groups, err = s.FetchRosterGroups(context.Background(), "sxmpp")
 	require.Nil(t, mock.ExpectationsWereMet())
 
 	require.Nil(t, groups)

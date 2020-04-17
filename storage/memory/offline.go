@@ -8,8 +8,8 @@ package memorystorage
 import (
 	"context"
 
-	"github.com/ortuman/jackal/model/serializer"
-	"github.com/ortuman/jackal/xmpp"
+	"github.com/sxmpp/jackal/model/serializer"
+	"github.com/sxmpp/jackal/xmpp"
 )
 
 // Offline represents an in-memory offline storage.

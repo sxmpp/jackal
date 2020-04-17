@@ -16,12 +16,12 @@ import (
 	"testing"
 	"time"
 
-	streamerror "github.com/ortuman/jackal/errors"
-	"github.com/ortuman/jackal/router/host"
-	"github.com/ortuman/jackal/transport"
-	"github.com/ortuman/jackal/transport/compress"
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	streamerror "github.com/sxmpp/jackal/errors"
+	"github.com/sxmpp/jackal/router/host"
+	"github.com/sxmpp/jackal/transport"
+	"github.com/sxmpp/jackal/transport/compress"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/pborman/uuid"
 	"github.com/stretchr/testify/require"
 )
@@ -107,7 +107,7 @@ func TestSession_Close(t *testing.T) {
 func TestSession_Send(t *testing.T) {
 	hosts := setupTest("jackal.im")
 
-	j, _ := jid.NewWithString("ortuman@jackal.im/res", true)
+	j, _ := jid.NewWithString("sxmpp@jackal.im/res", true)
 	tr := newFakeTransport(transport.Socket)
 	sess := New(uuid.New(), &Config{JID: j}, tr, hosts)
 	elem := xmpp.NewElementNamespace("open", "urn:ietf:params:xml:ns:xmpp-framing")
@@ -122,7 +122,7 @@ func TestSession_Send(t *testing.T) {
 func TestSession_Receive(t *testing.T) {
 	hosts := setupTest("jackal.im")
 
-	j, _ := jid.NewWithString("ortuman@jackal.im/res", true)
+	j, _ := jid.NewWithString("sxmpp@jackal.im/res", true)
 	tr := newFakeTransport(transport.Socket)
 	sess := New(uuid.New(), &Config{JID: j}, tr, hosts)
 
@@ -198,7 +198,7 @@ func TestSession_IsValidFrom(t *testing.T) {
 	hosts := setupTest("jackal.im")
 
 	j1, _ := jid.NewWithString("jackal.im", true)                  // server domain
-	j2, _ := jid.NewWithString("ortuman@jackal.im/resource", true) // full jid with user
+	j2, _ := jid.NewWithString("sxmpp@jackal.im/resource", true) // full jid with user
 
 	tr := newFakeTransport(transport.Socket)
 	sess := New(uuid.New(), &Config{JID: j2}, tr, hosts)
@@ -208,7 +208,7 @@ func TestSession_IsValidFrom(t *testing.T) {
 	require.False(t, sess.isValidFrom("romeo@jackal.im"))
 
 	sess.SetJID(j2)
-	require.True(t, sess.isValidFrom("ortuman@jackal.im/resource"))
+	require.True(t, sess.isValidFrom("sxmpp@jackal.im/resource"))
 }
 
 func TestSession_ValidateStream(t *testing.T) {
@@ -256,10 +256,10 @@ func TestSession_ExtractAddresses(t *testing.T) {
 	hosts := setupTest("jackal.im")
 
 	j1, _ := jid.NewWithString("jackal.im", true)
-	j2, _ := jid.NewWithString("ortuman@jackal.im/res", true)
+	j2, _ := jid.NewWithString("sxmpp@jackal.im/res", true)
 
 	iq := xmpp.NewElementNamespace("iq", "jabber:client")
-	iq.SetFrom("ortuman@jackal.im/res")
+	iq.SetFrom("sxmpp@jackal.im/res")
 	iq.SetTo("romeo@example.org")
 
 	tr := newFakeTransport(transport.Socket)
@@ -278,14 +278,14 @@ func TestSession_ExtractAddresses(t *testing.T) {
 	_, _, err = sess.extractAddresses(iq)
 	require.Equal(t, streamerror.ErrInvalidFrom, err.UnderlyingErr)
 
-	iq.SetFrom("ortuman@jackal.im/res")
+	iq.SetFrom("sxmpp@jackal.im/res")
 	iq.SetTo("")
 	from, to, err = sess.extractAddresses(iq)
 	require.Nil(t, err)
-	require.Equal(t, "ortuman@jackal.im/res", from.String())
-	require.Equal(t, "ortuman@jackal.im", to.String())
+	require.Equal(t, "sxmpp@jackal.im/res", from.String())
+	require.Equal(t, "sxmpp@jackal.im", to.String())
 
-	iq.SetTo("ortuman@" + string([]byte{255, 255, 255}) + "/res")
+	iq.SetTo("sxmpp@" + string([]byte{255, 255, 255}) + "/res")
 	_, _, err = sess.extractAddresses(iq)
 	require.NotNil(t, err)
 	require.Equal(t, iq, err.Element)
@@ -295,7 +295,7 @@ func TestSession_ExtractAddresses(t *testing.T) {
 func TestSession_BuildStanza(t *testing.T) {
 	hosts := setupTest("jackal.im")
 
-	j, _ := jid.NewWithString("ortuman@jackal.im/res", true)
+	j, _ := jid.NewWithString("sxmpp@jackal.im/res", true)
 	tr := newFakeTransport(transport.Socket)
 	sess := New(uuid.New(), &Config{JID: j}, tr, hosts)
 
@@ -312,12 +312,12 @@ func TestSession_BuildStanza(t *testing.T) {
 	require.Equal(t, streamerror.ErrUnsupportedStanzaType, err.UnderlyingErr)
 
 	elem.SetName("iq")
-	elem.SetTo("ortuman@" + string([]byte{255, 255, 255}) + "/res")
+	elem.SetTo("sxmpp@" + string([]byte{255, 255, 255}) + "/res")
 	_, err = sess.buildStanza(elem)
 	require.NotNil(t, err)
 	require.Equal(t, xmpp.ErrJidMalformed, err.UnderlyingErr)
 
-	elem.SetTo("ortuman@jackal.im/res")
+	elem.SetTo("sxmpp@jackal.im/res")
 	_, err = sess.buildStanza(elem)
 	require.NotNil(t, err)
 	require.Equal(t, xmpp.ErrBadRequest, err.UnderlyingErr)
@@ -349,7 +349,7 @@ func TestSession_BuildStanza(t *testing.T) {
 func TestSession_MapError(t *testing.T) {
 	hosts := setupTest("jackal.im")
 
-	j, _ := jid.NewWithString("ortuman@jackal.im/res", true)
+	j, _ := jid.NewWithString("sxmpp@jackal.im/res", true)
 	tr := newFakeTransport(transport.Socket)
 	sess := New(uuid.New(), &Config{JID: j}, tr, hosts)
 

@@ -9,10 +9,10 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/ortuman/jackal/log"
-	"github.com/ortuman/jackal/module/xep0030"
-	"github.com/ortuman/jackal/stream"
-	"github.com/ortuman/jackal/xmpp"
+	"github.com/sxmpp/jackal/log"
+	"github.com/sxmpp/jackal/module/xep0030"
+	"github.com/sxmpp/jackal/stream"
+	"github.com/sxmpp/jackal/xmpp"
 )
 
 // Component represents a generic component interface.

@@ -10,8 +10,8 @@ import (
 	"context"
 	"encoding/gob"
 
-	rostermodel "github.com/ortuman/jackal/model/roster"
-	"github.com/ortuman/jackal/model/serializer"
+	rostermodel "github.com/sxmpp/jackal/model/roster"
+	"github.com/sxmpp/jackal/model/serializer"
 )
 
 // Roster represents an in-memory roster storage.

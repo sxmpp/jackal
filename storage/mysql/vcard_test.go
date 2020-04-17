@@ -10,7 +10,7 @@ import (
 	"testing"
 
 	sqlmock "github.com/DATA-DOG/go-sqlmock"
-	"github.com/ortuman/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp"
 	"github.com/stretchr/testify/require"
 )
 
@@ -20,20 +20,20 @@ func TestMySQLStorageInsertVCard(t *testing.T) {
 
 	s, mock := newVCardMock()
 	mock.ExpectExec("INSERT INTO vcards (.+) ON DUPLICATE KEY UPDATE (.+)").
-		WithArgs("ortuman", rawXML, rawXML).
+		WithArgs("sxmpp", rawXML, rawXML).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
-	err := s.UpsertVCard(context.Background(), vCard, "ortuman")
+	err := s.UpsertVCard(context.Background(), vCard, "sxmpp")
 	require.Nil(t, mock.ExpectationsWereMet())
 	require.Nil(t, err)
 	require.NotNil(t, vCard)
 
 	s, mock = newVCardMock()
 	mock.ExpectExec("INSERT INTO vcards (.+) ON DUPLICATE KEY UPDATE (.+)").
-		WithArgs("ortuman", rawXML, rawXML).
+		WithArgs("sxmpp", rawXML, rawXML).
 		WillReturnError(errMySQLStorage)
 
-	err = s.UpsertVCard(context.Background(), vCard, "ortuman")
+	err = s.UpsertVCard(context.Background(), vCard, "sxmpp")
 	require.Nil(t, mock.ExpectationsWereMet())
 	require.Equal(t, errMySQLStorage, err)
 }
@@ -43,30 +43,30 @@ func TestMySQLStorageFetchVCard(t *testing.T) {
 
 	s, mock := newVCardMock()
 	mock.ExpectQuery("SELECT (.+) FROM vcards (.+)").
-		WithArgs("ortuman").
+		WithArgs("sxmpp").
 		WillReturnRows(sqlmock.NewRows(vCardColumns).AddRow("<vCard><FN>Miguel Ángel</FN></vCard>"))
 
-	vCard, err := s.FetchVCard(context.Background(), "ortuman")
+	vCard, err := s.FetchVCard(context.Background(), "sxmpp")
 	require.Nil(t, mock.ExpectationsWereMet())
 	require.Nil(t, err)
 	require.NotNil(t, vCard)
 
 	s, mock = newVCardMock()
 	mock.ExpectQuery("SELECT (.+) FROM vcards (.+)").
-		WithArgs("ortuman").
+		WithArgs("sxmpp").
 		WillReturnRows(sqlmock.NewRows(vCardColumns))
 
-	vCard, err = s.FetchVCard(context.Background(), "ortuman")
+	vCard, err = s.FetchVCard(context.Background(), "sxmpp")
 	require.Nil(t, mock.ExpectationsWereMet())
 	require.Nil(t, err)
 	require.Nil(t, vCard)
 
 	s, mock = newVCardMock()
 	mock.ExpectQuery("SELECT (.+) FROM vcards (.+)").
-		WithArgs("ortuman").
+		WithArgs("sxmpp").
 		WillReturnError(errMySQLStorage)
 
-	vCard, _ = s.FetchVCard(context.Background(), "ortuman")
+	vCard, _ = s.FetchVCard(context.Background(), "sxmpp")
 	require.Nil(t, mock.ExpectationsWereMet())
 	require.Nil(t, vCard)
 }

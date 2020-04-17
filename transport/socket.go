@@ -14,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ortuman/jackal/transport/compress"
+	"github.com/sxmpp/jackal/transport/compress"
 )
 
 const socketBuffSize = 4096

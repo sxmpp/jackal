@@ -11,10 +11,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ortuman/jackal/component"
-	"github.com/ortuman/jackal/module"
-	"github.com/ortuman/jackal/stream"
-	"github.com/ortuman/jackal/transport"
+	"github.com/sxmpp/jackal/component"
+	"github.com/sxmpp/jackal/module"
+	"github.com/sxmpp/jackal/stream"
+	"github.com/sxmpp/jackal/transport"
 	"github.com/stretchr/testify/require"
 )
 

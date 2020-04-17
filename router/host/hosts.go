@@ -9,7 +9,7 @@ import (
 	"crypto/tls"
 	"sort"
 
-	utiltls "github.com/ortuman/jackal/util/tls"
+	utiltls "github.com/sxmpp/jackal/util/tls"
 )
 
 const defaultDomain = "localhost"

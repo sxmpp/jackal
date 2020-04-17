@@ -10,15 +10,15 @@ import (
 	"crypto/tls"
 	"testing"
 
-	"github.com/ortuman/jackal/router/host"
+	"github.com/sxmpp/jackal/router/host"
 
-	c2srouter "github.com/ortuman/jackal/c2s/router"
-	"github.com/ortuman/jackal/model"
-	"github.com/ortuman/jackal/router"
-	memorystorage "github.com/ortuman/jackal/storage/memory"
-	"github.com/ortuman/jackal/stream"
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	c2srouter "github.com/sxmpp/jackal/c2s/router"
+	"github.com/sxmpp/jackal/model"
+	"github.com/sxmpp/jackal/router"
+	memorystorage "github.com/sxmpp/jackal/storage/memory"
+	"github.com/sxmpp/jackal/stream"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/pborman/uuid"
 	"github.com/stretchr/testify/require"
 )
@@ -26,7 +26,7 @@ import (
 func TestXEP0077_Matching(t *testing.T) {
 	r, s := setupTest("jackal.im")
 
-	j, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 
 	x := New(&Config{}, nil, r, s)
 	defer func() { _ = x.Shutdown() }()
@@ -44,7 +44,7 @@ func TestXEP0077_InvalidToJID(t *testing.T) {
 	r, s := setupTest("jackal.im")
 
 	j1, _ := jid.New("romeo", "jackal.im", "balcony", true)
-	j2, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j2, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 
 	stm1 := stream.NewMockC2S(uuid.New(), j1)
 	r.Bind(context.Background(), stm1)
@@ -69,7 +69,7 @@ func TestXEP0077_InvalidToJID(t *testing.T) {
 func TestXEP0077_NotAuthenticatedErrors(t *testing.T) {
 	r, s := setupTest("jackal.im")
 
-	j, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 
 	stm := stream.NewMockC2S(uuid.New(), j)
 	r.Bind(context.Background(), stm)
@@ -115,7 +115,7 @@ func TestXEP0077_AuthenticatedErrors(t *testing.T) {
 	r, s := setupTest("jackal.im")
 
 	srvJid, _ := jid.New("", "jackal.im", "", true)
-	j, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 
 	stm := stream.NewMockC2S(uuid.New(), j)
 	r.Bind(context.Background(), stm)
@@ -145,7 +145,7 @@ func TestXEP0077_RegisterUser(t *testing.T) {
 	r, s := setupTest("jackal.im")
 
 	srvJid, _ := jid.New("", "jackal.im", "", true)
-	j, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 
 	stm := stream.NewMockC2S(uuid.New(), j)
 	r.Bind(context.Background(), stm)
@@ -177,8 +177,8 @@ func TestXEP0077_RegisterUser(t *testing.T) {
 	require.Equal(t, xmpp.ErrBadRequest.Error(), elem.Error().Elements().All()[0].Name())
 
 	// already existing user...
-	_ = s.UpsertUser(context.Background(), &model.User{Username: "ortuman", Password: "1234"})
-	username.SetText("ortuman")
+	_ = s.UpsertUser(context.Background(), &model.User{Username: "sxmpp", Password: "1234"})
+	username.SetText("sxmpp")
 	password.SetText("5678")
 	x.ProcessIQ(context.Background(), iq)
 	elem = stm.ReceiveElement()
@@ -196,7 +196,7 @@ func TestXEP0077_RegisterUser(t *testing.T) {
 	elem = stm.ReceiveElement()
 	require.Equal(t, xmpp.ResultType, elem.Type())
 
-	usr, _ := s.FetchUser(context.Background(), "ortuman")
+	usr, _ := s.FetchUser(context.Background(), "sxmpp")
 	require.NotNil(t, usr)
 }
 
@@ -204,7 +204,7 @@ func TestXEP0077_CancelRegistration(t *testing.T) {
 	r, s := setupTest("jackal.im")
 
 	srvJid, _ := jid.New("", "jackal.im", "", true)
-	j, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 
 	stm := stream.NewMockC2S("abcd1234", j)
 	r.Bind(context.Background(), stm)
@@ -214,7 +214,7 @@ func TestXEP0077_CancelRegistration(t *testing.T) {
 	x := New(&Config{}, nil, r, s)
 	defer func() { _ = x.Shutdown() }()
 
-	_ = s.UpsertUser(context.Background(), &model.User{Username: "ortuman", Password: "1234"})
+	_ = s.UpsertUser(context.Background(), &model.User{Username: "sxmpp", Password: "1234"})
 
 	iq := xmpp.NewIQType(uuid.New(), xmpp.SetType)
 	iq.SetFromJID(j)
@@ -249,7 +249,7 @@ func TestXEP0077_CancelRegistration(t *testing.T) {
 	elem = stm.ReceiveElement()
 	require.Equal(t, xmpp.ResultType, elem.Type())
 
-	usr, _ := s.FetchUser(context.Background(), "ortuman")
+	usr, _ := s.FetchUser(context.Background(), "sxmpp")
 	require.Nil(t, usr)
 }
 
@@ -257,7 +257,7 @@ func TestXEP0077_ChangePassword(t *testing.T) {
 	r, s := setupTest("jackal.im")
 
 	srvJid, _ := jid.New("", "jackal.im", "", true)
-	j, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 
 	stm := stream.NewMockC2S(uuid.New(), j)
 	r.Bind(context.Background(), stm)
@@ -267,7 +267,7 @@ func TestXEP0077_ChangePassword(t *testing.T) {
 	x := New(&Config{}, nil, r, s)
 	defer func() { _ = x.Shutdown() }()
 
-	_ = s.UpsertUser(context.Background(), &model.User{Username: "ortuman", Password: "1234"})
+	_ = s.UpsertUser(context.Background(), &model.User{Username: "sxmpp", Password: "1234"})
 
 	iq := xmpp.NewIQType(uuid.New(), xmpp.SetType)
 	iq.SetFromJID(j)
@@ -293,7 +293,7 @@ func TestXEP0077_ChangePassword(t *testing.T) {
 	elem = stm.ReceiveElement()
 	require.Equal(t, xmpp.ErrNotAllowed.Error(), elem.Error().Elements().All()[0].Name())
 
-	username.SetText("ortuman")
+	username.SetText("sxmpp")
 	x.ProcessIQ(context.Background(), iq)
 	elem = stm.ReceiveElement()
 	require.Equal(t, xmpp.ErrNotAuthorized.Error(), elem.Error().Elements().All()[0].Name())
@@ -312,7 +312,7 @@ func TestXEP0077_ChangePassword(t *testing.T) {
 	elem = stm.ReceiveElement()
 	require.Equal(t, xmpp.ResultType, elem.Type())
 
-	usr, _ := s.FetchUser(context.Background(), "ortuman")
+	usr, _ := s.FetchUser(context.Background(), "sxmpp")
 	require.NotNil(t, usr)
 	require.Equal(t, "5678", usr.Password)
 }

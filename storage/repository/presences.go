@@ -3,9 +3,9 @@ package repository
 import (
 	"context"
 
-	capsmodel "github.com/ortuman/jackal/model/capabilities"
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	capsmodel "github.com/sxmpp/jackal/model/capabilities"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 )
 
 type Presences interface {

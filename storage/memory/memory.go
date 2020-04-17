@@ -8,7 +8,7 @@ package memorystorage
 import (
 	"context"
 
-	"github.com/ortuman/jackal/storage/repository"
+	"github.com/sxmpp/jackal/storage/repository"
 )
 
 type memoryContainer struct {

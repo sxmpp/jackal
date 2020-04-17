@@ -8,14 +8,14 @@ package xmpp_test
 import (
 	"testing"
 
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/pborman/uuid"
 	"github.com/stretchr/testify/require"
 )
 
 func TestIQBuild(t *testing.T) {
-	j, _ := jid.New("ortuman", "example.org", "balcony", false)
+	j, _ := jid.New("sxmpp", "example.org", "balcony", false)
 
 	elem := xmpp.NewElementName("message")
 	_, err := xmpp.NewIQFromElement(elem, j, j) // wrong name...
@@ -70,8 +70,8 @@ func TestResultIQ(t *testing.T) {
 }
 
 func TestIQJID(t *testing.T) {
-	from, _ := jid.New("ortuman", "test.org", "balcony", false)
-	to, _ := jid.New("ortuman", "example.org", "garden", false)
+	from, _ := jid.New("sxmpp", "test.org", "balcony", false)
+	to, _ := jid.New("sxmpp", "example.org", "garden", false)
 	iq := xmpp.NewIQType(uuid.New(), xmpp.GetType)
 	iq.SetFromJID(from)
 	require.Equal(t, iq.FromJID().String(), iq.From())

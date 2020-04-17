@@ -10,15 +10,15 @@ import (
 	"crypto/tls"
 	"testing"
 
-	"github.com/ortuman/jackal/router/host"
+	"github.com/sxmpp/jackal/router/host"
 
-	c2srouter "github.com/ortuman/jackal/c2s/router"
-	"github.com/ortuman/jackal/router"
-	memorystorage "github.com/ortuman/jackal/storage/memory"
-	"github.com/ortuman/jackal/stream"
-	"github.com/ortuman/jackal/version"
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	c2srouter "github.com/sxmpp/jackal/c2s/router"
+	"github.com/sxmpp/jackal/router"
+	memorystorage "github.com/sxmpp/jackal/storage/memory"
+	"github.com/sxmpp/jackal/stream"
+	"github.com/sxmpp/jackal/version"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/pborman/uuid"
 	"github.com/stretchr/testify/require"
 )
@@ -27,7 +27,7 @@ func TestXEP0092(t *testing.T) {
 	r := setupTest()
 
 	srvJID, _ := jid.New("", "jackal.im", "", true)
-	j, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 
 	stm := stream.NewMockC2S(uuid.New(), j)
 	stm.SetPresence(xmpp.NewPresence(j, j, xmpp.AvailableType))

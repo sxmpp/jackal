@@ -9,8 +9,8 @@ import (
 	"context"
 	"strings"
 
-	pubsubmodel "github.com/ortuman/jackal/model/pubsub"
-	"github.com/ortuman/jackal/model/serializer"
+	pubsubmodel "github.com/sxmpp/jackal/model/pubsub"
+	"github.com/sxmpp/jackal/model/serializer"
 )
 
 // PubSub represents an in-memory pubsub storage.

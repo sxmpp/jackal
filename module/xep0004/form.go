@@ -8,7 +8,7 @@ package xep0004
 import (
 	"fmt"
 
-	"github.com/ortuman/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp"
 )
 
 // FormNamespace specifies XEP-0004 namespace constant value.

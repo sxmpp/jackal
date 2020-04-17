@@ -10,8 +10,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/ortuman/jackal/util/pool"
-	"github.com/ortuman/jackal/xmpp/jid"
+	"github.com/sxmpp/jackal/util/pool"
+	"github.com/sxmpp/jackal/xmpp/jid"
 )
 
 var bufPool = pool.NewBufferPool()

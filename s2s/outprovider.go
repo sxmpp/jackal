@@ -10,9 +10,9 @@ import (
 	"crypto/tls"
 	"sync"
 
-	"github.com/ortuman/jackal/log"
-	"github.com/ortuman/jackal/router/host"
-	"github.com/ortuman/jackal/stream"
+	"github.com/sxmpp/jackal/log"
+	"github.com/sxmpp/jackal/router/host"
+	"github.com/sxmpp/jackal/stream"
 )
 
 type newOutFunc = func(localDomain, remoteDomain string) *outStream

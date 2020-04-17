@@ -11,14 +11,14 @@ import (
 	"sync"
 	"time"
 
-	streamerror "github.com/ortuman/jackal/errors"
-	"github.com/ortuman/jackal/log"
-	"github.com/ortuman/jackal/module/xep0030"
-	"github.com/ortuman/jackal/router"
-	"github.com/ortuman/jackal/stream"
-	"github.com/ortuman/jackal/util/runqueue"
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	streamerror "github.com/sxmpp/jackal/errors"
+	"github.com/sxmpp/jackal/log"
+	"github.com/sxmpp/jackal/module/xep0030"
+	"github.com/sxmpp/jackal/router"
+	"github.com/sxmpp/jackal/stream"
+	"github.com/sxmpp/jackal/util/runqueue"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/pborman/uuid"
 )
 

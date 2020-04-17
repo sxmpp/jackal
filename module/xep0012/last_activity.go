@@ -10,14 +10,14 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/ortuman/jackal/log"
-	rostermodel "github.com/ortuman/jackal/model/roster"
-	"github.com/ortuman/jackal/module/xep0030"
-	"github.com/ortuman/jackal/router"
-	"github.com/ortuman/jackal/storage/repository"
-	"github.com/ortuman/jackal/util/runqueue"
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	"github.com/sxmpp/jackal/log"
+	rostermodel "github.com/sxmpp/jackal/model/roster"
+	"github.com/sxmpp/jackal/module/xep0030"
+	"github.com/sxmpp/jackal/router"
+	"github.com/sxmpp/jackal/storage/repository"
+	"github.com/sxmpp/jackal/util/runqueue"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 )
 
 const lastActivityNamespace = "jabber:iq:last"

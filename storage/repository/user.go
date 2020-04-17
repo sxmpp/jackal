@@ -8,7 +8,7 @@ package repository
 import (
 	"context"
 
-	"github.com/ortuman/jackal/model"
+	"github.com/sxmpp/jackal/model"
 )
 
 // User defines user repository operations

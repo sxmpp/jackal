@@ -14,7 +14,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ortuman/jackal/version"
+	"github.com/sxmpp/jackal/version"
 	"github.com/stretchr/testify/require"
 )
 

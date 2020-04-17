@@ -8,7 +8,7 @@ package auth
 import (
 	"context"
 
-	"github.com/ortuman/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp"
 )
 
 const saslNamespace = "urn:ietf:params:xml:ns:xmpp-sasl"

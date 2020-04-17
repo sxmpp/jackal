@@ -8,10 +8,10 @@ package storage
 import (
 	"fmt"
 
-	memorystorage "github.com/ortuman/jackal/storage/memory"
-	"github.com/ortuman/jackal/storage/mysql"
-	"github.com/ortuman/jackal/storage/pgsql"
-	"github.com/ortuman/jackal/storage/repository"
+	memorystorage "github.com/sxmpp/jackal/storage/memory"
+	"github.com/sxmpp/jackal/storage/mysql"
+	"github.com/sxmpp/jackal/storage/pgsql"
+	"github.com/sxmpp/jackal/storage/repository"
 )
 
 // New initializes configured storage type and returns associated container.

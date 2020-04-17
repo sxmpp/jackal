@@ -10,14 +10,14 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/ortuman/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp"
 	"github.com/stretchr/testify/require"
 )
 
 func TestItem_Serialization(t *testing.T) {
 	it := Item{}
 	it.ID = "1234"
-	it.Publisher = "ortuman@jackal.im"
+	it.Publisher = "sxmpp@jackal.im"
 	it.Payload = xmpp.NewElementName("el")
 
 	buf := bytes.NewBuffer(nil)

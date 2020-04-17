@@ -10,20 +10,20 @@ import (
 	"crypto/tls"
 	"testing"
 
-	"github.com/ortuman/jackal/router/host"
+	"github.com/sxmpp/jackal/router/host"
 
-	c2srouter "github.com/ortuman/jackal/c2s/router"
-	"github.com/ortuman/jackal/router"
-	memorystorage "github.com/ortuman/jackal/storage/memory"
-	"github.com/ortuman/jackal/stream"
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	c2srouter "github.com/sxmpp/jackal/c2s/router"
+	"github.com/sxmpp/jackal/router"
+	memorystorage "github.com/sxmpp/jackal/storage/memory"
+	"github.com/sxmpp/jackal/stream"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/pborman/uuid"
 	"github.com/stretchr/testify/require"
 )
 
 func TestXEP0054_Matching(t *testing.T) {
-	j, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 
 	x := New(nil, nil, nil)
 	defer func() { _ = x.Shutdown() }()
@@ -49,7 +49,7 @@ func TestXEP0054_Matching(t *testing.T) {
 func TestXEP0054_Set(t *testing.T) {
 	r, s := setupTest("jackal.im")
 
-	j, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 
 	stm := stream.NewMockC2S("abcd", j)
 	stm.SetPresence(xmpp.NewPresence(j, j, xmpp.AvailableType))
@@ -88,7 +88,7 @@ func TestXEP0054_Set(t *testing.T) {
 func TestXEP0054_SetError(t *testing.T) {
 	r, s := setupTest("jackal.im")
 
-	j, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 	j2, _ := jid.New("romeo", "jackal.im", "garden", true)
 
 	stm := stream.NewMockC2S("abcd", j)
@@ -126,7 +126,7 @@ func TestXEP0054_SetError(t *testing.T) {
 func TestXEP0054_Get(t *testing.T) {
 	r, s := setupTest("jackal.im")
 
-	j, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 	j2, _ := jid.New("romeo", "jackal.im", "garden", true)
 
 	stm := stream.NewMockC2S(uuid.New(), j)
@@ -175,7 +175,7 @@ func TestXEP0054_Get(t *testing.T) {
 func TestXEP0054_GetError(t *testing.T) {
 	r, s := setupTest("jackal.im")
 
-	j, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 
 	stm := stream.NewMockC2S("abcd", j)
 	stm.SetPresence(xmpp.NewPresence(j, j, xmpp.AvailableType))

@@ -9,7 +9,7 @@ import (
 	"errors"
 	"sync"
 
-	"github.com/ortuman/jackal/model/serializer"
+	"github.com/sxmpp/jackal/model/serializer"
 )
 
 var (

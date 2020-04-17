@@ -10,10 +10,10 @@ import (
 	"sort"
 	"testing"
 
-	rostermodel "github.com/ortuman/jackal/model/roster"
-	"github.com/ortuman/jackal/stream"
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	rostermodel "github.com/sxmpp/jackal/model/roster"
+	"github.com/sxmpp/jackal/stream"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/pborman/uuid"
 	"github.com/stretchr/testify/require"
 )
@@ -38,7 +38,7 @@ func TestServerProvider_Features(t *testing.T) {
 	require.Equal(t, sp.accountFeatures, []Feature{"af1"})
 
 	srvJID, _ := jid.New("", "jackal.im", "", true)
-	accJID, _ := jid.New("ortuman", "jackal.im", "garden", true)
+	accJID, _ := jid.New("sxmpp", "jackal.im", "garden", true)
 	accJID2, _ := jid.New("noelia", "jackal.im", "balcony", true)
 
 	features, sErr := sp.Features(context.Background(), srvJID, accJID, "node")
@@ -64,7 +64,7 @@ func TestServerProvider_Identities(t *testing.T) {
 	var sp = serverProvider{router: r, rosterRep: rosterRep}
 
 	srvJID, _ := jid.New("", "jackal.im", "", true)
-	accJID, _ := jid.New("ortuman", "jackal.im", "garden", true)
+	accJID, _ := jid.New("sxmpp", "jackal.im", "garden", true)
 	require.Nil(t, sp.Identities(context.Background(), srvJID, accJID, "node"))
 
 	require.Equal(t, sp.Identities(context.Background(), srvJID, accJID, ""), []Identity{
@@ -81,7 +81,7 @@ func TestServerProvider_Items(t *testing.T) {
 	var sp = serverProvider{router: r, rosterRep: rosterRep}
 
 	srvJID, _ := jid.New("", "jackal.im", "", true)
-	accJID1, _ := jid.New("ortuman", "jackal.im", "garden", true)
+	accJID1, _ := jid.New("sxmpp", "jackal.im", "garden", true)
 	accJID2, _ := jid.New("noelia", "jackal.im", "balcony", true)
 	accJID3, _ := jid.New("noelia", "jackal.im", "yard", true)
 
@@ -108,7 +108,7 @@ func TestServerProvider_Items(t *testing.T) {
 	require.Equal(t, sErr, xmpp.ErrSubscriptionRequired)
 
 	_, _ = rosterRep.UpsertRosterItem(context.Background(), &rostermodel.Item{
-		Username:     "ortuman",
+		Username:     "sxmpp",
 		JID:          "noelia@jackal.im",
 		Subscription: "both",
 	})

@@ -12,8 +12,8 @@ import (
 	"time"
 
 	_ "github.com/go-sql-driver/mysql" // SQL driver
-	"github.com/ortuman/jackal/log"
-	"github.com/ortuman/jackal/storage/repository"
+	"github.com/sxmpp/jackal/log"
+	"github.com/sxmpp/jackal/storage/repository"
 )
 
 type mySQLContainer struct {

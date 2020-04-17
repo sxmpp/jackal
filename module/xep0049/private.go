@@ -9,11 +9,11 @@ import (
 	"context"
 	"strings"
 
-	"github.com/ortuman/jackal/log"
-	"github.com/ortuman/jackal/router"
-	"github.com/ortuman/jackal/storage/repository"
-	"github.com/ortuman/jackal/util/runqueue"
-	"github.com/ortuman/jackal/xmpp"
+	"github.com/sxmpp/jackal/log"
+	"github.com/sxmpp/jackal/router"
+	"github.com/sxmpp/jackal/storage/repository"
+	"github.com/sxmpp/jackal/util/runqueue"
+	"github.com/sxmpp/jackal/xmpp"
 )
 
 const privateNamespace = "jabber:iq:private"

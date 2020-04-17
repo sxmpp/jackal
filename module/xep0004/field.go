@@ -8,7 +8,7 @@ package xep0004
 import (
 	"fmt"
 
-	"github.com/ortuman/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp"
 )
 
 // FormType represents form type constant value.

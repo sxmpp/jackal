@@ -9,8 +9,8 @@ import (
 	"context"
 	"sync"
 
-	"github.com/ortuman/jackal/router"
-	"github.com/ortuman/jackal/xmpp"
+	"github.com/sxmpp/jackal/router"
+	"github.com/sxmpp/jackal/xmpp"
 )
 
 type s2sRouter struct {

@@ -10,8 +10,8 @@ import (
 	"testing"
 
 	sqlmock "github.com/DATA-DOG/go-sqlmock"
-	"github.com/ortuman/jackal/util/pool"
-	"github.com/ortuman/jackal/xmpp"
+	"github.com/sxmpp/jackal/util/pool"
+	"github.com/sxmpp/jackal/xmpp"
 	"github.com/stretchr/testify/require"
 )
 
@@ -21,19 +21,19 @@ func TestMySQLStorageInsertPrivateXML(t *testing.T) {
 
 	s, mock := newPrivateMock()
 	mock.ExpectExec("INSERT INTO private_storage (.+) ON DUPLICATE KEY UPDATE (.+)").
-		WithArgs("ortuman", "exodus:ns", rawXML, rawXML).
+		WithArgs("sxmpp", "exodus:ns", rawXML, rawXML).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
-	err := s.UpsertPrivateXML(context.Background(), []xmpp.XElement{private}, "exodus:ns", "ortuman")
+	err := s.UpsertPrivateXML(context.Background(), []xmpp.XElement{private}, "exodus:ns", "sxmpp")
 	require.Nil(t, mock.ExpectationsWereMet())
 	require.Nil(t, err)
 
 	s, mock = newPrivateMock()
 	mock.ExpectExec("INSERT INTO private_storage (.+) ON DUPLICATE KEY UPDATE (.+)").
-		WithArgs("ortuman", "exodus:ns", rawXML, rawXML).
+		WithArgs("sxmpp", "exodus:ns", rawXML, rawXML).
 		WillReturnError(errMySQLStorage)
 
-	err = s.UpsertPrivateXML(context.Background(), []xmpp.XElement{private}, "exodus:ns", "ortuman")
+	err = s.UpsertPrivateXML(context.Background(), []xmpp.XElement{private}, "exodus:ns", "sxmpp")
 	require.Nil(t, mock.ExpectationsWereMet())
 	require.Equal(t, errMySQLStorage, err)
 }
@@ -43,50 +43,50 @@ func TestMySQLStorageFetchPrivateXML(t *testing.T) {
 
 	s, mock := newPrivateMock()
 	mock.ExpectQuery("SELECT (.+) FROM private_storage (.+)").
-		WithArgs("ortuman", "exodus:ns").
+		WithArgs("sxmpp", "exodus:ns").
 		WillReturnRows(sqlmock.NewRows(privateColumns).AddRow("<exodus xmlns='exodus:ns'><stuff/></exodus>"))
 
-	elems, err := s.FetchPrivateXML(context.Background(), "exodus:ns", "ortuman")
+	elems, err := s.FetchPrivateXML(context.Background(), "exodus:ns", "sxmpp")
 	require.Nil(t, mock.ExpectationsWereMet())
 	require.Nil(t, err)
 	require.Equal(t, 1, len(elems))
 
 	s, mock = newPrivateMock()
 	mock.ExpectQuery("SELECT (.+) FROM private_storage (.+)").
-		WithArgs("ortuman", "exodus:ns").
+		WithArgs("sxmpp", "exodus:ns").
 		WillReturnRows(sqlmock.NewRows(privateColumns).AddRow("<exodus xmlns='exodus:ns'><stuff/>"))
 
-	elems, err = s.FetchPrivateXML(context.Background(), "exodus:ns", "ortuman")
+	elems, err = s.FetchPrivateXML(context.Background(), "exodus:ns", "sxmpp")
 	require.Nil(t, mock.ExpectationsWereMet())
 	require.NotNil(t, err)
 	require.Equal(t, 0, len(elems))
 
 	s, mock = newPrivateMock()
 	mock.ExpectQuery("SELECT (.+) FROM private_storage (.+)").
-		WithArgs("ortuman", "exodus:ns").
+		WithArgs("sxmpp", "exodus:ns").
 		WillReturnRows(sqlmock.NewRows(privateColumns).AddRow(""))
 
-	elems, err = s.FetchPrivateXML(context.Background(), "exodus:ns", "ortuman")
+	elems, err = s.FetchPrivateXML(context.Background(), "exodus:ns", "sxmpp")
 	require.Nil(t, mock.ExpectationsWereMet())
 	require.Nil(t, err)
 	require.Equal(t, 0, len(elems))
 
 	s, mock = newPrivateMock()
 	mock.ExpectQuery("SELECT (.+) FROM private_storage (.+)").
-		WithArgs("ortuman", "exodus:ns").
+		WithArgs("sxmpp", "exodus:ns").
 		WillReturnRows(sqlmock.NewRows(privateColumns))
 
-	elems, err = s.FetchPrivateXML(context.Background(), "exodus:ns", "ortuman")
+	elems, err = s.FetchPrivateXML(context.Background(), "exodus:ns", "sxmpp")
 	require.Nil(t, mock.ExpectationsWereMet())
 	require.Nil(t, err)
 	require.Equal(t, 0, len(elems))
 
 	s, mock = newPrivateMock()
 	mock.ExpectQuery("SELECT (.+) FROM private_storage (.+)").
-		WithArgs("ortuman", "exodus:ns").
+		WithArgs("sxmpp", "exodus:ns").
 		WillReturnError(errMySQLStorage)
 
-	elems, err = s.FetchPrivateXML(context.Background(), "exodus:ns", "ortuman")
+	elems, err = s.FetchPrivateXML(context.Background(), "exodus:ns", "sxmpp")
 	require.Nil(t, mock.ExpectationsWereMet())
 	require.Equal(t, errMySQLStorage, err)
 	require.Equal(t, 0, len(elems))

@@ -9,7 +9,7 @@ import (
 	"crypto/tls"
 	"time"
 
-	"github.com/ortuman/jackal/stream"
+	"github.com/sxmpp/jackal/stream"
 	"github.com/pkg/errors"
 )
 

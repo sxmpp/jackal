@@ -9,8 +9,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/ortuman/jackal/transport"
-	"github.com/ortuman/jackal/transport/compress"
+	"github.com/sxmpp/jackal/transport"
+	"github.com/sxmpp/jackal/transport/compress"
 	"github.com/stretchr/testify/require"
 	yaml "gopkg.in/yaml.v2"
 )

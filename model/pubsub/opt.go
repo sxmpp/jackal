@@ -12,7 +12,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/ortuman/jackal/module/xep0004"
+	"github.com/sxmpp/jackal/module/xep0004"
 )
 
 const nodeConfigNamespace = "http://jabber.org/protocol/pubsub#node_config"

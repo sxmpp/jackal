@@ -10,9 +10,9 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"github.com/ortuman/jackal/stream"
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	"github.com/sxmpp/jackal/stream"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/stretchr/testify/require"
 )
 
@@ -38,9 +38,9 @@ func TestS2SRouter_Route(t *testing.T) {
 
 	r := New(p)
 
-	j1, _ := jid.NewWithString("ortuman@jackal.im", true)
+	j1, _ := jid.NewWithString("sxmpp@jackal.im", true)
 	j2, _ := jid.NewWithString("noelia@jabber.org/yard", true)
-	j3, _ := jid.NewWithString("ortuman@jabber.org/chamber", true)
+	j3, _ := jid.NewWithString("sxmpp@jabber.org/chamber", true)
 
 	_ = r.Route(context.Background(), xmpp.NewPresence(j1, j2, xmpp.AvailableType), "jackal.im")
 	_ = r.Route(context.Background(), xmpp.NewPresence(j1, j3, xmpp.AvailableType), "jackal.im")

@@ -10,16 +10,16 @@ import (
 	"reflect"
 	"testing"
 
-	pubsubmodel "github.com/ortuman/jackal/model/pubsub"
-	rostermodel "github.com/ortuman/jackal/model/roster"
-	memorystorage "github.com/ortuman/jackal/storage/memory"
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	pubsubmodel "github.com/sxmpp/jackal/model/pubsub"
+	rostermodel "github.com/sxmpp/jackal/model/roster"
+	memorystorage "github.com/sxmpp/jackal/storage/memory"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/stretchr/testify/require"
 )
 
 func TestDiscoInfoProvider_Identities(t *testing.T) {
-	j1, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j1, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 	j2, _ := jid.New("noelia", "jackal.im", "yard", true)
 
 	dp := &discoInfoProvider{}
@@ -42,13 +42,13 @@ func TestDiscoInfoProvider_Identities(t *testing.T) {
 }
 
 func TestDiscoInfoProvider_Items(t *testing.T) {
-	j1, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j1, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 	j2, _ := jid.New("noelia", "jackal.im", "yard", true)
 
 	pubSubRep := memorystorage.NewPubSub()
 
 	_ = pubSubRep.UpsertNode(context.Background(), &pubsubmodel.Node{
-		Host:    "ortuman@jackal.im",
+		Host:    "sxmpp@jackal.im",
 		Name:    "princely_musings",
 		Options: defaultNodeOptions,
 	})
@@ -65,7 +65,7 @@ func TestDiscoInfoProvider_Items(t *testing.T) {
 
 	_, _ = rosterRep.UpsertRosterItem(context.Background(), &rostermodel.Item{
 		Username:     "noelia",
-		JID:          "ortuman@jackal.im",
+		JID:          "sxmpp@jackal.im",
 		Subscription: rostermodel.SubscriptionTo,
 	})
 
@@ -73,12 +73,12 @@ func TestDiscoInfoProvider_Items(t *testing.T) {
 	require.Nil(t, err)
 	require.Len(t, items, 1)
 
-	require.Equal(t, "ortuman@jackal.im", items[0].Jid)
+	require.Equal(t, "sxmpp@jackal.im", items[0].Jid)
 	require.Equal(t, "princely_musings", items[0].Node)
 }
 
 func TestDiscoInfoProvider_Features(t *testing.T) {
-	j1, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j1, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 	j2, _ := jid.New("noelia", "jackal.im", "yard", true)
 
 	dp := &discoInfoProvider{}
@@ -91,7 +91,7 @@ func TestDiscoInfoProvider_Features(t *testing.T) {
 }
 
 func TestDiscoInfoProvider_Form(t *testing.T) {
-	j1, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j1, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 	j2, _ := jid.New("noelia", "jackal.im", "yard", true)
 
 	dp := &discoInfoProvider{}

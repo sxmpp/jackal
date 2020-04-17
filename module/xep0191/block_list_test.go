@@ -11,17 +11,17 @@ import (
 	"testing"
 	"time"
 
-	c2srouter "github.com/ortuman/jackal/c2s/router"
-	"github.com/ortuman/jackal/model"
-	rostermodel "github.com/ortuman/jackal/model/roster"
-	"github.com/ortuman/jackal/module/xep0115"
-	"github.com/ortuman/jackal/router"
-	"github.com/ortuman/jackal/router/host"
-	memorystorage "github.com/ortuman/jackal/storage/memory"
-	"github.com/ortuman/jackal/storage/repository"
-	"github.com/ortuman/jackal/stream"
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	c2srouter "github.com/sxmpp/jackal/c2s/router"
+	"github.com/sxmpp/jackal/model"
+	rostermodel "github.com/sxmpp/jackal/model/roster"
+	"github.com/sxmpp/jackal/module/xep0115"
+	"github.com/sxmpp/jackal/router"
+	"github.com/sxmpp/jackal/router/host"
+	memorystorage "github.com/sxmpp/jackal/storage/memory"
+	"github.com/sxmpp/jackal/storage/repository"
+	"github.com/sxmpp/jackal/stream"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/pborman/uuid"
 	"github.com/stretchr/testify/require"
 )
@@ -29,7 +29,7 @@ import (
 func TestXEP0191_Matching(t *testing.T) {
 	r, presencesRep, blockListRep, rosterRep := setupTest("jackal.im")
 
-	j, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 
 	stm := stream.NewMockC2S(uuid.New(), j)
 	r.Bind(context.Background(), stm)
@@ -63,7 +63,7 @@ func TestXEP0191_Matching(t *testing.T) {
 func TestXEP0191_GetBlockList(t *testing.T) {
 	r, presencesRep, blockListRep, rosterRep := setupTest("jackal.im")
 
-	j, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 
 	stm := stream.NewMockC2S(uuid.New(), j)
 	r.Bind(context.Background(), stm)
@@ -75,11 +75,11 @@ func TestXEP0191_GetBlockList(t *testing.T) {
 	defer func() { _ = x.Shutdown() }()
 
 	_ = blockListRep.InsertBlockListItem(context.Background(), &model.BlockListItem{
-		Username: "ortuman",
+		Username: "sxmpp",
 		JID:      "hamlet@jackal.im/garden",
 	})
 	_ = blockListRep.InsertBlockListItem(context.Background(), &model.BlockListItem{
-		Username: "ortuman",
+		Username: "sxmpp",
 		JID:      "jabber.org",
 	})
 
@@ -114,10 +114,10 @@ func TestXEP191_BlockAndUnblock(t *testing.T) {
 	x := New(nil, caps, r, rosterRep, blockListRep)
 	defer func() { _ = x.Shutdown() }()
 
-	j1, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j1, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 	stm1 := stream.NewMockC2S(uuid.New(), j1)
 
-	j2, _ := jid.New("ortuman", "jackal.im", "yard", true)
+	j2, _ := jid.New("sxmpp", "jackal.im", "yard", true)
 	stm2 := stream.NewMockC2S(uuid.New(), j2)
 
 	j3, _ := jid.New("romeo", "jackal.im", "garden", true)
@@ -153,7 +153,7 @@ func TestXEP191_BlockAndUnblock(t *testing.T) {
 	stm2.SetValue(xep191RequestedContextKey, true)
 
 	_, _ = rosterRep.UpsertRosterItem(context.Background(), &rostermodel.Item{
-		Username:     "ortuman",
+		Username:     "sxmpp",
 		JID:          "romeo@jackal.im",
 		Subscription: "both",
 	})
@@ -190,7 +190,7 @@ func TestXEP191_BlockAndUnblock(t *testing.T) {
 	elem = stm4.ReceiveElement()
 	require.Equal(t, "presence", elem.Name())
 	require.Equal(t, xmpp.UnavailableType, elem.Type())
-	require.Equal(t, "ortuman@jackal.im/balcony", elem.From())
+	require.Equal(t, "sxmpp@jackal.im/balcony", elem.From())
 
 	// result IQ
 	elem = stm1.ReceiveElement()
@@ -212,7 +212,7 @@ func TestXEP191_BlockAndUnblock(t *testing.T) {
 	require.Equal(t, xmpp.SetType, elem.Type())
 
 	// check storage
-	bl, _ := blockListRep.FetchBlockListItems(context.Background(), "ortuman")
+	bl, _ := blockListRep.FetchBlockListItems(context.Background(), "sxmpp")
 	require.NotNil(t, bl)
 	require.Equal(t, 1, len(bl))
 	require.Equal(t, "jackal.im/jail", bl[0].JID)
@@ -241,7 +241,7 @@ func TestXEP191_BlockAndUnblock(t *testing.T) {
 	elem = stm4.ReceiveElement()
 	require.Equal(t, "presence", elem.Name())
 	require.Equal(t, xmpp.AvailableType, elem.Type())
-	require.Equal(t, "ortuman@jackal.im/balcony", elem.From())
+	require.Equal(t, "sxmpp@jackal.im/balcony", elem.From())
 
 	// result IQ
 	elem = stm1.ReceiveElement()
@@ -260,11 +260,11 @@ func TestXEP191_BlockAndUnblock(t *testing.T) {
 
 	// test full unblock
 	_ = blockListRep.InsertBlockListItem(context.Background(), &model.BlockListItem{
-		Username: "ortuman",
+		Username: "sxmpp",
 		JID:      "hamlet@jackal.im/garden",
 	})
 	_ = blockListRep.InsertBlockListItem(context.Background(), &model.BlockListItem{
-		Username: "ortuman",
+		Username: "sxmpp",
 		JID:      "jabber.org",
 	})
 
@@ -279,7 +279,7 @@ func TestXEP191_BlockAndUnblock(t *testing.T) {
 
 	time.Sleep(time.Millisecond * 150) // wait until processed...
 
-	blItems, _ := blockListRep.FetchBlockListItems(context.Background(), "ortuman")
+	blItems, _ := blockListRep.FetchBlockListItems(context.Background(), "sxmpp")
 	require.Equal(t, 0, len(blItems))
 }
 

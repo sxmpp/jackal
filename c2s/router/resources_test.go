@@ -11,15 +11,15 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/ortuman/jackal/router"
-	"github.com/ortuman/jackal/stream"
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	"github.com/sxmpp/jackal/router"
+	"github.com/sxmpp/jackal/stream"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/stretchr/testify/require"
 )
 
 func TestResources_Binding(t *testing.T) {
-	j, _ := jid.NewWithString("ortuman@jackal.im/yard", true)
+	j, _ := jid.NewWithString("sxmpp@jackal.im/yard", true)
 	stm := stream.NewMockC2S("id-1", j)
 
 	res := resources{}
@@ -38,10 +38,10 @@ func TestResources_Binding(t *testing.T) {
 }
 
 func TestResources_Route(t *testing.T) {
-	j1, _ := jid.NewWithString("ortuman@jackal.im/yard", true)
-	j2, _ := jid.NewWithString("ortuman@jackal.im/balcony", true)
-	j3, _ := jid.NewWithString("ortuman@jackal.im/chamber", true)
-	j4, _ := jid.NewWithString("ortuman@jackal.im", true)
+	j1, _ := jid.NewWithString("sxmpp@jackal.im/yard", true)
+	j2, _ := jid.NewWithString("sxmpp@jackal.im/balcony", true)
+	j3, _ := jid.NewWithString("sxmpp@jackal.im/chamber", true)
+	j4, _ := jid.NewWithString("sxmpp@jackal.im", true)
 
 	stm1 := stream.NewMockC2S("id-1", j1)
 	stm2 := stream.NewMockC2S("id-2", j2)

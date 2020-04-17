@@ -11,7 +11,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/ortuman/jackal/xmpp/jid"
+	"github.com/sxmpp/jackal/xmpp/jid"
 )
 
 const capabilitiesNamespace = "http://jabber.org/protocol/caps"

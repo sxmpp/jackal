@@ -10,9 +10,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ortuman/jackal/stream"
-	"github.com/ortuman/jackal/transport"
-	"github.com/ortuman/jackal/transport/compress"
+	"github.com/sxmpp/jackal/stream"
+	"github.com/sxmpp/jackal/transport"
+	"github.com/sxmpp/jackal/transport/compress"
 )
 
 const (

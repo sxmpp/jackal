@@ -8,7 +8,7 @@ package version_test
 import (
 	"testing"
 
-	"github.com/ortuman/jackal/version"
+	"github.com/sxmpp/jackal/version"
 	"github.com/stretchr/testify/require"
 )
 

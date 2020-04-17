@@ -7,7 +7,7 @@ package pgsql
 
 import (
 	sqlmock "github.com/DATA-DOG/go-sqlmock"
-	"github.com/ortuman/jackal/log"
+	"github.com/sxmpp/jackal/log"
 )
 
 // newStorageMock returns a mocked MySQL storage instance.

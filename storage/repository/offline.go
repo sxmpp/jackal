@@ -8,7 +8,7 @@ package repository
 import (
 	"context"
 
-	"github.com/ortuman/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp"
 )
 
 // Offline defines storage operations for offline messages

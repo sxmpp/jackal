@@ -9,8 +9,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/ortuman/jackal/storage/mysql"
-	"github.com/ortuman/jackal/storage/pgsql"
+	"github.com/sxmpp/jackal/storage/mysql"
+	"github.com/sxmpp/jackal/storage/pgsql"
 )
 
 // Type represents a storage manager type.

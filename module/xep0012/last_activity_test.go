@@ -10,17 +10,17 @@ import (
 	"crypto/tls"
 	"testing"
 
-	"github.com/ortuman/jackal/router/host"
+	"github.com/sxmpp/jackal/router/host"
 
-	c2srouter "github.com/ortuman/jackal/c2s/router"
-	"github.com/ortuman/jackal/model"
-	rostermodel "github.com/ortuman/jackal/model/roster"
-	"github.com/ortuman/jackal/router"
-	memorystorage "github.com/ortuman/jackal/storage/memory"
-	"github.com/ortuman/jackal/storage/repository"
-	"github.com/ortuman/jackal/stream"
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	c2srouter "github.com/sxmpp/jackal/c2s/router"
+	"github.com/sxmpp/jackal/model"
+	rostermodel "github.com/sxmpp/jackal/model/roster"
+	"github.com/sxmpp/jackal/router"
+	memorystorage "github.com/sxmpp/jackal/storage/memory"
+	"github.com/sxmpp/jackal/storage/repository"
+	"github.com/sxmpp/jackal/stream"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/pborman/uuid"
 	"github.com/stretchr/testify/require"
 )
@@ -28,7 +28,7 @@ import (
 func TestXEP0012_Matching(t *testing.T) {
 	r, userRep, rosterRep := setupTest("jackal.im")
 
-	j, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 
 	x := New(nil, r, userRep, rosterRep)
 	defer func() { _ = x.Shutdown() }()
@@ -59,7 +59,7 @@ func TestXEP0012_GetServerLastActivity(t *testing.T) {
 	r, userRep, rosterRep := setupTest("jackal.im")
 
 	j1, _ := jid.New("", "jackal.im", "", true)
-	j2, _ := jid.New("ortuman", "jackal.im", "garden", true)
+	j2, _ := jid.New("sxmpp", "jackal.im", "garden", true)
 
 	stm := stream.NewMockC2S("abcd", j2)
 	stm.SetPresence(xmpp.NewPresence(j2, j2, xmpp.AvailableType))
@@ -87,7 +87,7 @@ func TestXEP0012_GetServerLastActivity(t *testing.T) {
 func TestXEP0012_GetOnlineUserLastActivity(t *testing.T) {
 	r, userRep, rosterRep := setupTest("jackal.im")
 
-	j1, _ := jid.New("ortuman", "jackal.im", "balcony", true)
+	j1, _ := jid.New("sxmpp", "jackal.im", "balcony", true)
 	j2, _ := jid.New("noelia", "jackal.im", "garden", true)
 
 	stm1 := stream.NewMockC2S(uuid.New(), j1)
@@ -120,7 +120,7 @@ func TestXEP0012_GetOnlineUserLastActivity(t *testing.T) {
 		LastPresence: p,
 	})
 	_, _ = rosterRep.UpsertRosterItem(context.Background(), &rostermodel.Item{
-		Username:     "ortuman",
+		Username:     "sxmpp",
 		JID:          "noelia@jackal.im",
 		Subscription: "both",
 	})

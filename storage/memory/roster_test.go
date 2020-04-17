@@ -9,9 +9,9 @@ import (
 	"context"
 	"testing"
 
-	rostermodel "github.com/ortuman/jackal/model/roster"
-	"github.com/ortuman/jackal/xmpp"
-	"github.com/ortuman/jackal/xmpp/jid"
+	rostermodel "github.com/sxmpp/jackal/model/roster"
+	"github.com/sxmpp/jackal/xmpp"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/stretchr/testify/require"
 )
 
@@ -161,7 +161,7 @@ func TestMemoryStorage_DeleteRosterItem(t *testing.T) {
 
 func TestMemoryStorage_InsertRosterNotification(t *testing.T) {
 	rn := rostermodel.Notification{
-		Contact:  "ortuman",
+		Contact:  "sxmpp",
 		JID:      "romeo@jackal.im",
 		Presence: &xmpp.Presence{},
 	}
@@ -175,19 +175,19 @@ func TestMemoryStorage_InsertRosterNotification(t *testing.T) {
 func TestMemoryStorage_FetchRosterNotifications(t *testing.T) {
 	rn1 := rostermodel.Notification{
 		Contact:  "romeo",
-		JID:      "ortuman@jackal.im",
+		JID:      "sxmpp@jackal.im",
 		Presence: &xmpp.Presence{},
 	}
 	rn2 := rostermodel.Notification{
 		Contact:  "romeo",
-		JID:      "ortuman2@jackal.im",
+		JID:      "sxmpp2@jackal.im",
 		Presence: &xmpp.Presence{},
 	}
 	s := NewRoster()
 	_ = s.UpsertRosterNotification(context.Background(), &rn1)
 	_ = s.UpsertRosterNotification(context.Background(), &rn2)
 
-	from, _ := jid.NewWithString("ortuman2@jackal.im", true)
+	from, _ := jid.NewWithString("sxmpp2@jackal.im", true)
 	to, _ := jid.NewWithString("romeo@jackal.im", true)
 	rn2.Presence = xmpp.NewPresence(from, to, xmpp.SubscribeType)
 	_ = s.UpsertRosterNotification(context.Background(), &rn2)
@@ -200,13 +200,13 @@ func TestMemoryStorage_FetchRosterNotifications(t *testing.T) {
 	rns, err := s.FetchRosterNotifications(context.Background(), "romeo")
 	require.Nil(t, err)
 	require.Equal(t, 2, len(rns))
-	require.Equal(t, "ortuman@jackal.im", rns[0].JID)
-	require.Equal(t, "ortuman2@jackal.im", rns[1].JID)
+	require.Equal(t, "sxmpp@jackal.im", rns[0].JID)
+	require.Equal(t, "sxmpp2@jackal.im", rns[1].JID)
 }
 
 func TestMemoryStorage_DeleteRosterNotification(t *testing.T) {
 	rn1 := rostermodel.Notification{
-		Contact:  "ortuman",
+		Contact:  "sxmpp",
 		JID:      "romeo@jackal.im",
 		Presence: &xmpp.Presence{},
 	}
@@ -214,15 +214,15 @@ func TestMemoryStorage_DeleteRosterNotification(t *testing.T) {
 	_ = s.UpsertRosterNotification(context.Background(), &rn1)
 
 	EnableMockedError()
-	require.Equal(t, ErrMocked, s.DeleteRosterNotification(context.Background(), "ortuman", "romeo@jackal.im"))
+	require.Equal(t, ErrMocked, s.DeleteRosterNotification(context.Background(), "sxmpp", "romeo@jackal.im"))
 	DisableMockedError()
 
-	require.Nil(t, s.DeleteRosterNotification(context.Background(), "ortuman", "romeo@jackal.im"))
+	require.Nil(t, s.DeleteRosterNotification(context.Background(), "sxmpp", "romeo@jackal.im"))
 
 	rns, err := s.FetchRosterNotifications(context.Background(), "romeo")
 	require.Nil(t, err)
 	require.Equal(t, 0, len(rns))
 
 	// delete not existing roster notification...
-	require.Nil(t, s.DeleteRosterNotification(context.Background(), "ortuman2", "romeo@jackal.im"))
+	require.Nil(t, s.DeleteRosterNotification(context.Background(), "sxmpp2", "romeo@jackal.im"))
 }

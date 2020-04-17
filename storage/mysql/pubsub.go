@@ -11,8 +11,8 @@ import (
 	"strings"
 
 	sq "github.com/Masterminds/squirrel"
-	pubsubmodel "github.com/ortuman/jackal/model/pubsub"
-	"github.com/ortuman/jackal/xmpp"
+	pubsubmodel "github.com/sxmpp/jackal/model/pubsub"
+	"github.com/sxmpp/jackal/xmpp"
 )
 
 type mySQLPubSub struct {

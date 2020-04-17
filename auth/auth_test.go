@@ -10,10 +10,10 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-	"github.com/ortuman/jackal/model"
-	memorystorage "github.com/ortuman/jackal/storage/memory"
-	"github.com/ortuman/jackal/stream"
-	"github.com/ortuman/jackal/xmpp/jid"
+	"github.com/sxmpp/jackal/model"
+	memorystorage "github.com/sxmpp/jackal/storage/memory"
+	"github.com/sxmpp/jackal/stream"
+	"github.com/sxmpp/jackal/xmpp/jid"
 	"github.com/stretchr/testify/require"
 )
 
