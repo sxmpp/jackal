@@ -82,7 +82,7 @@ func (r *resources) routeToResource(ctx context.Context, stanza xmpp.Stanza, res
 	defer r.mu.RUnlock()
 
 	for _, s := range r.streams {
-		if s.Resource() != resource {
+		if s.Resource() != resource || !s.Presence().IsAvailable() {
 			continue
 		}
 		s.SendElement(ctx, stanza)
@@ -96,6 +96,9 @@ func (r *resources) broadcast(ctx context.Context, stanza xmpp.Stanza) error {
 	defer r.mu.RUnlock()
 
 	for _, s := range r.streams {
+		if !s.Presence().IsAvailable() {
+			continue
+		}
 		s.SendElement(ctx, stanza)
 	}
 	return nil

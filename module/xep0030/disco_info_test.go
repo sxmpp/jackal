@@ -200,10 +200,11 @@ func TestXEP0030_Provider(t *testing.T) {
 func setupTest(domain string) (router.Router, storage.Roster) {
 	hosts, _ := host.New([]host.Config{{Name: domain, Certificate: tls.Certificate{}}})
 	rosterSt := memorystorage.NewRoster()
+
+	c2sRouter, _ := c2srouter.New(memorystorage.NewUser(), memorystorage.NewBlockList(), memorystorage.NewPresences(), nil)
 	r, _ := router.New(
 		hosts,
-		c2srouter.New(memorystorage.NewUser(), memorystorage.NewBlockList()),
-		nil,
+		c2sRouter,
 		nil,
 	)
 	return r, rosterSt

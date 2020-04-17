@@ -10,6 +10,7 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"net/http"
 	"strconv"
 
 	"github.com/ortuman/jackal/cluster/etcd"
@@ -102,12 +103,12 @@ func (c *Cluster) shutdown(ctx context.Context) error {
 	if err := c.srv.shutdown(ctx); err != nil {
 		return err
 	}
-	log.Infof("successfully shutted down")
+	log.Infof("shutdown complete")
 	return nil
 }
 
 func (c *Cluster) serve() {
-	if err := c.srv.start(); err != nil {
+	if err := c.srv.start(); err != nil && err != http.ErrServerClosed {
 		log.Fatal(err)
 	}
 }

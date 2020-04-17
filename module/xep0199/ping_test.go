@@ -11,10 +11,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ortuman/jackal/router/host"
-
 	c2srouter "github.com/ortuman/jackal/c2s/router"
 	"github.com/ortuman/jackal/router"
+	"github.com/ortuman/jackal/router/host"
 	memorystorage "github.com/ortuman/jackal/storage/memory"
 	"github.com/ortuman/jackal/stream"
 	"github.com/ortuman/jackal/xmpp"
@@ -144,10 +143,11 @@ func TestXEP0199_Disconnect(t *testing.T) {
 
 func setupTest() router.Router {
 	hosts, _ := host.New([]host.Config{{Name: "jackal.im", Certificate: tls.Certificate{}}})
+
+	c2sRouter, _ := c2srouter.New(memorystorage.NewUser(), memorystorage.NewBlockList(), memorystorage.NewPresences(), nil)
 	r, _ := router.New(
 		hosts,
-		c2srouter.New(memorystorage.NewUser(), memorystorage.NewBlockList()),
-		nil,
+		c2sRouter,
 		nil,
 	)
 	return r

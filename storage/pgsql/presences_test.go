@@ -5,11 +5,8 @@ import (
 	"encoding/json"
 	"testing"
 
-	sq "github.com/Masterminds/squirrel"
-
-	capsmodel "github.com/ortuman/jackal/model/capabilities"
-
 	"github.com/DATA-DOG/go-sqlmock"
+	capsmodel "github.com/ortuman/jackal/model/capabilities"
 	"github.com/ortuman/jackal/util/pool"
 	"github.com/ortuman/jackal/xmpp"
 	"github.com/ortuman/jackal/xmpp/jid"
@@ -21,7 +18,7 @@ func TestPgSQLPresences_UpsertPresence(t *testing.T) {
 
 	s, mock := newPresencesMock()
 	mock.ExpectQuery("INSERT INTO presences (.+) VALUES (.+) ON CONFLICT (.+) DO UPDATE SET (.+) RETURNING CASE WHEN updated_at=created_at THEN true ELSE false END AS inserted").
-		WithArgs("ortuman", "jackal.im", "yard", `<presence from="ortuman@jackal.im/yard" to="ortuman@jackal.im"/>`, "", "", "alloc-1234").
+		WithArgs("ortuman", "jackal.im", "yard", `<presence from="ortuman@jackal.im/yard" to="ortuman@jackal.im"/>`, 0, "", "", "alloc-1234").
 		WillReturnRows(sqlmock.NewRows(columns).AddRow(true))
 
 	j, _ := jid.NewWithString("ortuman@jackal.im/yard", true)
@@ -54,39 +51,15 @@ func TestPgSQLPresences_FetchPresence(t *testing.T) {
 	require.Equal(t, "urn:xmpp:ping", extPresence.Caps.Features[0])
 }
 
-func TestPgSQLPresences_FetchPrioritaryPresence(t *testing.T) {
+func TestPgSQLPresences_FetchPresencesMatchingJID(t *testing.T) {
 	var columns = []string{"allocation_id", "presence", "c.node", "c.ver", "c.features"}
 
-	sq.StatementBuilder.PlaceholderFormat(sq.Dollar)
-
 	s, mock := newPresencesMock()
-	mock.ExpectQuery("SELECT allocation_id, presence, c.node, c.ver, c.features FROM presences AS p, capabilities AS c WHERE \\(username = (.+) AND domain = (.+) AND p.priority > 0 AND p.priority = \\(SELECT MAX\\(priority\\) FROM presences WHERE username = (.+) AND domain = (.+)\\) AND p.node = c.node AND p.ver = c.ver\\)").
-		WithArgs("ortuman", "jackal.im").
-		WillReturnRows(sqlmock.NewRows(columns).
-			AddRow("a1234", "<presence/>", "http://jackal.im", "v1234", `["urn:xmpp:ping"]`))
-
-	j, _ := jid.NewWithString("ortuman@jackal.im/yard", true)
-	extPresence, err := s.FetchPrioritaryPresence(context.Background(), j)
-	require.Nil(t, mock.ExpectationsWereMet())
-	require.Nil(t, err)
-
-	require.NotNil(t, extPresence)
-
-	require.Equal(t, "http://jackal.im", extPresence.Caps.Node)
-	require.Equal(t, "v1234", extPresence.Caps.Ver)
-	require.Len(t, extPresence.Caps.Features, 1)
-	require.Equal(t, "urn:xmpp:ping", extPresence.Caps.Features[0])
-}
-
-func TestPgSQLPresences_FetchPresencesMatchingJID(t *testing.T) {
-	var columns = []string{"presence", "c.node", "c.ver", "c.features"}
-
-	s, mock := newPresencesMock()
-	mock.ExpectQuery("SELECT presence, c.node, c.ver, c.features FROM presences AS p, capabilities AS c WHERE \\(username = \\? AND domain = \\? AND resource = \\? AND p.node = c.node AND p.ver = c.ver\\)").
+	mock.ExpectQuery("SELECT allocation_id, presence, c.node, c.ver, c.features FROM presences AS p, capabilities AS c WHERE \\(username = \\? AND domain = \\? AND resource = \\? AND p.node = c.node AND p.ver = c.ver\\)").
 		WithArgs("ortuman", "jackal.im", "yard").
 		WillReturnRows(sqlmock.NewRows(columns).
-			AddRow("<presence/>", "http://jackal.im", "v1234", `["urn:xmpp:ping"]`).
-			AddRow("<presence/>", "http://jackal.im", "v1234", `["urn:xmpp:ping"]`),
+			AddRow("a1234", "<presence/>", "http://jackal.im", "v1234", `["urn:xmpp:ping"]`).
+			AddRow("a1234", "<presence/>", "http://jackal.im", "v1234", `["urn:xmpp:ping"]`),
 		)
 
 	j, _ := jid.NewWithString("ortuman@jackal.im/yard", true)
@@ -126,24 +99,6 @@ func TestPgSQLPresences_DeleteAllocationPresence(t *testing.T) {
 
 	require.Nil(t, mock.ExpectationsWereMet())
 	require.Nil(t, err)
-}
-
-func TestPgSQLPresences_FetchPresenceAllocationID(t *testing.T) {
-	var columns = []string{"allocation_id"}
-
-	j, _ := jid.NewWithString("ortuman@jackal.im/yard", true)
-
-	s, mock := newPresencesMock()
-	mock.ExpectQuery("SELECT allocation_id FROM presences WHERE \\(username = \\? AND domain = \\? AND resource = \\?\\)").
-		WithArgs(j.Node(), j.Domain(), j.Resource()).
-		WillReturnRows(sqlmock.NewRows(columns).AddRow("a1"))
-
-	allocID, err := s.FetchPresenceAllocationID(context.Background(), j)
-
-	require.Nil(t, mock.ExpectationsWereMet())
-
-	require.Nil(t, err)
-	require.Equal(t, "a1", allocID)
 }
 
 func TestPgSQLPresences_FetchAllocationIDs(t *testing.T) {

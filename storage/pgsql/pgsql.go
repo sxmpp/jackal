@@ -79,7 +79,7 @@ func (c *Storage) Shutdown(ctx context.Context) error {
 	c.doneCh <- ch
 	select {
 	case <-ch:
-		log.Infof("successfully shutted down")
+		log.Infof("Shutdown complete")
 		return nil
 	case <-ctx.Done():
 		return ctx.Err()

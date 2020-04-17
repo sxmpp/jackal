@@ -46,10 +46,6 @@ func TestMemoryStorage_FetchPresencesMatchingJID(t *testing.T) {
 	require.NotNil(t, extPresence)
 	require.Equal(t, extPresence.AllocationID, allocID2)
 
-	// fetch presence allocation
-	allocID, _ := s.FetchPresenceAllocationID(context.Background(), j1)
-	require.Equal(t, allocID1, allocID)
-
 	allocationIDs, _ := s.FetchAllocationIDs(context.Background())
 	require.Len(t, allocationIDs, 2)
 

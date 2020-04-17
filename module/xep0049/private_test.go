@@ -170,10 +170,11 @@ func TestXEP0049_SetAndGetPrivate(t *testing.T) {
 func setupTest(domain string) (router.Router, storage.Private) {
 	hosts, _ := host.New([]host.Config{{Name: domain, Certificate: tls.Certificate{}}})
 	s := memorystorage.NewPrivate()
+
+	c2sRouter, _ := c2srouter.New(memorystorage.NewUser(), memorystorage.NewBlockList())
 	r, _ := router.New(
 		hosts,
-		c2srouter.New(memorystorage.NewUser(), memorystorage.NewBlockList()),
-		nil,
+		c2sRouter,
 		nil,
 	)
 	return r, s

@@ -233,10 +233,11 @@ func testVCard() xmpp.XElement {
 func setupTest(domain string) (router.Router, *memorystorage.VCard) {
 	hosts, _ := host.New([]host.Config{{Name: domain, Certificate: tls.Certificate{}}})
 	s := memorystorage.NewVCard()
+
+	c2sRouter, _ := c2srouter.New(memorystorage.NewUser(), memorystorage.NewBlockList(), memorystorage.NewPresences(), nil)
 	r, _ := router.New(
 		hosts,
-		c2srouter.New(memorystorage.NewUser(), memorystorage.NewBlockList()),
-		nil,
+		c2sRouter,
 		nil,
 	)
 	return r, s

@@ -11,14 +11,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ortuman/jackal/storage"
-
 	c2srouter "github.com/ortuman/jackal/c2s/router"
 	"github.com/ortuman/jackal/model"
 	rostermodel "github.com/ortuman/jackal/model/roster"
 	"github.com/ortuman/jackal/module/xep0115"
 	"github.com/ortuman/jackal/router"
 	"github.com/ortuman/jackal/router/host"
+	"github.com/ortuman/jackal/storage"
 	memorystorage "github.com/ortuman/jackal/storage/memory"
 	"github.com/ortuman/jackal/stream"
 	"github.com/ortuman/jackal/xmpp"
@@ -495,10 +494,11 @@ func setupTest(domain string) (router.Router, storage.User, storage.Presences, s
 	userSt := memorystorage.NewUser()
 	presencesSt := memorystorage.NewPresences()
 	rosterSt := memorystorage.NewRoster()
+
+	c2sRouter, _ := c2srouter.New(userSt, memorystorage.NewBlockList(), memorystorage.NewPresences(), nil)
 	r, _ := router.New(
 		hosts,
-		c2srouter.New(userSt, memorystorage.NewBlockList()),
-		nil,
+		c2sRouter,
 		nil,
 	)
 	return r, userSt, presencesSt, rosterSt

@@ -159,9 +159,11 @@ func setupTest(domain string) (router.Router, storage.User, storage.BlockList) {
 
 	userRep := memorystorage.NewUser()
 	blockListRep := memorystorage.NewBlockList()
+
+	c2sRouter, _ := c2srouter.New(userRep, blockListRep, nil, nil)
 	r, _ := router.New(
 		hosts,
-		c2srouter.New(userRep, blockListRep),
+		c2sRouter,
 		nil,
 	)
 	return r, userRep, blockListRep
@@ -218,10 +220,11 @@ func setupTestC2S(domain string) (*C2S, *fakeC2SServer) {
 
 	userSt := memorystorage.NewUser()
 	blockListSt := memorystorage.NewBlockList()
+
+	c2sRouter, _ := c2srouter.New(userSt, blockListSt, nil, nil)
 	r, _ := router.New(
 		hosts,
-		c2srouter.New(userSt, blockListSt),
-		nil,
+		c2sRouter,
 		nil,
 	)
 

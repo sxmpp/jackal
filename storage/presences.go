@@ -23,9 +23,6 @@ type Presences interface {
 	// FetchPresence retrieves from storage a previously registered presence.
 	FetchPresence(ctx context.Context, jid *jid.JID) (*model.ExtPresence, error)
 
-	// FetchPrioritaryPresence retrieves highest priority presence.
-	FetchPrioritaryPresence(ctx context.Context, jid *jid.JID) (*model.ExtPresence, error)
-
 	// FetchPresencesMatchingJID retrives all storage presences matching a certain JID
 	FetchPresencesMatchingJID(ctx context.Context, jid *jid.JID) ([]model.ExtPresence, error)
 
@@ -34,9 +31,6 @@ type Presences interface {
 
 	// DeleteAllocationPresences removes from storage all presences associated to a given allocation.
 	DeleteAllocationPresences(ctx context.Context, allocationID string) error
-
-	// FetchPresenceAllocationID returns the allocation identifier that registered a concrete JID presence.
-	FetchPresenceAllocationID(ctx context.Context, jid *jid.JID) (string, error)
 
 	// FetchAllocationIDs returns all allocation identifiers that registered one or more presences.
 	FetchAllocationIDs(ctx context.Context) ([]string, error)

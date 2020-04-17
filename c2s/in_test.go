@@ -420,7 +420,6 @@ func tUtilStreamInit(r router.Router, userSt storage.User, blockListSt storage.B
 func tUtilInStreamDefaultConfig() *streamConfig {
 	return &streamConfig{
 		connectTimeout:   time.Second,
-		keepAlive:        time.Second,
 		maxStanzaSize:    8192,
 		resourceConflict: Reject,
 		compression:      CompressConfig{Level: compress.DefaultCompression},

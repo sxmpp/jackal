@@ -14,6 +14,24 @@ CREATE TABLE IF NOT EXISTS users (
     created_at       DATETIME NOT NULL
 ) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- resources
+
+CREATE TABLE IF NOT EXISTS resources (
+    username      VARCHAR(256) NOT NULL,
+    domain        VARCHAR(256) NOT NULL,
+    resource      VARCHAR(256) NOT NULL,
+    priority      INT DEFAULT 0,
+    allocation_id VARCHAR(256) NOT NULL,
+    updated_at    DATETIME NOT NULL,
+    created_at    DATETIME NOT NULL,
+
+    PRIMARY KEY (username, domain, resource),
+
+    INDEX i_resources_username_domain(username, domain),
+    INDEX i_resources_allocation_id(allocation_id)
+
+) ENGINE=InnoDB CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 -- presences
 
 CREATE TABLE IF NOT EXISTS presences (
@@ -21,7 +39,6 @@ CREATE TABLE IF NOT EXISTS presences (
     domain        VARCHAR(256) NOT NULL,
     resource      VARCHAR(256) NOT NULL,
     presence      TEXT NOT NULL,
-    priority      INT DEFAULT 0,
     node          VARCHAR(256) NOT NULL,
     ver           VARCHAR(256) NOT NULL,
     allocation_id VARCHAR(256) NOT NULL,

@@ -81,10 +81,11 @@ func TestXEP0092(t *testing.T) {
 
 func setupTest() router.Router {
 	hosts, _ := host.New([]host.Config{{Name: "jackal.im", Certificate: tls.Certificate{}}})
+
+	c2sRouter, _ := c2srouter.New(memorystorage.NewUser(), memorystorage.NewBlockList(), memorystorage.NewPresences(), nil)
 	r, _ := router.New(
 		hosts,
-		c2srouter.New(memorystorage.NewUser(), memorystorage.NewBlockList()),
-		nil,
+		c2sRouter,
 		nil,
 	)
 	return r

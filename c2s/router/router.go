@@ -7,10 +7,12 @@ package c2srouter
 
 import (
 	"context"
+	"sort"
 	"sync"
 
 	"github.com/ortuman/jackal/cluster"
 	"github.com/ortuman/jackal/log"
+	"github.com/ortuman/jackal/model"
 	"github.com/ortuman/jackal/router"
 	"github.com/ortuman/jackal/storage"
 	"github.com/ortuman/jackal/stream"
@@ -68,7 +70,15 @@ func (r *c2sRouter) Route(ctx context.Context, stanza xmpp.Stanza, validations r
 			return router.ErrBlockedJID
 		}
 	}
-	return r.route(ctx, stanza)
+	// fetch user extended presences
+	extPresences, err := r.presencesSt.FetchPresencesMatchingJID(ctx, stanza.ToJID().ToBareJID())
+	if err != nil {
+		return err
+	}
+	if len(extPresences) == 0 {
+		return router.ErrNotAuthenticated
+	}
+	return r.route(ctx, stanza, extPresences)
 }
 
 func (r *c2sRouter) Bind(stm stream.C2S) {
@@ -91,14 +101,14 @@ func (r *c2sRouter) Streams(username string) []stream.C2S {
 	return r.localRouter.streams(username)
 }
 
-func (r *c2sRouter) route(ctx context.Context, stanza xmpp.Stanza) error {
+func (r *c2sRouter) route(ctx context.Context, stanza xmpp.Stanza, extPresences []model.ExtPresence) error {
 	toJID := stanza.ToJID()
 	if toJID.IsFullWithUser() {
-		return r.routeToResource(ctx, stanza)
+		return r.routeToResource(ctx, stanza, extPresences)
 	}
 	switch msg := stanza.(type) {
 	case *xmpp.Message:
-		routed, err := r.routeMessageToPrioritaryResource(ctx, msg)
+		routed, err := r.routeToPrioritaryResources(ctx, msg, extPresences)
 		if err != nil {
 			return err
 		}
@@ -108,54 +118,42 @@ func (r *c2sRouter) route(ctx context.Context, stanza xmpp.Stanza) error {
 		return nil
 	}
 route2all:
-	return r.routeToAllResources(ctx, stanza)
+	return r.routeToAllResources(ctx, stanza, extPresences)
 }
 
-func (r *c2sRouter) routeToResource(ctx context.Context, stanza xmpp.Stanza) error {
-	err := r.localRouter.route(ctx, stanza) // first, try to route locally
-	switch err {
-	case router.ErrResourceNotFound:
-		if r.cluster == nil {
-			return err
+func (r *c2sRouter) routeToResource(ctx context.Context, stanza xmpp.Stanza, extPresences []model.ExtPresence) error {
+	for _, extPresence := range extPresences {
+		if stanza.ToJID().Resource() != extPresence.Presence.FromJID().Resource() {
+			continue
 		}
-		break
-	default:
-		return err
+		return r.routeToAllocation(ctx, stanza, extPresence.AllocationID)
 	}
-	allocID, err := r.presencesSt.FetchPresenceAllocationID(ctx, stanza.ToJID())
-	if err != nil {
-		return err
-	}
-	if len(allocID) == 0 {
-		return router.ErrResourceNotFound
-	}
-	return r.clusterRouter.route(ctx, stanza, allocID)
+	return router.ErrResourceNotFound
 }
 
-func (r *c2sRouter) routeMessageToPrioritaryResource(ctx context.Context, msg *xmpp.Message) (routed bool, err error) {
-	extPresence, err := r.presencesSt.FetchPrioritaryPresence(ctx, msg.ToJID())
-	if err != nil {
-		return false, err
+func (r *c2sRouter) routeToPrioritaryResources(ctx context.Context, stanza xmpp.Stanza, extPresences []model.ExtPresence) (routed bool, err error) {
+	sort.Slice(extPresences, func(i, j int) bool {
+		return extPresences[i].Presence.Priority() > extPresences[j].Presence.Priority()
+	})
+	highestPriority := extPresences[0].Presence.Priority()
+	if highestPriority == 0 {
+		return false, nil // no prioritary presence found
 	}
-	if extPresence == nil { // no prioritary presence found
-		return false, nil
+	var prioritaryPresences []model.ExtPresence
+	for _, extPresence := range extPresences {
+		if extPresence.Presence.Priority() != highestPriority {
+			break
+		}
+		prioritaryPresences = append(prioritaryPresences, extPresence)
 	}
-	// rewrite message stanza pointing to prioritary resource
-	rwMessage, err := xmpp.NewMessageFromElement(msg, msg.FromJID(), extPresence.Presence.FromJID())
-	if err != nil {
-		return false, err
-	}
-	if err := r.routeToAllocation(ctx, rwMessage, extPresence.AllocationID); err != nil {
+	// broacast to prioritary resources
+	if err := r.routeToAllResources(ctx, stanza, prioritaryPresences); err != nil {
 		return false, err
 	}
 	return true, nil
 }
 
-func (r *c2sRouter) routeToAllResources(ctx context.Context, stanza xmpp.Stanza) error {
-	extPresences, err := r.presencesSt.FetchPresencesMatchingJID(ctx, stanza.ToJID().ToBareJID())
-	if err != nil {
-		return err
-	}
+func (r *c2sRouter) routeToAllResources(ctx context.Context, stanza xmpp.Stanza, extPresences []model.ExtPresence) error {
 	allocationIDs := make(map[string]struct{})
 	for _, extPresence := range extPresences {
 		allocationIDs[extPresence.AllocationID] = struct{}{}
@@ -181,7 +179,7 @@ func (r *c2sRouter) routeToAllResources(ctx context.Context, stanza xmpp.Stanza)
 }
 
 func (r *c2sRouter) routeToAllocation(ctx context.Context, stanza xmpp.Stanza, allocID string) error {
-	if r.cluster == nil || r.cluster.IsLocalAllocationID(allocID) {
+	if r.clusterRouter == nil || r.cluster.IsLocalAllocationID(allocID) {
 		return r.localRouter.route(ctx, stanza)
 	}
 	return r.clusterRouter.route(ctx, stanza, allocID)

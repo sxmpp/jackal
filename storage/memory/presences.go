@@ -65,36 +65,6 @@ func (m *Presences) FetchPresence(_ context.Context, jid *jid.JID) (*model.ExtPr
 	return res, nil
 }
 
-func (m *Presences) FetchPrioritaryPresence(ctx context.Context, jid *jid.JID) (*model.ExtPresence, error) {
-	var res *model.ExtPresence
-
-	if err := m.inReadLock(func() error {
-		var currentPriority int8
-		for k, v := range m.b {
-			if !strings.HasPrefix(k, "presences:"+jid.String()) {
-				continue
-			}
-			extPresence, err := m.deserializePresence(v)
-			if err != nil {
-				return err
-			}
-			priority := extPresence.Presence.Priority()
-			if priority == 0 {
-				continue
-			}
-			if priority < currentPriority {
-				continue
-			}
-			extPresence.AllocationID = allocationIDFromKey(k)
-			res = extPresence
-		}
-		return nil
-	}); err != nil {
-		return nil, err
-	}
-	return res, nil
-}
-
 func (m *Presences) FetchPresencesMatchingJID(ctx context.Context, j *jid.JID) ([]model.ExtPresence, error) {
 	var usePrefix, useSuffix bool
 	var res []model.ExtPresence
@@ -166,23 +136,6 @@ func (m *Presences) DeleteAllocationPresences(_ context.Context, allocationID st
 		}
 		return nil
 	})
-}
-
-func (m *Presences) FetchPresenceAllocationID(_ context.Context, jid *jid.JID) (string, error) {
-	var allocID string
-	if err := m.inReadLock(func() error {
-		for k := range m.b {
-			if strings.HasPrefix(k, "presences:"+jid.String()) {
-				ss := strings.Split(k, ":")
-				allocID = ss[2]
-				return nil
-			}
-		}
-		return nil
-	}); err != nil {
-		return "", err
-	}
-	return allocID, nil
 }
 
 func (m *Presences) FetchAllocationIDs(_ context.Context) ([]string, error) {

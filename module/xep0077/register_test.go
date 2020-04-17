@@ -320,10 +320,11 @@ func TestXEP0077_ChangePassword(t *testing.T) {
 func setupTest(domain string) (router.Router, *memorystorage.User) {
 	hosts, _ := host.New([]host.Config{{Name: domain, Certificate: tls.Certificate{}}})
 	userSt := memorystorage.NewUser()
+
+	c2sRouter, _ := c2srouter.New(userSt, memorystorage.NewBlockList(), memorystorage.NewPresences(), nil)
 	r, _ := router.New(
 		hosts,
-		c2srouter.New(userSt, memorystorage.NewBlockList()),
-		nil,
+		c2sRouter,
 		nil,
 	)
 	return r, userSt

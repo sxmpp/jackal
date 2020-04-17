@@ -290,10 +290,11 @@ func setupTest(domain string) (router.Router, storage.Presences, storage.BlockLi
 	presencesSt := memorystorage.NewPresences()
 	blockListSt := memorystorage.NewBlockList()
 	rosterSt := memorystorage.NewRoster()
+
+	c2sRouter, _ := c2srouter.New(memorystorage.NewUser(), blockListSt, memorystorage.NewPresences(), nil)
 	r, _ := router.New(
 		hosts,
-		c2srouter.New(memorystorage.NewUser(), blockListSt),
-		nil,
+		c2sRouter,
 		nil,
 	)
 	return r, presencesSt, blockListSt, rosterSt
