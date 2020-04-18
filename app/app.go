@@ -16,12 +16,12 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
-	"runtime"
 	"strconv"
 	"syscall"
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/pkg/errors"
 	"github.com/sxmpp/jackal/c2s"
 	c2srouter "github.com/sxmpp/jackal/c2s/router"
 	"github.com/sxmpp/jackal/component"
@@ -33,7 +33,6 @@ import (
 	s2srouter "github.com/sxmpp/jackal/s2s/router"
 	"github.com/sxmpp/jackal/storage"
 	"github.com/sxmpp/jackal/version"
-	"github.com/pkg/errors"
 )
 
 const (
@@ -43,6 +42,8 @@ const (
 
 	defaultShutDownWaitTime = time.Duration(5) * time.Second
 )
+
+var defaultConfigPathPostfix = filepath.Join("jackal", "jackal.yml")
 
 var logoStr = []string{
 	`        __               __            __   `,
@@ -103,8 +104,8 @@ func (a *Application) Run() error {
 	fs.BoolVar(&showUsage, "h", false, "Show this message")
 	fs.BoolVar(&showVersion, "version", false, "Print version information.")
 	fs.BoolVar(&showVersion, "v", false, "Print version information.")
-	fs.StringVar(&configFile, "config", "/etc/jackal/jackal.yml", "Configuration file path.")
-	fs.StringVar(&configFile, "c", "/etc/jackal/jackal.yml", "Configuration file path.")
+	fs.StringVar(&configFile, "config", a.getDefaultConfigDir(), "Configuration file path.")
+	fs.StringVar(&configFile, "c", a.getDefaultConfigDir(), "Configuration file path.")
 	fs.Usage = func() {
 		for i := range logoStr {
 			_, _ = fmt.Fprintf(a.output, "%s\n", logoStr[i])
@@ -264,26 +265,6 @@ func (a *Application) printLogo(allocID string) {
 	}
 	log.Infof("")
 	log.Infof("jackal %v - allocation_id: %s\n", version.ApplicationVersion, allocID)
-}
-
-func (a *Application) setRLimit() error {
-	var rLim syscall.Rlimit
-	if err := syscall.Getrlimit(syscall.RLIMIT_NOFILE, &rLim); err != nil {
-		return err
-	}
-	if rLim.Cur < rLim.Max {
-		switch runtime.GOOS {
-		case "darwin":
-			// The max file limit is 10240, even though
-			// the max returned by Getrlimit is 1<<63-1.
-			// This is OPEN_MAX in sys/syslimits.h.
-			rLim.Cur = darwinOpenMax
-		default:
-			rLim.Cur = rLim.Max
-		}
-		return syscall.Setrlimit(syscall.RLIMIT_NOFILE, &rLim)
-	}
-	return nil
 }
 
 func (a *Application) initDebugServer(port int) error {
