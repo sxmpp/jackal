@@ -44,14 +44,14 @@ const (
 // A JID is made up of a node (generally a username), a domain, and a resource.
 // The node and resource are optional; domain is required.
 type JID struct {
-	node     string
+	node     [32]byte
 	domain   string
 	resource string
 }
 
 // New constructs a JID given a user, domain, and resource.
 // This construction allows the caller to specify if stringprep should be applied or not.
-func New(node, domain, resource string, skipStringPrep bool) (*JID, error) {
+func New(node [32]byte, domain, resource string, skipStringPrep bool) (*JID, error) {
 	if skipStringPrep {
 		return &JID{
 			node:     node,
@@ -241,11 +241,11 @@ func (j *JID) ToBytes(buf *bytes.Buffer) error {
 	return nil
 }
 
-func (j *JID) stringPrep(node, domain, resource string) error {
+func (j *JID) stringPrep(node [32]byte, domain, resource string) error {
 	// Ensure that parts are valid UTF-8 (and short circuit the rest of the
 	// process if they're not). We'll check the domain after performing
 	// the IDNA ToUnicode operation.
-	if !utf8.ValidString(node) || !utf8.ValidString(resource) {
+	if !utf8.ValidString(resource) {
 		return errors.New("JID contains invalid UTF-8")
 	}
 
@@ -273,16 +273,14 @@ func (j *JID) stringPrep(node, domain, resource string) error {
 	//   the normalization, case-mapping, and width-mapping rules defined in
 	//   [RFC5892].
 	//
-	var nodeLen int
 	data := make([]byte, 0, len(node)+len(domain)+len(resource))
 
-	if node != "" {
-		data, err = precis.UsernameCaseMapped.Append(data, []byte(node))
-		if err != nil {
-			return err
-		}
-		nodeLen = len(data)
+	data, err = precis.UsernameCaseMapped.Append(data, node)
+	if err != nil {
+		return err
 	}
+	nodeLen = len(data)
+
 	data = append(data, []byte(domain)...)
 
 	if resource != "" {

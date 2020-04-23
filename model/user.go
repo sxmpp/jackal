@@ -15,8 +15,7 @@ import (
 
 // User represents a user storage entity.
 type User struct {
-	Username       string
-	Password       string
+	Username       [32]byte
 	LastPresence   *xmpp.Presence
 	LastPresenceAt time.Time
 }
@@ -25,9 +24,6 @@ type User struct {
 func (u *User) FromBytes(buf *bytes.Buffer) error {
 	dec := gob.NewDecoder(buf)
 	if err := dec.Decode(&u.Username); err != nil {
-		return err
-	}
-	if err := dec.Decode(&u.Password); err != nil {
 		return err
 	}
 	var hasPresence bool
@@ -51,9 +47,6 @@ func (u *User) FromBytes(buf *bytes.Buffer) error {
 func (u *User) ToBytes(buf *bytes.Buffer) error {
 	enc := gob.NewEncoder(buf)
 	if err := enc.Encode(&u.Username); err != nil {
-		return err
-	}
-	if err := enc.Encode(&u.Password); err != nil {
 		return err
 	}
 	hasPresence := u.LastPresence != nil

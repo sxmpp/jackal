@@ -15,7 +15,6 @@ import (
 	"github.com/sxmpp/jackal/module/xep0030"
 	"github.com/sxmpp/jackal/module/xep0049"
 	"github.com/sxmpp/jackal/module/xep0054"
-	"github.com/sxmpp/jackal/module/xep0077"
 	"github.com/sxmpp/jackal/module/xep0092"
 	"github.com/sxmpp/jackal/module/xep0115"
 	"github.com/sxmpp/jackal/module/xep0163"
@@ -51,7 +50,6 @@ type Modules struct {
 	Private      *xep0049.Private
 	DiscoInfo    *xep0030.DiscoInfo
 	VCard        *xep0054.VCard
-	Register     *xep0077.Register
 	Version      *xep0092.Version
 	Pep          *xep0163.Pep
 	BlockingCmd  *xep0191.BlockingCommand
@@ -92,13 +90,6 @@ func New(config *Config, router router.Router, reps repository.Container, alloca
 		m.VCard = xep0054.New(m.DiscoInfo, router, reps.VCard())
 		m.iqHandlers = append(m.iqHandlers, m.VCard)
 		m.all = append(m.all, m.VCard)
-	}
-
-	// XEP-0077: In-band registration (https://xmpp.org/extensions/xep-0077.html)
-	if _, ok := config.Enabled["registration"]; ok {
-		m.Register = xep0077.New(&config.Registration, m.DiscoInfo, router, reps.User())
-		m.iqHandlers = append(m.iqHandlers, m.Register)
-		m.all = append(m.all, m.Register)
 	}
 
 	// XEP-0092: Software Version (https://xmpp.org/extensions/xep-0092.html)

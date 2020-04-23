@@ -7,12 +7,11 @@ package model
 
 import (
 	"bytes"
-	"testing"
-	"time"
-
+	"github.com/stretchr/testify/require"
 	"github.com/sxmpp/jackal/xmpp"
 	"github.com/sxmpp/jackal/xmpp/jid"
-	"github.com/stretchr/testify/require"
+	"testing"
+	"time"
 )
 
 func TestModelUser(t *testing.T) {
@@ -21,8 +20,7 @@ func TestModelUser(t *testing.T) {
 	j1, _ := jid.NewWithString("sxmpp@jackal.im", true)
 	j2, _ := jid.NewWithString("sxmpp@jackal.im", true)
 
-	usr1.Username = "sxmpp"
-	usr1.Password = "1234"
+	// usr1.Username =
 	usr1.LastPresence = xmpp.NewPresence(j1, j2, xmpp.AvailableType)
 
 	buf := new(bytes.Buffer)
@@ -30,7 +28,6 @@ func TestModelUser(t *testing.T) {
 	usr2 := User{}
 	require.Nil(t, usr2.FromBytes(buf))
 	require.Equal(t, usr1.Username, usr2.Username)
-	require.Equal(t, usr1.Password, usr2.Password)
 	require.Equal(t, usr1.LastPresence.String(), usr2.LastPresence.String())
 	require.NotEqual(t, time.Time{}, usr2.LastPresenceAt)
 }

@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/pborman/uuid"
 	"github.com/sxmpp/jackal/log"
 	"github.com/sxmpp/jackal/model"
 	rostermodel "github.com/sxmpp/jackal/model/roster"
@@ -21,7 +22,6 @@ import (
 	"github.com/sxmpp/jackal/util/runqueue"
 	"github.com/sxmpp/jackal/xmpp"
 	"github.com/sxmpp/jackal/xmpp/jid"
-	"github.com/pborman/uuid"
 )
 
 const rosterNamespace = "jabber:iq:roster"
@@ -38,19 +38,17 @@ type Roster struct {
 	cfg        *Config
 	runQueue   *runqueue.RunQueue
 	router     router.Router
-	userRep    repository.User
 	rosterRep  repository.Roster
 	pep        *xep0163.Pep
 	entityCaps *xep0115.EntityCaps
 }
 
 // New returns a roster server stream module.
-func New(cfg *Config, entityCaps *xep0115.EntityCaps, pep *xep0163.Pep, router router.Router, userRep repository.User, rosterRep repository.Roster) *Roster {
+func New(cfg *Config, entityCaps *xep0115.EntityCaps, pep *xep0163.Pep, router router.Router, rosterRep repository.Roster) *Roster {
 	r := &Roster{
 		cfg:        cfg,
 		runQueue:   runqueue.New("roster"),
 		router:     router,
-		userRep:    userRep,
 		rosterRep:  rosterRep,
 		entityCaps: entityCaps,
 		pep:        pep,

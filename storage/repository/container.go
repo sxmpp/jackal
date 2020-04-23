@@ -9,9 +9,6 @@ import "context"
 
 // Container interface brings together all repository instances.
 type Container interface {
-	// User method returns repository.User concrete implementation.
-	User() User
-
 	// Roster method returns repository.Roster concrete implementation.
 	Roster() Roster
 
